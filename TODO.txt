@@ -1,0 +1,3 @@
+Create init script to:
+  - init secrets in .env
+  - generate initial homepage index file

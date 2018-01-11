@@ -1,0 +1,7 @@
+dotenv
+body-parser
+cookie-parser
+dotenv
+express
+express-session
+multer

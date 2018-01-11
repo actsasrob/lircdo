@@ -1,0 +1,87 @@
+
+{Intent Name}	{LircAVRAction}				 	  {LircAVDevice}
+avr_action      change device/set device/device                   DVD Player, DVR/FireTV, 
+                change component/set component/component          HDP/PS4, Television/TV/STB/CBL 
+
+Sample Utterances:
+change component HDP            {LircAVRAction} to {LircAVDevice}
+Set device to DVD Player        {LircAVRAction} to {LircAVDevice}
+change component to DVR
+change component to ps4
+
+
+channel_action                 {LircChannelAction}		{LircComponent}		{LircNumericArgument}
+
+Sample Utterances:
+Change channel to 746           {LircChannelAction} to {LircNumericArgument}
+set channel to 746              
+Change channel to AMC      
+change channel settopbox to 345 {LircChannelAction} {LircComponent} to {LircNumericArgument}
+change settopbox channel to 345 change {LircComponent} {LircChannelAction} to {LircNumericArgument}
+set tv channel to 345           set {LircComponent} {LircChannelAction} to {LircNumericArgument}
+set tv channel to 231
+
+
+volume_action	{LircVolumeAction}		{LircComponent}		{LircNumericArgument}
+                increase volume/raise volume/                           Number
+                increase/raise   
+                decrease volume/lower volume/
+                decrease/lower
+
+SampleUtterances:
+increase avr volume by 5        {LircVolumeAction} {LircComponent} volume by {LircNumericArgument}
+raise avr volume by 5           
+decrease volume by 3            {LircVolumeAction} by {LircNumericArgument}
+
+lircdo		{LircComponent}	{LircAction}					 	               
+		AVR		power on                                                                                  
+		                turn on AVR
+		                turn audio video receiver on
+		                Power off AV
+		                turn off AV
+		                turn AV off
+		                increase volume						                                          
+		                decrease volume						
+		DVD             Power on/turn on/on
+		                Power off/turn off/off
+		 		Open Tray/close tray/toggle tray
+		SetTopBox	Power on/turn on/on/toggle power
+		                Power off/turn off/off
+				Launch Menu/show menu
+		                display menu
+		                launch dvr menu/show dvr menu
+		                Exit menu/dismiss menu/exit
+		                Change/set/turn Channel					
+		System          Power on/turn on/on
+		                power off/turn off/off
+		TV      	Power off/turn off/off
+
+SampleUtterances:
+turn on avr                     {LircAction} {LircComponent}
+turn avr on                     turn {LircComponent} {LircAction}
+power avr on                    power {LircComponent} {LircAction}
+
+turn on dvd                     {LircAction} {LircComponent}
+Turn DVD power on 		Turn {LircComponent} {LircAction}
+turn dvd on
+Turn DVD power off
+Turn on tv                      {LircAction} {LircComponent}
+turn tv on                      Turn {LircComponent} {LircAction}
+Power on tv                     {LircAction} {LircComponent}
+Open DVD tray 			{LircComponent} {LircAction} 
+DVD close tray                   
+open tray for DVD                {LircAction} for {LircComponent}
+close tray for DVD               
+open tray
+close tray
+launch menu           		{LircAction}
+display menu
+show menu
+PROBLEM: show settopbox menu "does not recognize {LircAction}
+tv show menu
+exit menu
+dismiss menu
+launch dvr menu       
+Power on system
+turn system power off           turn {LircComponent} {LircAction}
+turn on system                  {LircAction} {LircComponent}

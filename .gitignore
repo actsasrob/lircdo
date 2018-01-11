@@ -1,3 +1,16 @@
+# vim .swp files
+*.swp
+
+catalog_internal.json
+catalog_external.json
+
+lircscripts/*.sh
+openssl/serial.txt
+openssl/index*
+openssl/*.pem
+openssl/*.pem
+sslcert/
+
 # Logs
 logs
 *.log

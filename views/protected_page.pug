@@ -1,0 +1,11 @@
+block content
+  .main.container
+    .row
+      .col-md-6.col-md-offset-3
+        h1.display-4.m-b-2 Protected Page
+        div Welcome #{id}, here are the things you can do:
+        each intent in lirc_catalog.intents 
+          form(method='POST' action='/lircdo_gui?intentname=' + intent.name + '&shared_secret=' + lirc_catalog.SHARED_SECRET)
+            button.btn.btn-primary(type='submit') #{intent.displayname}
+        form(method='GET' action='/logout')
+          button.btn.btn-primary(type='submit') Log out
