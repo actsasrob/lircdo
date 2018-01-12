@@ -260,6 +260,7 @@ app.get('/channel_action_ask', function (req, res) {
 
    var lircComponent=req.query.lircComponent;
    var lircChannelAction=req.query.lircChannelAction;
+   var lircArgument=req.query.lircArgument;
 
    console.log(`channel_action_ask: lircChannelAction=${lircChannelAction} lircComponent=${lircComponent} lircArgument=${lircArgument}`);
 
