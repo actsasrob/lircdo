@@ -5,7 +5,7 @@ catalog_internal.json
 catalog_external.json
 
 lircscripts/*.sh
-openssl/serial.txt
+openssl/serial*
 openssl/index*
 openssl/*.pem
 openssl/*.pem
