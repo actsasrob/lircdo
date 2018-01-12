@@ -64,12 +64,12 @@ var lirc_catalog = require('./catalog_internal.json')
 //console.log("lirc_catalog: ", lirc_catalog);
 //console.log("just intents: ", lirc_catalog.intents);
 
-function lookup_intent(intentname) {
-   console.log('lookup_intent: intentname=' + intentname);
+function lookup_intent_by_name(intentname) {
+   console.log('lookup_intent_by_name: intentname=' + intentname);
    var retVal = null;
    var intents = lirc_catalog.intents;
    for (i=0; i < intents.length; i++) {
-      //console.log("intentname=" + intentname + " " + intents[i].name);
+      //console.log("lookup_intent_by_name: intentname=" + intentname + " " + intents[i].name);
       if (intentname === intents[i].name) {
          return intents[i];
       }   
@@ -77,9 +77,30 @@ function lookup_intent(intentname) {
    return retVal;
 }
 
-//console.log("test lookup", lookup_intent('avpoweron'));
-//var myintent = lookup_intent('avpoweron');
-//console.log('script for avpoweron is ' + myintent.lircscript);
+
+function lookup_intent(intent, action, component) {
+   console.log('lookup_intent: intent=' + intent + " action=" + action + " component=" + component);
+   var retVal = null;
+   var intents = lirc_catalog.intents;
+   for (i=0; i < intents.length; i++) {
+      if (intent.toLowerCase === intents[i].intent.toLowerCase) {
+         if (intents[i].action.toLowerCase.indexOf(action.toLowerCase) > -1) {
+            if (!component || !component.length) { // no component specified
+               // Check if intent acts as default component
+               if (intents[i].default_component) {
+                  retVal = intents[i];
+               }
+            } else {
+               if (intents[i].component.toLowerCase.indexOf(component.toLowerCase) > -1) {
+                  return intents[i];
+               }  
+            }
+         }
+      }
+   }
+   return retVal;
+}
+
 
 console.log(`env PORT is ${PORT}`);
 console.log(`env APP_FQDN is ${APP_FQDN}`);
@@ -210,6 +231,14 @@ app.get('/lircdo_ask', function (req, res) {
    } else {
        res.writeHead(200, {"Content-Type": "application/json"});
    }
+ 
+   var intent = lookup_intent('lircdo', lircAction, lircComponent);
+   if (intent) {
+      console.log('lircdo_ask: found lircscript=' + intent.lircscript);
+   } else {
+      console.log('lircdo_ask: no matching lircscript found');
+   }
+
    var json = JSON.stringify({ 
      status: status, 
      message: message 
@@ -329,7 +358,7 @@ app.post('/lircdo_gui', function (req, res) {
    if (typeof intentname !== 'undefined' && intentname !== null &&
        typeof shared_secret !== 'undefined' && shared_secret !== null &&
        shared_secret === LIRCDO_PAGE_SECRET){
-         var intentobj=lookup_intent(intentname);
+         var intentobj=lookup_intent_by_name(intentname);
          if (intentobj !== 'undefined' && intentobj !== null) { 
             var lircscriptpath = intentobj.lircscript;
             console.log("Got a POST request for /lircdo_gui intent=" + intentname + "script=" + lircscriptpath);
