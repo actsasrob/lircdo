@@ -293,6 +293,7 @@ app.get('/volume_action_ask', function (req, res) {
 
    var lircComponent=req.query.lircComponent;
    var lircVolumeAction=req.query.lircVolumeAction;
+   var lircArgument=req.query.lircArgument;
 
    console.log(`volume_action_ask: lircVolumeAction=${lircVolumeAction} lircComponent=${lircComponent} lircArgument=${lircArgument}`);
 
