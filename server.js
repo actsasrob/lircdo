@@ -19,6 +19,8 @@ if (process.env.LIRCDO_PAGE_SECRET !== 'undefined' && process.env.IRCDO_PAGE_SEC
    console.log('error: LIRCDO_PAGE_SECRET environment variable MUST be set in .env');
    exit(1);
 }
+const TEST_MODE = process.env.TEST_MODE && /^true$/i.test(process.env.TEST_MODE);
+console.log('TEST_MODE=' + TEST_MODE);
 
 var privateKey  = fs.readFileSync('sslcert/serverkey.pem', 'utf8');
 var certificate = fs.readFileSync('sslcert/servercert.pem', 'utf8');
@@ -198,21 +200,6 @@ app.use('/', function(err, req, res, next){
    res.redirect('/login');
 });
 
-app.get('/old', function (req, res) {
-   console.log("Got a GET request for the homepage");
-   
-   res.writeHeader(200, {"Content-Type": "text/html"});  
-   lircindex = spawnSync('./generate_lirc_index.sh', ['arg1', 'arg2']); 
-   if (lircindex.status !== 0) {
-      res.write("<html><body>Error occured</body></html>");
-      console.log("Error occurred. Exit status: " + play.status + " stderr: " + play.stderr);
-   } else {
-      res.write(lircindex.stdout);  
-   }
-   res.end();
-})
-
-
 // This responds to a POST request for /lircdo_ask. 
 // Meant to be invoked Alexa Skills Kit(sdk)
 // Params: lircComponent. Not required
@@ -241,8 +228,12 @@ app.get('/lircdo_ask', function (req, res) {
    var intent = lookup_intent('lircdo', lircAction, lircComponent);
    if (intent) {
       console.log('lircdo_ask: found lircscript=' + intent.lircscript);
+      if (!TEST_MODE) {
+         console.log('lircdo_ask: executing script');
+      }
    } else {
       console.log('lircdo_ask: no matching lircscript found');
+      message = 'No matching LIRC script found';
    }
 
    var json = JSON.stringify({ 
@@ -276,6 +267,18 @@ app.get('/avr_action_ask', function (req, res) {
    } else {
        res.writeHead(200, {"Content-Type": "application/json"});
    }
+
+   var intent = lookup_intent('avr_action', lircAction, lircComponent);
+   if (intent) {
+      console.log('avr_action_ask: found lircscript=' + intent.lircscript);
+      if (!TEST_MODE) {
+         console.log('avr_action_ask: executing script');
+      }
+   } else {
+      console.log('avr_action_ask: no matching lircscript found');
+      message = 'No matching LIRC script found';
+   }
+
    var json = JSON.stringify({
      status: status,
      message: message
@@ -309,6 +312,18 @@ app.get('/channel_action_ask', function (req, res) {
    } else {
        res.writeHead(200, {"Content-Type": "application/json"});
    }
+
+   var intent = lookup_intent('channel_action', lircAction, lircComponent);
+   if (intent) {
+      console.log('channel_action_ask: found lircscript=' + intent.lircscript);
+      if (!TEST_MODE) {
+         console.log('channel_action_ask: executing script');
+      }
+   } else {
+      console.log('channel_action_ask: no matching lircscript found');
+      message = 'No matching LIRC script found';
+   }
+
    var json = JSON.stringify({
      status: status,
      message: message
@@ -342,6 +357,18 @@ app.get('/volume_action_ask', function (req, res) {
    } else {
        res.writeHead(200, {"Content-Type": "application/json"});
    }
+
+   var intent = lookup_intent('volume_action', lircAction, lircComponent);
+   if (intent) {
+      console.log('volume_action_ask: found lircscript=' + intent.lircscript);
+      if (!TEST_MODE) {
+         console.log('volume_action_ask: executing script');
+      }
+   } else {
+      console.log('volume_ask: no matching lircscript found');
+      message = 'No matching LIRC script found';
+   }
+
    var json = JSON.stringify({
      status: status,
      message: message
