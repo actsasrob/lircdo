@@ -83,15 +83,15 @@ function lookup_intent(intent, action, component) {
    var retVal = null;
    var intents = lirc_catalog.intents;
    for (i=0; i < intents.length; i++) {
-      if (intent.toLowerCase === intents[i].intent.toLowerCase) {
-         if (intents[i].action.toLowerCase().indexOf(action.toLowerCase) > -1) {
+      if (intent.toLowerCase() === intents[i].intent.toLowerCase()) {
+         if (intents[i].action.toLowerCase().indexOf(action.toLowerCase()) > -1) {
             if (!component || !component.length) { // no component specified
                // Check if intent acts as default component
                if (intents[i].default_component) {
                   retVal = intents[i];
                }
             } else {
-               if (intents[i].component.toLowerCase().indexOf(component.toLowerCase) > -1) {
+               if (intents[i].component.toLowerCase().indexOf(component.toLowerCase()) > -1) {
                   return intents[i];
                }  
             }
