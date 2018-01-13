@@ -42,8 +42,9 @@ def process_lircscript(filename):
       if m:
          thekey,thevalue=m.group(2,3)
          thekey = thekey.lower()
+         print "process_lircscript: thekey=" + thekey
          if thekey == 'default_component':
-            retVal[thekey] = thevalue.lower in ['true', '1', 't', 'y', 'yes']
+            retVal[thekey] = thevalue.lower() in ['true', '1', 't', 'y', 'yes']
          elif thekey in multivalued_keys:
             retVal[thekey] = [x.strip() for x in thevalue.split(',')] 
          else:
