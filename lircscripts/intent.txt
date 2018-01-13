@@ -40,8 +40,6 @@ lircdo		{LircComponent}	{LircAction}
 		                Power off AV
 		                turn off AV
 		                turn AV off
-		                increase volume						                                          
-		                decrease volume						
 		DVD             Power on/turn on/on
 		                Power off/turn off/off
 		 		Open Tray/close tray/toggle tray
