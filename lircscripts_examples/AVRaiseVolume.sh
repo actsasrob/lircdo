@@ -8,6 +8,20 @@
 # meta: default_component=true
 # meta: numargs=1
 
-#irsend SEND_ONCE Denon_RC-1070_raw KEY_HDP
-:
-exit $?
+status=0
+
+if [ "$#" -eq 1 ]; then
+   argument="$1"
+   if [[ "$argument" =~ ^[0-9]+$ ]]; then
+      if [ "${argument}" -gt 3 ]; then
+         $argument="3"
+      fi
+      for ((i=0; i<"${argument}"; i++)); do
+        irsend SEND_ONCE Denon_RC-1070_raw KEY_VOLUMEUP 
+        status=$?
+        sleep 1
+      done
+   fi
+fi
+
+exit $status
