@@ -3,7 +3,7 @@
 # meta: name=avraisevolume
 # meta: displayname=Raise AVR Volume
 # meta: intent=volume_action
-# meta: action=INCREASE_VOLUME
+# meta: action=VOLUME_INCREASE
 # meta: component=COMPONENT_AVR
 # meta: default_component=true
 # meta: numargs=1

@@ -3,7 +3,7 @@
 # meta: name=avlowervolume
 # meta: displayname=Lower AVR Volume
 # meta: intent=volume_action
-# meta: action=DECREASE_VOLUME
+# meta: action=VOLUME_DECREASE
 # meta: component=COMPONENT_AVR
 # meta: default_component=true
 # meta: numargs=1

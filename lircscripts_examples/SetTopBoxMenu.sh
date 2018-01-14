@@ -3,7 +3,7 @@
 # meta: name=settopboxlaunchmenu
 # meta: displayname=Launch Set Top Box Menu
 # meta: intent=lircdo
-# meta: action=LAUNCH_MENU
+# meta: action=MENU_SHOW
 # meta: component=COMPONENT_STB
 # meta: default_component=true
 # meta: numargs=0

@@ -3,7 +3,7 @@
 # meta: name=avpoweroff
 # meta: displayname=Power Off AV Device
 # meta: intent=lircdo
-# meta: action=POWE_OFF
+# meta: action=POWER_OFF
 # meta: component=COMPONENT_AVR
 # meta: default_component=false
 # meta: numargs=0
