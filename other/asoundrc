@@ -1,0 +1,29 @@
+# ~/.asoundrc config to addd "pre-amp" microphone boost for card 1
+# Useful to raise microphone input volume levels for USB microphone on Raspberry pi
+pcm.preamp {
+    type softvol
+    slave {
+        pcm "dsnoop:1,0"
+    }
+    control {
+        name "Pre-Amp"
+        card 1
+    }
+    min_dB -5.0
+    max_dB 50.0
+    resolution 10
+}
+
+
+pcm.!default {
+  type asym
+   playback.pcm {
+     type plug
+     slave.pcm "hw:0,0"
+   }
+   capture.pcm {
+     type plug
+     slave.pcm "plug:preamp"
+   }
+}
+
