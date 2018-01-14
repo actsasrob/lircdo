@@ -79,8 +79,7 @@ function lookup_intent_by_name(intentname) {
    return retVal;
 }
 
-
-function lookup_intent(intent, action, component) {
+function lookup_intent(intent, action, component, argument) {
    console.log('lookup_intent: intent=' + intent + " action=" + action + " component=" + component);
    var retVal = null;
    var intents = lirc_catalog.intents;
@@ -100,7 +99,14 @@ function lookup_intent(intent, action, component) {
                       return value.toUpperCase();
                    });
                if (upperCaseComponents.indexOf(component.toUpperCase()) > -1) {
-                  return intents[i];
+                  var thetype = typeof(argument);
+                  if (thetype === 'string' && argument.length > 0) {
+                     if (intents[i].numargs === '1') {
+                        return intents[i];
+                     }
+                  } else {
+                      return intents[i];
+                  }
                }  
             }
          }
@@ -109,6 +115,29 @@ function lookup_intent(intent, action, component) {
    return retVal;
 }
 
+function execute_lirc_script(lircscriptpath, argument) {
+   var retVal = '';
+
+   var testcmd = spawnSync('test', ['-f', lircscriptpath ]);
+   if (testcmd.status === 0) {
+      var lircscript;
+      var argument_type = typeof(argument);
+      if (argument_type === 'string' && argument.length > 0) {
+         lircscript = spawnSync(lircscriptpath, [ argument ]);
+         console.log('execute_lirc_script: ' + lircscriptpath + ' ' + argument);
+      } else {
+         lircscript = spawnSync(lircscriptpath);
+      }
+      if (lircscript.status === 0){
+         retVal = "success";
+      } else {
+         retVal= "LIRC script non-zero return status";
+      }
+   } else {
+      status="LIRC script not found";
+   }
+   return retVal;
+}
 
 console.log(`env PORT is ${PORT}`);
 console.log(`env APP_FQDN is ${APP_FQDN}`);
@@ -225,11 +254,14 @@ app.get('/lircdo_ask', function (req, res) {
        res.writeHead(200, {"Content-Type": "application/json"});
    }
  
-   var intent = lookup_intent('lircdo', lircAction, lircComponent);
+   var intent = lookup_intent('lircdo', lircAction, lircComponent, '');
    if (intent) {
       console.log('lircdo_ask: found lircscript=' + intent.lircscript);
       if (!TEST_MODE) {
-         console.log('lircdo_ask: executing script');
+         var msg = execute_lirc_script(intent.lircscript, '');
+         if (msg && msg.length > 0) {
+            message = msg;
+         }
       }
    } else {
       console.log('lircdo_ask: no matching lircscript found');
@@ -268,11 +300,14 @@ app.get('/avr_action_ask', function (req, res) {
        res.writeHead(200, {"Content-Type": "application/json"});
    }
 
-   var intent = lookup_intent('avr_action', lircAction, lircComponent);
+   var intent = lookup_intent('avr_action', lircAction, lircComponent, '');
    if (intent) {
       console.log('avr_action_ask: found lircscript=' + intent.lircscript);
       if (!TEST_MODE) {
-         console.log('avr_action_ask: executing script');
+         var msg = execute_lirc_script(intent.lircscript, '');
+         if (msg && msg.length > 0) {
+            message = msg;
+         }
       }
    } else {
       console.log('avr_action_ask: no matching lircscript found');
@@ -313,11 +348,14 @@ app.get('/channel_action_ask', function (req, res) {
        res.writeHead(200, {"Content-Type": "application/json"});
    }
 
-   var intent = lookup_intent('channel_action', lircAction, lircComponent);
+   var intent = lookup_intent('channel_action', lircAction, lircComponent, lircArgument);
    if (intent) {
       console.log('channel_action_ask: found lircscript=' + intent.lircscript);
       if (!TEST_MODE) {
-         console.log('channel_action_ask: executing script');
+         var msg = execute_lirc_script(intent.lircscript, lircArgument);
+         if (msg && msg.length > 0) {
+            message = msg;
+         }
       }
    } else {
       console.log('channel_action_ask: no matching lircscript found');
@@ -358,11 +396,14 @@ app.get('/volume_action_ask', function (req, res) {
        res.writeHead(200, {"Content-Type": "application/json"});
    }
 
-   var intent = lookup_intent('volume_action', lircAction, lircComponent);
+   var intent = lookup_intent('volume_action', lircAction, lircComponent, lircArgument);
    if (intent) {
       console.log('volume_action_ask: found lircscript=' + intent.lircscript);
       if (!TEST_MODE) {
-         console.log('volume_action_ask: executing script');
+         var msg = execute_lirc_script(intent.lircscript, lircArgument);
+         if (msg && msg.length > 0) {
+            message = msg;
+         }
       }
    } else {
       console.log('volume_ask: no matching lircscript found');
