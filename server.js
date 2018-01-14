@@ -300,7 +300,7 @@ app.get('/avr_action_ask', function (req, res) {
        res.writeHead(200, {"Content-Type": "application/json"});
    }
 
-   var intent = lookup_intent('avr_action', lircAction, lircComponent, '');
+   var intent = lookup_intent('avr_action', lircAVRAction, lircComponent, '');
    if (intent) {
       console.log('avr_action_ask: found lircscript=' + intent.lircscript);
       if (!TEST_MODE) {
@@ -348,7 +348,7 @@ app.get('/channel_action_ask', function (req, res) {
        res.writeHead(200, {"Content-Type": "application/json"});
    }
 
-   var intent = lookup_intent('channel_action', lircAction, lircComponent, lircArgument);
+   var intent = lookup_intent('channel_action', lircChannelAction, lircComponent, lircArgument);
    if (intent) {
       console.log('channel_action_ask: found lircscript=' + intent.lircscript);
       if (!TEST_MODE) {
@@ -396,7 +396,7 @@ app.get('/volume_action_ask', function (req, res) {
        res.writeHead(200, {"Content-Type": "application/json"});
    }
 
-   var intent = lookup_intent('volume_action', lircAction, lircComponent, lircArgument);
+   var intent = lookup_intent('volume_action', lircVolumeAction, lircComponent, lircArgument);
    if (intent) {
       console.log('volume_action_ask: found lircscript=' + intent.lircscript);
       if (!TEST_MODE) {
