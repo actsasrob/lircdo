@@ -80,7 +80,7 @@ function lookup_intent_by_name(intentname) {
 }
 
 function lookup_intent(intent, action, component, argument) {
-   console.log('lookup_intent: intent=' + intent + " action=" + action + " component=" + component);
+   console.log('lookup_intent: intent=' + intent + " action=" + action + " component=" + component + " argument=" + argument);
    var retVal = null;
    var intents = lirc_catalog.intents;
    for (i=0; i < intents.length; i++) {
@@ -99,8 +99,9 @@ function lookup_intent(intent, action, component, argument) {
                       return value.toUpperCase();
                    });
                if (upperCaseComponents.indexOf(component.toUpperCase()) > -1) {
-                  var thetype = typeof(argument);
-                  if (thetype === 'string' && argument.length > 0) {
+                  var argumenttype = typeof(argument);
+                  console.log('thetype =' + argumenttype + " numargs=" + intents[i].numargs);
+                  if (argumenttype === 'string' && argument.length > 0) {
                      if (intents[i].numargs === '1') {
                         return intents[i];
                      }
