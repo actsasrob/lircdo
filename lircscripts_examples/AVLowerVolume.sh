@@ -14,7 +14,7 @@ if [ "$#" -eq 1 ]; then
    argument="$1"
    if [[ "$argument" =~ ^[0-9]+$ ]]; then
       if [ "${argument}" -gt 10 ]; then
-         $argument="10"
+         argument="10"
       fi
       for ((i=0; i<"${argument}"; i++)); do
         irsend SEND_ONCE Denon_RC-1070_raw KEY_VOLUMEDOWN
