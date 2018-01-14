@@ -19,7 +19,6 @@ if [ "$#" -eq 1 ]; then
       for ((i=0; i<"${argument}"; i++)); do
         irsend SEND_ONCE Denon_RC-1070_raw KEY_VOLUMEDOWN
         status=$?
-        sleep 1
       done
    fi
 fi
