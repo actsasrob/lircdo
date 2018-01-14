@@ -83,6 +83,7 @@ function lookup_intent(intent, action, component, argument) {
    console.log('lookup_intent: intent=' + intent + " action=" + action + " component=" + component + " argument=" + argument);
    var retVal = null;
    var intents = lirc_catalog.intents;
+   var argumenttype = typeof(argument);
    for (i=0; i < intents.length; i++) {
       if (intent.toUpperCase() === intents[i].intent.toUpperCase()) {
          var upperCaseActions = intents[i].action.map(function(value) {
@@ -92,15 +93,21 @@ function lookup_intent(intent, action, component, argument) {
             if (!component || !component.length) { // no component specified
                // Check if intent acts as default component
                if (intents[i].default_component) {
-                  retVal = intents[i];
+                  //console.log('thetype=' + argumenttype + " numargs=" + intents[i].numargs);
+                  if (argumenttype === 'string' && argument.length > 0) {
+                     if (intents[i].numargs === '1') {
+                        return intents[i];
+                     }
+                  } else {
+                      return intents[i];
+                  }
                }
             } else {
                var upperCaseComponents = intents[i].component.map(function(value) {
                       return value.toUpperCase();
                    });
                if (upperCaseComponents.indexOf(component.toUpperCase()) > -1) {
-                  var argumenttype = typeof(argument);
-                  console.log('thetype =' + argumenttype + " numargs=" + intents[i].numargs);
+                  //console.log('thetype=' + argumenttype + " numargs=" + intents[i].numargs);
                   if (argumenttype === 'string' && argument.length > 0) {
                      if (intents[i].numargs === '1') {
                         return intents[i];
@@ -301,7 +308,7 @@ app.get('/avr_action_ask', function (req, res) {
        res.writeHead(200, {"Content-Type": "application/json"});
    }
 
-   var intent = lookup_intent('avr_action', lircAVRAction, lircComponent, '');
+   var intent = lookup_intent('avr_action', lircAVRAction, lircAVDevice, '');
    if (intent) {
       console.log('avr_action_ask: found lircscript=' + intent.lircscript);
       if (!TEST_MODE) {
