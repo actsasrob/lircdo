@@ -15,10 +15,10 @@ countryName         = Country Name (2 letter code)
 countryName_default = US
 
 stateOrProvinceName         = State or Province Name (full name)
-stateOrProvinceName_default = VA 
+stateOrProvinceName_default = MyState 
 
 localityName         = Locality Name (eg, city)
-localityName_default = Herndon
+localityName_default = MyTown
 
 organizationName            = Organization Name (eg, company)
 organizationName_default    = Test CA, Limited
@@ -41,8 +41,7 @@ nsComment            = "OpenSSL Generated Certificate"
 ####################################################################
 [ alternate_names ]
 
-DNS.1  = robhughes.net 
-DNS.2  = lirc.robhughes.net 
+DNS.1  = lirc.example.com 
 
 # IPv4 localhost
 IP.1     = 127.0.0.1

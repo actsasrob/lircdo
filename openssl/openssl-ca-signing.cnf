@@ -37,10 +37,10 @@ countryName         = Country Name (2 letter code)
 countryName_default = US
 
 stateOrProvinceName         = State or Province Name (full name)
-stateOrProvinceName_default = Virginia 
+stateOrProvinceName_default = MyState 
 
 localityName                = Locality Name (eg, city)
-localityName_default        = Herndon 
+localityName_default        = MyTown 
 
 organizationName            = Organization Name (eg, company)
 organizationName_default    = Test CA, Limited
