@@ -191,7 +191,7 @@ if (PAIR_MODE) {
           pin !== applicationPin) {
           // Error.
           res.writeHead(402, {"Content-Type": "application/json"});
-          json_reponse.status = 'error';
+          json_response.status = 'error';
           json_response.message = 'invalid application pin';
           console.log(`pair_action_ask: error: received invalid pin=${pin}`);
       } else {
