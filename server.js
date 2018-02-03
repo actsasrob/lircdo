@@ -181,7 +181,7 @@ if (PAIR_MODE) {
       var status = 'success';
       var message = 'action successful';
 
-      var json_response = { status: success, message: message};
+      var json_response = { status: status, message: message};
 
       var pin=req.query.pin;
 
