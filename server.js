@@ -207,7 +207,7 @@ if (PAIR_MODE) {
       var json = JSON.stringify(json_response);
       res.end(json);
       
-   })
+   });
 
 } else { // START OF NON-PAIR MODE
 
