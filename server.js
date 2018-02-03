@@ -25,6 +25,8 @@ console.log('TEST_MODE=' + TEST_MODE);
 const PAIR_MODE = process.env.PAIR_MODE && /^true$/i.test(process.env.PAIR_MODE);
 console.log('PAIR_MODE=' + PAIR_MODE);
 
+var applicationPin=Math.floor(Math.random() * 1000).toString();
+
 var privateKey  = fs.readFileSync('sslcert/serverkey.pem', 'utf8');
 var certificate = fs.readFileSync('sslcert/servercert.pem', 'utf8');
 
@@ -170,7 +172,6 @@ function checkSignIn(req, res, next){
 }
 
 if (PAIR_MODE) {
-   var applicationPin=Math.floor(Math.random() * 1000);
    console.log(`Application pairing pin number is ${applicationPin}`);
 
    // This responds to a POST request for /pair_action_ask.
