@@ -200,7 +200,7 @@ if (PAIR_MODE) {
           json_response.fqdn = APP_FQDN;
           json_response.port = PORT;
           json_response.shared_secret = LIRCDO_PAGE_SECRET;
-          json_response.ca_cert = options.ca;
+          json_response.ca_cert = options.ca.replace(/\n/g, ".");
           console.log(`pair_action_ask: success: received valid pin=${pin}`);
       }
 
