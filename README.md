@@ -14,19 +14,34 @@ unzip -p 2017-07-05-raspbian-jessie.zip | sudo dd of=/dev/mmcblk0 bs=4M conv=fsy
 ### Install LIRC packages
 sudo apt-get install lirc
 
-### Upgrade to node.js v4.x
-curl -sL https://deb.nodesource.com/setup_4.x | sudo -E bash -
-sudo apt-get install nodejs
+### Install curl
+sudo apt-get install curl
 
 ### Create unprivileged lirc user
 sudo adduser lirc
 sudo su - lirc
+
+### Install Node Version Manager (nvm)
+curl https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install | bash
+source ~/.bashrc
+
+### Install node.js v8.x
+nvm install 8.10.0
+nvm alias default 8.10.0
+
+### Install lircdo service
 Change directory to where you want lircdo installed
 git clone https://github.com/actsasrob/lircdo.git
 cd lircdo
+
+## Install dependent node.js packages
 npm install
 
-### reate the directory where LIRC scripts will reside. The steps below assume this directory is named 'lircscripts' inside the top-level lircdo directory
+## TODO: 
+1. Upgrade pug from 0.1.0 to pug 2.0.0-alpha6
+1. Upgrade pug-loader from 0.0.0 to pug-loader 1.0.2 
+
+### Create the directory where LIRC scripts will reside. The steps below assume this directory is named 'lircscripts' inside the top-level lircdo directory
 mkdir lircscripts
 <See section regarding how to create LIRC scripts>
 
