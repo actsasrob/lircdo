@@ -328,6 +328,11 @@ This produces ./catalog_internal.json which is read by the node.js application o
 NOTE: Re-run generate_json_catalogs.py anytime changes are made to scripts in the LIRC scripts directory then restart the node.js application.
 
 
+### Start node.js lircdo service
+node server.js
 
+## TODO: 
+* Add script to automate install
+* Add service init script to start service on boot
 
 
