@@ -12,11 +12,14 @@ const PORT = process.env.PORT || 8843;
 const APP_FQDN = process.env.APP_FQDN || '127.0.0.1';
 const LIRCSCRIPTS_LOCATION = process.env.LIRCSCRIPTS_LOCATION || './lircscripts';
 const SESSION_SECRET = process.env.SESSION_SECRET || 'shh its a secret';
-if (process.env.LIRCDO_PAGE_SECRET === 'undefined' || process.env.LIRCDO_PAGE_SECRET === null) {
+if (process.env.LIRCDO_PAGE_SECRET !== 'undefined' && process.env.LIRCDO_PAGE_SECRET !== null) {
+   const LIRCDO_PAGE_SECRET = process.env.LIRCDO_PAGE_SECRET;
+   console.log('info: LIRCDO_PAGE_SECRET is ' + LIRCDO_PAGE_SECRET);
+} else {
    console.log('error: LIRCDO_PAGE_SECRET environment variable MUST be set in .env');
    exit(1);
 }
-const LIRCDO_PAGE_SECRET = process.env.LIRCDO_PAGE_SECRET;
+const LIRCDO_PAGE_SECRET = process.env.LIRCDO_PAGE_SECRET
 const TEST_MODE = process.env.TEST_MODE && /^true$/i.test(process.env.TEST_MODE);
 console.log('TEST_MODE=' + TEST_MODE);
 
@@ -150,6 +153,7 @@ function execute_lirc_script(lircscriptpath, argument) {
    return retVal;
 }
 
+console.log(`env LIRCDO_PAGE_SECRET is ${LIRCDO_PAGE_SECRET}`);
 console.log(`env PORT is ${PORT}`);
 console.log(`env APP_FQDN is ${APP_FQDN}`);
 console.log(`env LIRCSCRIPTS_LOCATION is ${LIRCSCRIPTS_LOCATION}`);
