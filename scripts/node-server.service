@@ -1,0 +1,13 @@
+[Unit]
+Description=lircdo nodejs HTTP server
+
+[Service]
+WorkingDirectory=/home/lirc/dev/lircdo_dev
+ExecStart=/home/lirc/.nvm/versions/node/v8.10.0/bin/node server.js
+Type=simple
+Restart=always
+RestartSec=10
+User=lirc
+
+[Install]
+WantedBy=basic.target
