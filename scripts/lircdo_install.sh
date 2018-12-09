@@ -2,13 +2,17 @@
 
 # Add logic to test for valid FQDN and PORT???
 # TODO add logic to install node.js v8.10
-# TODO set facls to allow lirc user to read let's encrypt fles under /etc/letsencrypt/live/...
+# Add logic to test for valid FQDN and PORT???
+# TODO test lircdo_install.sh script
 
 LIRCDO_USER=lirc
 LIRCDO_SERVER_PATH="/home/${LIRCDO_USER}
 LIRCDO_SERVER_DIR="/home/${LIRCDO_USER}/lircdo
 #GIT_BRANCH=master
 GIT_BRANCH=nodejsv8
+
+
+current_dir=$(cwd)
 
 #function create_systemd_service {
 #   cat << EOT >> /etc/systemd/system/node-server.service
@@ -35,6 +39,11 @@ if [ "$EUID" -ne 0 ]; then
     exit 1
 fi
 
+if [ ! -w $current_dir ]; then
+   echo "error: the current directory must be writable. exiting..."
+   exit 1
+fi
+
 echo "info: checking if unprivileged user ${LIRCDO_USER} exists..."
 grep $LIRCDO_USER /etc/passwd > /dev/null 2>&1
 if [ "$?" -ne 0 ]; then
@@ -49,7 +58,6 @@ echo "info: checking if lircdo server application has been installed at ${LIRCDO
 if [ ! -e "${LIRCDO_SERVER_DIR}/server.js" ]; then
    echo "info: installing lircdo server application..."
    apt-get install -y git > /dev/null 2>&1
-   current_dir=$(cwd)
    sudo -u $LIRCDO_USER "mkdir -p ${LIRCDO_SERVER_PATH}"
    sudo -u $LIRCDO_USER "cd ${LIRCDO_SERVER_PATH}; git clone https://github.com/actsasrob/lircdo.git ${LIRCDO_SERVER_DIR}; cd $LIRCDO_SERVER_DIR; git checkout $GIT_BRANCH" 
    cd $current_dir
@@ -210,7 +218,117 @@ fi
 chmod a+x ./certbot-auto
 # ./certbot-auto --help
 
-#sudo ./certbot-auto certonly --standalone -n --agree-tos -m acts.as.rob@gmail.com --preferred-challenges http  -d lirc.robhughes.net
+echo "info: checking if Let\'s Encrypt signed server certificate exists for domain $APP_FQDN..."
+if [ ! -e /etc/letsencript/live/$APP_FQDN/cert.pem ]; then
+   echo "info: registering $APP_FQDN domain with Let\'s Encrypt and requesting signed certificate..."
+   echo "info: when requesting signed server certifates from Let\'s Encrypt you can add an e-mail address"
+   echo "       which will be used to send important notifications such as reminders about expiring "
+   echo "       certificates."
+   emailswitch=""
+   email=""
+   while true; do
+      read -p "Do you wish to register an e-mail address with Let\'s Encrypt? y/n: " YN
+      case $YN in
+        [Yy]*)
+               read -p "What e-mail address would you like to register with Let\'s Encrypt? " email
+               char='[[:alnum:]!#\$%&'\''\*\+/=?^_\`{|}~-]'
+               name_part="${char}+(\.${char}+)*"
+               domain="([[:alnum:]]([[:alnum:]-]*[[:alnum:]])?\.)+[[:alnum:]]([[:alnum:]-]*[[:alnum:]])?"
+               begin='(^|[[:space:]])'
+               end='($|[[:space:]])'
+               
+               # include capturing parentheses, 
+               # these are the ** 2nd ** set of parentheses (there's a pair in $begin)
+               re_email="${begin}(${name_part}@${domain})${end}"
+               if [[ $email =~ $re_email ]]; then
+                  email=${BASH_REMATCH[2]}
+                  echo "info: address ${email} will be registered with Let\'s Encrypt"
+               else
+                  echo "warn: ${email} doesn't appear to be a valid e-mail address. Will use it anyway."  
+               fi
+               emailswitch="-m $email"
+               break 
+            ;;
+        [Nn]*)
+                break 
+            ;;
+
+            *)
+                continue
+            ;;
+      esac
+   done
+   echo "info: invoking Let\'s Encrypt certbot-auto script tp register/download signed certificate"
+   echo "       for domain $APP_FQDN..."
+   ./certbot-auto certonly --standalone -n --agree-tos ${emailswitch} --preferred-challenges http  -d $APP_FQDN 
+   certbot_status=$?
+   if [ "$certbot_status" -ne 0 ]; then
+      echo "error: certbot-auto script returned non-zero status"
+   fi
+   if [ ! -e /etc/letsencript/live/$APP_FQDN/cert.pem ]; then
+      echo "error: the certbot-auto script executed without error but no server certificate was found in"
+      echo "         /etc/letsencript/live/$APP_FQDN/cert.pem"
+   fi
+   if [ "$certbot_status" -ne 0 ] || [ ! -e /etc/letsencript/live/$APP_FQDN/cert.pem ]; then
+      echo "error: failed to register/download signed certificate from Let\'s Encrypt"
+      echo "       here\'s a list of things that could cause the registration/download to fail:"
+      echo "       $APP_FQDN is the incorrect FQDN"
+      echo "       $APP_FQDN does not resolve in DNS to the correct IP (probably the WAN-side IP for your home router"
+      echo "       You did not configure port forwarding to allow HTTP port 80 to be forwarded to your lircdo server"
+      echo "       Possibly some other application is listening on HTTP port 80"
+      echo "       exiting..."
+      exit 1
+   fi
+fi
+
+
+echo
+echo "info: setting up file system access control lists (ACLs) to allow $LIRCDO_USER to read Let\'s Encrypt certificates and keys under /etc/letsencrypt directory..."
+
+cd /etc/letsencrypt
+getfacl -R live > acl_backup_for_live_folder
+getfacl -R archive > acl_backup_for_archive_folder
+
+setfacl -m u:${LIRCDO_USER}:rx /etc/letsencrypt/live
+setfacl -m u:${LIRCDO_USER}:rx /etc/letsencrypt/live/$APP_FQDN
+setfacl -m u:${LIRCDO_USER}:r /etc/letsencrypt/live/$APP_FQDN/*.pem
+setfacl -m u:${LIRCDO_USER}:rx /etc/letsencrypt/archive
+setfacl -m u:${LIRCDO_USER}:rx /etc/letsencrypt/archive/$APP_FQDN
+setfacl -m u:${LIRCDO_USER}:r /etc/letsencrypt/archive/$APP_FQDN/*.pem
+
+# Set directory default ACLs in case they are deleted/recreated
+setfacl -d -m u:${LIRCDO_USER}:rx /etc/letsencrypt/live
+setfacl -d -m u:${LIRCDO_USER}:rx /etc/letsencrypt/live/$APP_FQDN
+setfacl -d -m u:${LIRCDO_USER}:rx /etc/letsencrypt/archive
+setfacl -d -m u:${LIRCDO_USER}:rx /etc/letsencrypt/archive/$APP_FQDN
+
+cd $current_dir
+
+getfacl /etc/letsencrypt/live | grep $LIRCDO_USER > /dev/null 2>&1
+if [ "$?" -ne 0 ]; then
+   echo "error: failed to create file system ACLs. exiting..."
+   exit 1
+fi
+
+echo "info: file system ACLs have been created"
+
+echo
+echo "info: checking if lircdo application cert/key files under $LIRCDO_SERVER_DIR/sslcert have been soft linked to /etc/letsencrypt/live/${APP_FQDN} ..."
+if [ ! -h $LIRCDO_SERVER_DIR/sslcert/cacert.pem  ] || [ ! -h $LIRCDO_SERVER_DIR/sslcert/servercert.pem  ] || [ ! -h $LIRCDO_SERVER_DIR/sslcert/serverkey.pem  ]; then
+   echo "info: creating soft links for lircdo application cert/key files..."
+   ln -f -s $LIRCDO_SERVER_DIR/sslcert/cacert.pem /etc/letsencrypt/live/$APP_FQDN/chain.pem
+   ln -f -s $LIRCDO_SERVER_DIR/sslcert/servercert.pem /etc/letsencrypt/live/$APP_FQDN/cert.pem
+   ln -f -s $LIRCDO_SERVER_DIR/sslcert/serverkey.pem /etc/letsencrypt/live/$APP_FQDN/privkey.pem
+
+   if [ ! -h $LIRCDO_SERVER_DIR/sslcert/cacert.pem  ] || [ ! -h $LIRCDO_SERVER_DIR/sslcert/servercert.pem  ] || [ ! -h $LIRCDO_SERVER_DIR/sslcert/serverkey.pem  ]; then
+      echo "error: failed to soft link one or more lircdo application cert/key files from $LIRCDO_SERVER_DIR/sslcert to /etc/letsencrypt/live/$APP_FQDN/. exiting..."
+      exit 1
+   fi
+else
+   echo "info: lircdo application certificates files already linked to /etc/letsencrypt directory" 
+fi
+
+
 
 
 echo
