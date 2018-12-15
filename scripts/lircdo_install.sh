@@ -153,7 +153,7 @@ if [ ! -e "${LIRCDO_SERVER_DIR}/server.js" ]; then
    echo "info: installing lircdo server application..."
    apt-get install -y git > /dev/null 2>&1
    sudo -H -u $LIRCDO_USER bash -c "mkdir -p ${LIRCDO_SERVER_PATH}"
-   sudo -H -u $LIRCDO_USER bash -c "cd ${LIRCDO_SERVER_PATH}; git clone https://github.com/actsasrob/lircdo.git ${LIRCDO_SERVER_DIR}; cd $LIRCDO_SERVER_DIR; git checkout $GIT_BRANCH; source ~/.bashrc; /home/$LIRCDO_USER/.nvm/versions/node/v${NODEJS_VERSION}/bin/npm install" 
+   sudo -H -u $LIRCDO_USER bash -c "cd ${LIRCDO_SERVER_PATH}; git clone https://github.com/actsasrob/lircdo.git ${LIRCDO_SERVER_DIR}; cd $LIRCDO_SERVER_DIR; git checkout $GIT_BRANCH; . ~/.bashrc; /home/$LIRCDO_USER/.nvm/versions/node/v${NODEJS_VERSION}/bin/npm install" 
    cd $current_dir
    if [ ! -e "${LIRCDO_SERVER_DIR}/server.js" ]; then
       echo "error: failed to install lircdo server application. exiting..."
