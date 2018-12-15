@@ -1,38 +1,22 @@
 #!/bin/bash
 
-# Add logic to test for valid FQDN and PORT???
-# TODO add logic to install node.js v8.10
-# Add logic to test for valid FQDN and PORT???
+# TODO Add logic to test for valid FQDN and PORT???
 # TODO test lircdo_install.sh script
 
-LIRCDO_USER=lirc
-LIRCDO_SERVER_PATH="/home/${LIRCDO_USER}
-LIRCDO_SERVER_DIR="/home/${LIRCDO_USER}/lircdo
+LIRCDO_USER="lirc"
+LIRCDO_SERVER_PATH="/home/${LIRCDO_USER}"
+LIRCDO_SERVER_DIR="/home/${LIRCDO_USER}/lircdo"
 #GIT_BRANCH=master
-GIT_BRANCH=nodejsv8
+GIT_BRANCH="nodejsv8"
+NVM_VERSION="0.33.11"
+NODEJS_VERSION="8.10.0"
+LIRC_DRIVER="default"
+LIRC_DEVICE="/dev/lirc0"
 
+NEEDS_REBOOT=0
+NEEDS_LIRCSERVICE_RESTART=0
 
-current_dir=$(cwd)
-
-#function create_systemd_service {
-#   cat << EOT >> /etc/systemd/system/node-server.service
-#[Unit]
-#Description=lircdo nodejs HTTP server
-#
-#[Service]
-#WorkingDirectory=$LIRCDO_SERVER_DIR
-#ExecStart=${LIRCDO_SERVER_PATH}/.nvm/versions/node/v8.10.0/bin/node server.js
-#Type=simple
-#Restart=always
-#RestartSec=10
-#User=$LIRCDO_USER
-#
-#[Install]
-#WantedBy=basic.target
-#EOT
-#
-#   chmod 644 /etc/systemd/system/node-server.service
-#}
+current_dir="$(cwd)"
 
 if [ "$EUID" -ne 0 ]; then
     echo "error: this script must be run as root. exiting..."
@@ -44,6 +28,91 @@ if [ ! -w $current_dir ]; then
    exit 1
 fi
 
+echo
+echo "info: install/configure Linux Infrared Remote Control (LIRC) service"
+dpkg -l | grep " lirc " > /dev/null 2>&1
+if [ "$?" -ne 0 ]; then
+   echo "info: installing lirc package..."
+   apt-get install -y lirc
+   dpkg -l | grep " lirc " > /dev/null 2>&1
+   if [ "$?" -ne 0 ]; then
+      echo "error: failed to install lirc package. exiting..."
+      exit 1
+   fi
+else
+   echo "info: lirc package already installed. nothing to do"
+fi
+
+echo
+echo "info: install/configure Linux Infrared Remote Control (LIRC) service. configure /boot/config.txt"
+grep "^dtoverlay.*lirc" /boot/config.txt > /dev/null 2>&1
+if [ "$?" -ne 0 ]; then
+   cp /boot/config.txt /boot/config.txt.bak
+   grep "^dtoverlay" /boot/config.txt > /dev/null 2>&1
+   if [ "$?" -ne 0 ]; then
+      echo "info: no dtoverlay line exists in /boot/config.txt for lirc-rpi module...adding line..."
+      echo "dtoverlay=lirc-rpi,gpio_in_pin=17,gpio_out_pin=18" >> /boot/config.txt
+      echo "info: added dtoverlay line in /boot/config.txt for lirc-rpi module using gpio in pin 17 and gpio out pin 18"
+   else
+      echo "info: dtloverlay line exists in /boot/config.txt but doesn't include lirc-rpi module...adding it..."
+      sed -ie "s/^\(dtoverlay.*\)$/\1,lirc-rpi,gpio_in_pin=17,gpio_out_pin=18/" /boot/config.txt
+      echo "info: added dtoverlay line in /boot/config.txt for lirc-rpi module using gpio in pin 17 and gpio out pin 18"
+   fi
+   NEEDS_REBOOT=1
+else
+   echo "info: dtoverlay line for lirc-rpi already exists in /boot/config.txt. nothing to do"
+fi
+
+
+echo
+echo "info: install/configure Linux Infrared Remote Control (LIRC) service. configure /etc/lirc/hardware.conf"
+grep "^DEVICE=\"${LIRC_DEVICE}\"" /etc/lirc/hardware.conf > /dev/null 2>&1
+devicestatus=$?
+grep "^DRIVER=\"${LIRC_DRIVER}\"" /etc/lirc/hardware.conf > /dev/null 2>&1
+driverstatus=$?
+if [ "$devicestatus" -ne 0" ] || [ "$driverstatus" -ne 0" ]; then
+   echo "info: configuring DEVICE and DRIVER in /etc/lirc/hardware.conf..."
+   cp -p /etc/lirc/hardware.conf /etc/lirc/hardware.conf.bak
+   sed -ie "s/^DEVICE=/DEVICE='${LIRC_DEVICE}'/" /etc/lirc/hardware.conf
+   sed -ie "s/^DRIVER=/DRIVER='${LIRC_DRIVER}'/" /etc/lirc/hardware.conf
+   echo "info: /etc/lirc/hardware.conf has been updated."
+   NEEDS_LIRCSERVICE_RESTART=1
+else
+   echo "info: latest /etc/lirc/hardware.conf file already installed. nothing to do"
+fi
+
+systemctl enable lirc
+if [ "$NEEDS_LIRCSERVICE_RESTART" -eq 1 ]; then
+   echo "info: restarting lirc service..."
+   systemctl start lirc
+fi
+
+echo "info: lirc has been installed/configured/started"
+if [ "$NEEDS_REBOOT" -eq 1 ]; then
+   echo "info: *** you need to reboot the server to properly load the lirc_rpi module before using lirc ***"
+   echo
+fi
+
+echo "info: you can stop here and test lirc or continue with the remainder of the lirdo server install"
+while true; do
+   read -p " continue? y/n: " YN
+   case $YN in
+     [Yy]*)
+             break 
+         ;;
+     [Nn]*)
+             echo "info: note: you need to populate /etc/lirc/lircd.conf with the configuration for the"
+             echo "            infrared remote control hardware used in your home."
+             exit 0 
+         ;;
+
+         *)
+             continue
+         ;;
+   esac
+done
+
+
 echo "info: checking if unprivileged user ${LIRCDO_USER} exists..."
 grep $LIRCDO_USER /etc/passwd > /dev/null 2>&1
 if [ "$?" -ne 0 ]; then
@@ -52,6 +121,27 @@ if [ "$?" -ne 0 ]; then
 else
    echo "info: unprivileged user ${LIRCDO_USER} already exists. skipping create."
 fi
+
+echo
+echo "info: checking if node.js version manager (nvm) is installed..."
+if [ ! -d /home/$LIRCDO_USER/.nvm ]; then
+   echo "info: installing nvm..."
+   sudo -H -u $LIRCDO_USER bash -c "curl https://raw.githubusercontent.com/creationix/nvm/v${NVM_VERSION}/install.sh | bash"
+   cat << EOT >> /home/$LIRCDO_USER/.bashrc
+export NVM_DIR="/home/lirc/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
+EOT
+   sudo -H -u $LIRCDO_USER bash -c "nvm install $NODEJS_VERSION"
+   sudo -H -u $LIRCDO_USER bash -c "nvm alias default $NODEJS_VERSION"
+
+   if [ ! -d /home/$LIRCDO_USER/.nvm/versions/node/$NODEJS_VERSION ]; then
+      echo "error: failed to install nvm and node.js version $NODEJS_VERSION. exiting..."
+      exit 1
+   fi
+else
+   echo "info: nvm is installed"
+fi
+
 
 echo
 echo "info: checking if lircdo server application has been installed at ${LIRCDO_SERVER_DIR}..."
@@ -71,14 +161,46 @@ fi
 
 echo
 echo "info: checking if lircdo systemd service is installed..."
+cat << EOT > /tmp/node-server.service
+[Unit]
+Description=lircdo nodejs HTTP server
+
+[Service]
+WorkingDirectory=$LIRCDO_SERVER_DIR
+ExecStart=${LIRCDO_SERVER_PATH}/.nvm/versions/node/v${NODEJS_VERSION}/bin/node server.js
+Type=simple
+Restart=always
+RestartSec=10
+User=$LIRCDO_USER
+
+[Install]
+WantedBy=basic.target
+EOT
+
 if [ ! -e /etc/systemd/system/node-server.service ]; then
    echo "info: installing lircdo systemd service to /etc/systemd/system/node-server.service..."
-   create_systemd_service 
+   cp /tmp/node-server.service /etc/systemd/system/node-server.service
+   chmod 644 /etc/systemd/system/node-server.service
    systemctl enable node-server
    systemctl daemon-reload
 else
-   echo "info: lircdo system service installed."
+   echo "info: lircdo system service installed"
 fi
+
+echo
+echo "info: checking if lircdo systemd service is up-to-date..."
+installedmd5=$(md5sum /etc/systemd/system/node-server.service)
+incomingmd5=$(md5sum /tmp/node-server.service)
+if [ "$installedmd5" != "$incomingmd5" ]; then
+   echo "info: installing updated node-server.service to /etc/systemd/system..."
+   cp /tmp/node-server.service /etc/systemd/system/node-server.service
+   chmod 644 /etc/systemd/system/node-server.service
+   systemctl enable node-server
+   systemctl daemon-reload
+else
+   echo "info: lircdo system service is up-to-date"
+fi
+rm -f /tmp/node-server.service
 
 echo
 echo "info: checking if lircdo server application environment file ${LIRCDO_SERVER_DIR}/.env exists..."
@@ -215,7 +337,8 @@ else
    echo "info: certbot-auto script successfully verified" 
 fi   
 
-chmod a+x ./certbot-auto
+cp certbox-auto /usr/local/bin
+chmod a+x /usr/local/bin/certbot-auto
 # ./certbot-auto --help
 
 echo "info: checking if Let\'s Encrypt signed server certificate exists for domain $APP_FQDN..."
@@ -260,7 +383,7 @@ if [ ! -e /etc/letsencript/live/$APP_FQDN/cert.pem ]; then
    done
    echo "info: invoking Let\'s Encrypt certbot-auto script tp register/download signed certificate"
    echo "       for domain $APP_FQDN..."
-   ./certbot-auto certonly --standalone -n --agree-tos ${emailswitch} --preferred-challenges http  -d $APP_FQDN 
+   /usr/local/bin/certbot-auto certonly --standalone -n --agree-tos ${emailswitch} --preferred-challenges http  -d $APP_FQDN 
    certbot_status=$?
    if [ "$certbot_status" -ne 0 ]; then
       echo "error: certbot-auto script returned non-zero status"
@@ -279,6 +402,16 @@ if [ ! -e /etc/letsencript/live/$APP_FQDN/cert.pem ]; then
       echo "       exiting..."
       exit 1
    fi
+fi
+
+echo
+echo "info: checking if cron job exists to renew server certificate..."
+grep "certbot-auto" /var/spool/cron/crontabs/root > /dev/null 2>&1
+if [ "$?" -ne 0 ]; then
+   echo "info: setting up cron job for root user to renew certificate using Let\'s Encrypt..."
+   echo "30 12,6 * * * /usr/local/bin/certbot-auto renew --renew-hook 'systemctl restart node-server' 2>>/var/log/cert-renew.log >>/var/log/cert-renew.log" >> /var/spool/cron/crontabs/root
+else
+   echo "info: cron job for root user exists to renew Let\'s Encrypt certificate"
 fi
 
 
@@ -328,11 +461,16 @@ else
    echo "info: lircdo application certificates files already linked to /etc/letsencrypt directory" 
 fi
 
+systemctl restart node-server
 
-
-
-echo
-echo "info: when ready, you need to start the lircdo server application via: 'sudo systemctl start node-server'"
 echo "info: you can view the lircdo server application log via: 'sudo journalctl -a -u ${LIRCDO_USER} -f'"
 
+echo "info: lirc has been installed/configured/started"
+if [ "$NEEDS_REBOOT" -eq 1 ]; then
+   echo "info: *** you need to reboot the server to properly load the lirc_rpi module before using lirc ***"
+   echo
+fi
 
+echo
+echo "info: note: you need to populate /etc/lirc/lircd.conf with the configuration for the"
+echo "            infrared remote control hardware used in your home."
