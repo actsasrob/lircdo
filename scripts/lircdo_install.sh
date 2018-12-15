@@ -215,9 +215,9 @@ if [ ! -e ${LIRCDO_SERVER_DIR}/.env ]; then
    SECRET1=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
    SECRET2=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
    SECRET3=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
-   sudo -H -u $LIRCDO_USER bash -c 'sed -ei "s/^PROTECTED_PAGE_SECRET/PROTECTED_PAGE_SECRET=${SECRET1}/"'
-   sudo -H -u $LIRCDO_USER bash -c 'sed -ei "s/^LIRCDO_PAGE_SECRET/LIRCDO_PAGE_SECRET=${SECRET1}/"'
-   sudo -H -u $LIRCDO_USER bash -c 'sed -ei "s/^SESSION_SECRET/SESSION_SECRET=${SECRET1}/"'
+   sudo -H -u $LIRCDO_USER bash -c 'sed -ie "s/^PROTECTED_PAGE_SECRET/PROTECTED_PAGE_SECRET=${SECRET1}/"'
+   sudo -H -u $LIRCDO_USER bash -c 'sed -ie "s/^LIRCDO_PAGE_SECRET/LIRCDO_PAGE_SECRET=${SECRET1}/"'
+   sudo -H -u $LIRCDO_USER bash -c 'sed -ie "s/^SESSION_SECRET/SESSION_SECRET=${SECRET1}/"'
    if [ ! -e ${LIRCDO_SERVER_DIR}/.env ]; then
       echo "error: failed to create lircdo server application environment file ${LIRCDO_SERVER_DIR}/.env. exiting..."
       exit 1
