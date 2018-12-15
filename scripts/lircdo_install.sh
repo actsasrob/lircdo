@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -x
+#set -x
 
 # TODO Add logic to test for valid FQDN and PORT???
 # TODO test lircdo_install.sh script
@@ -409,6 +409,8 @@ if [ ! -e /etc/letsencrypt/live/$APP_FQDN/cert.pem ]; then
       echo "       exiting..."
       exit 1
    fi
+else
+   echo "info: certificates exist for $APP_FQDN under /etc/letsencypt/live/$APP_FQDN. nothing to do"
 fi
 
 echo
@@ -451,6 +453,10 @@ if [ "$?" -ne 0 ]; then
 fi
 
 echo "info: file system ACLs have been created"
+
+mkdir -p $LIRCDO_SERVER_DIR/sslcert
+chown ${LIRCDO_USER}:${LIRCDO_USER} $LIRCDO_SERVER_DIR/sslcert
+chmod 700 $LIRCDO_SERVER_DIR/sslcert
 
 echo
 echo "info: checking if lircdo application cert/key files under $LIRCDO_SERVER_DIR/sslcert have been soft linked to /etc/letsencrypt/live/${APP_FQDN} ..."
