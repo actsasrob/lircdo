@@ -349,7 +349,7 @@ chmod a+x /usr/local/bin/certbot-auto
 # ./certbot-auto --help
 
 echo "info: checking if Let\'s Encrypt signed server certificate exists for domain $APP_FQDN..."
-if [ ! -e /etc/letsencript/live/$APP_FQDN/cert.pem ]; then
+if [ ! -e /etc/letsencrypt/live/$APP_FQDN/cert.pem ]; then
    echo "info: registering $APP_FQDN domain with Let\'s Encrypt and requesting signed certificate..."
    echo "info: when requesting signed server certifates from Let\'s Encrypt you can add an e-mail address"
    echo "       which will be used to send important notifications such as reminders about expiring "
@@ -395,11 +395,11 @@ if [ ! -e /etc/letsencript/live/$APP_FQDN/cert.pem ]; then
    if [ "$certbot_status" -ne 0 ]; then
       echo "error: certbot-auto script returned non-zero status"
    fi
-   if [ ! -e /etc/letsencript/live/$APP_FQDN/cert.pem ]; then
+   if [ ! -e /etc/letsencrypt/live/$APP_FQDN/cert.pem ]; then
       echo "error: the certbot-auto script executed without error but no server certificate was found in"
-      echo "         /etc/letsencript/live/$APP_FQDN/cert.pem"
+      echo "         /etc/letsencrypt/live/$APP_FQDN/cert.pem"
    fi
-   if [ "$certbot_status" -ne 0 ] || [ ! -e /etc/letsencript/live/$APP_FQDN/cert.pem ]; then
+   if [ "$certbot_status" -ne 0 ] || [ ! -e /etc/letsencrypt/live/$APP_FQDN/cert.pem ]; then
       echo "error: failed to register/download signed certificate from Let\'s Encrypt"
       echo "       here\'s a list of things that could cause the registration/download to fail:"
       echo "       $APP_FQDN is the incorrect FQDN"
