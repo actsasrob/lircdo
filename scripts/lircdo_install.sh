@@ -210,7 +210,7 @@ echo
 echo "info: checking if lircdo server application environment file ${LIRCDO_SERVER_DIR}/.env exists..."
 if [ ! -e ${LIRCDO_SERVER_DIR}/.env ]; then
    echo "info: creating initial lircdo server application environment file" 
-   cat ${LIRCDO_SERVER_DIR}/env_file_example > ${LIRCDO_SERVER_DIR}/.env
+   cp ${LIRCDO_SERVER_DIR}/env_file_example ${LIRCDO_SERVER_DIR}/.env
    chown ${LIRCDO_USER}:${LIRCDO_USER} ${LIRCDO_SERVER_DIR}/.env
    chmod 644 ${LIRCDO_SERVER_DIR}/.env
    PROTECTED_PAGE_SECRET='ce287cfce8bd11e7ba96d746a6e2ce6e'
@@ -219,9 +219,9 @@ if [ ! -e ${LIRCDO_SERVER_DIR}/.env ]; then
    SECRET1=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
    SECRET2=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
    SECRET3=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
-   sed -ie "s/^PROTECTED_PAGE_SECRET/PROTECTED_PAGE_SECRET=${SECRET1}/" ${LIRCDO_SERVER_DIR}/.env
-   sed -ie "s/^LIRCDO_PAGE_SECRET/LIRCDO_PAGE_SECRET=${SECRET1}/" ${LIRCDO_SERVER_DIR}/.env
-   sed -ie "s/^SESSION_SECRET/SESSION_SECRET=${SECRET1}/" ${LIRCDO_SERVER_DIR}/.env
+   sed -ie "s/^PROTECTED_PAGE_SECRET/PROTECTED_PAGE_SECRET='${SECRET1}'/" ${LIRCDO_SERVER_DIR}/.env
+   sed -ie "s/^LIRCDO_PAGE_SECRET/LIRCDO_PAGE_SECRET='${SECRET1}'/" ${LIRCDO_SERVER_DIR}/.env
+   sed -ie "s/^SESSION_SECRET/SESSION_SECRET='${SECRET1}'/" ${LIRCDO_SERVER_DIR}/.env
    if [ ! -e ${LIRCDO_SERVER_DIR}/.env ]; then
       echo "error: failed to create lircdo server application environment file ${LIRCDO_SERVER_DIR}/.env. exiting..."
       exit 1
