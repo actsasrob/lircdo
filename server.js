@@ -8,7 +8,7 @@ var https = require('https');
   require('dotenv').load();
 //}
 
-const PORT = process.env.PORT || 8843;
+const APP_PORT = process.env.APP_PORT || 8843;
 const APP_FQDN = process.env.APP_FQDN || '127.0.0.1';
 const LIRCSCRIPTS_LOCATION = process.env.LIRCSCRIPTS_LOCATION || './lircscripts';
 const SESSION_SECRET = process.env.SESSION_SECRET || 'shh its a secret';
@@ -154,7 +154,7 @@ function execute_lirc_script(lircscriptpath, argument) {
 }
 
 console.log(`env LIRCDO_PAGE_SECRET is ${LIRCDO_PAGE_SECRET}`);
-console.log(`env PORT is ${PORT}`);
+console.log(`env APP_PORT is ${APP_PORT}`);
 console.log(`env APP_FQDN is ${APP_FQDN}`);
 console.log(`env LIRCSCRIPTS_LOCATION is ${LIRCSCRIPTS_LOCATION}`);
 
@@ -200,7 +200,7 @@ if (PAIR_MODE) {
       } else {
           res.writeHead(200, {"Content-Type": "application/json"});
           json_response.fqdn = APP_FQDN;
-          json_response.port = PORT;
+          json_response.port = APP_PORT;
           json_response.shared_secret = LIRCDO_PAGE_SECRET;
 	  var ca_cert_string = options.ca.toString();
           json_response.ca_cert = ca_cert_string.replace(/[\r\n]+/g, ".");
@@ -489,7 +489,7 @@ if (PAIR_MODE) {
       }
       res.write(status);
       res.write('<br>');
-      res.write(`   <form action = "https://${APP_FQDN}:${PORT}/" method = "GET">`);
+      res.write(`   <form action = "https://${APP_FQDN}:${APP_PORT}/" method = "GET">`);
       res.write('      <button type="submit">Back to home page</button>');
       res.write('   </form>');
       res.write(status + "</body></html>");
@@ -522,7 +522,7 @@ if (PAIR_MODE) {
 // httpServer.listen(8080);
 
 var httpsServer = https.createServer(options, app);
-httpsServer.listen(PORT, function(){
+httpsServer.listen(APP_PORT, function(){
    var host = httpsServer.address().address;
    var port = httpsServer.address().port;
 
