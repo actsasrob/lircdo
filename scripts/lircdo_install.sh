@@ -16,7 +16,7 @@ LIRC_DEVICE="/dev/lirc0"
 NEEDS_REBOOT=0
 NEEDS_LIRCSERVICE_RESTART=0
 
-current_dir="$(cwd)"
+current_dir="$(pwd)"
 
 if [ "$EUID" -ne 0 ]; then
     echo "error: this script must be run as root. exiting..."
