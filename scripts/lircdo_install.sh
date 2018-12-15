@@ -70,7 +70,7 @@ grep "^DEVICE=\"${LIRC_DEVICE}\"" /etc/lirc/hardware.conf > /dev/null 2>&1
 devicestatus=$?
 grep "^DRIVER=\"${LIRC_DRIVER}\"" /etc/lirc/hardware.conf > /dev/null 2>&1
 driverstatus=$?
-if [ "$devicestatus" -ne 0" ] || [ "$driverstatus" -ne 0" ]; then
+if [ "$devicestatus" -ne 0 ] || [ "$driverstatus" -ne 0 ]; then
    echo "info: configuring DEVICE and DRIVER in /etc/lirc/hardware.conf..."
    cp -p /etc/lirc/hardware.conf /etc/lirc/hardware.conf.bak
    sed -ie "s/^DEVICE=/DEVICE='${LIRC_DEVICE}'/" /etc/lirc/hardware.conf
