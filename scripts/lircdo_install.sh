@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -x
+
 # TODO Add logic to test for valid FQDN and PORT???
 # TODO test lircdo_install.sh script
 
@@ -208,7 +210,7 @@ echo
 echo "info: checking if lircdo server application environment file ${LIRCDO_SERVER_DIR}/.env exists..."
 if [ ! -e ${LIRCDO_SERVER_DIR}/.env ]; then
    echo "info: creating initial lircdo server application environment file" 
-   sudo -H -u $LIRCDO_USER bash -c "cat ${LIRCDO_SERVER_DIR}/env_file_example > ${LIRCDO_SERVER_DIR}/.env"
+   sudo -H -u $LIRCDO_USER bash -c 'cat "${LIRCDO_SERVER_DIR}/env_file_example" > "${LIRCDO_SERVER_DIR}/.env""
    PROTECTED_PAGE_SECRET='ce287cfce8bd11e7ba96d746a6e2ce6e'
    LIRCDO_PAGE_SECRET='1840216ee8be11e7b124e36493f1a3ef'
    SESSION_SECRET='73abf97ee8c811e79bd35bb4b7a148ff'
