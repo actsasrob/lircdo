@@ -216,12 +216,12 @@ if [ ! -e ${LIRCDO_SERVER_DIR}/.env ]; then
    PROTECTED_PAGE_SECRET='ce287cfce8bd11e7ba96d746a6e2ce6e'
    LIRCDO_PAGE_SECRET='1840216ee8be11e7b124e36493f1a3ef'
    SESSION_SECRET='73abf97ee8c811e79bd35bb4b7a148ff'
-   SECRET1=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
-   SECRET2=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
-   SECRET3=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
-   sed -ie "s/^PROTECTED_PAGE_SECRET/PROTECTED_PAGE_SECRET='${SECRET1}'/" ${LIRCDO_SERVER_DIR}/.env
-   sed -ie "s/^LIRCDO_PAGE_SECRET/LIRCDO_PAGE_SECRET='${SECRET1}'/" ${LIRCDO_SERVER_DIR}/.env
-   sed -ie "s/^SESSION_SECRET/SESSION_SECRET='${SECRET1}'/" ${LIRCDO_SERVER_DIR}/.env
+   SECRET1="$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | tr 'A-Z' 'a-z' | head -n 1)"
+   SECRET2="$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)"
+   SECRET3="$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)"
+   sed -ie "s/^PROTECTED_PAGE_SECRET/PROTECTED_PAGE_SECRET=${SECRET1}/" ${LIRCDO_SERVER_DIR}/.env
+   sed -ie "s/^LIRCDO_PAGE_SECRET/LIRCDO_PAGE_SECRET=${SECRET2}/" ${LIRCDO_SERVER_DIR}/.env
+   sed -ie "s/^SESSION_SECRET/SESSION_SECRET=${SECRET3}/" ${LIRCDO_SERVER_DIR}/.env
    if [ ! -e ${LIRCDO_SERVER_DIR}/.env ]; then
       echo "error: failed to create lircdo server application environment file ${LIRCDO_SERVER_DIR}/.env. exiting..."
       exit 1
