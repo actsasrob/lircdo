@@ -315,7 +315,7 @@ if [ ! -e ./certbot-auto.asc ]; then
    echo "info: downloading certbot-auto.asc to verify integrity of certbot-auto..."
    wget -N https://dl.eff.org/certbot-auto.asc
    if [ "$?" -ne 0  ]; then
-      echo "error: could not download certbot-auto.asc to verify certbox-auto install. exiting..."
+      echo "error: could not download certbot-auto.asc to verify certbot-auto install. exiting..."
       exit 1
    fi
 else
@@ -334,7 +334,7 @@ else
 fi
 
 echo
-echo "info: verifying integrity of Let\'s Encrypt certbox-auto script..."
+echo "info: verifying integrity of Let\'s Encrypt certbot-auto script..."
 gpg2 --trusted-key 4D17C995CD9775F2 --verify certbot-auto.asc certbot-auto 2>&1 | grep "gpg: Good signature"
 
 if [ "$?" -ne 0 ]; then
@@ -344,7 +344,7 @@ else
    echo "info: certbot-auto script successfully verified" 
 fi   
 
-cp certbox-auto /usr/local/bin
+cp certbot-auto /usr/local/bin
 chmod a+x /usr/local/bin/certbot-auto
 # ./certbot-auto --help
 
