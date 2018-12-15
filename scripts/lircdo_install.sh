@@ -235,7 +235,7 @@ echo "info: checking if lircdo server env variables have been set..."
 . $LIRCDO_SERVER_DIR/.env
 if [ -z "$APP_PORT" ]; then
    echo "info: setting lircdo server application port."
-   echo "info: Please select an unused port which the lircdo server application will listen on for incoming requests from the lircd Alexa Skills Kit (ASK) lambda function."
+   echo "info: Please select an unused port which the lircdo server application will listen on for incoming requests from the lircdo Alexa Skills Kit (ASK) lambda function."
    echo "info: DO NOT use port 80 as this port is needed by the Lets Encrypt service to renew server certificates."
    echo "info: for a little more safety recommend not using port 443 as this port must be exposed to the internet."
 
@@ -289,6 +289,7 @@ if [ -z "$APP_FQDN" ]; then
           sed -i -e "s/^APP_FQDN=/APP_FQDN=$APP_FQDN/" $LIRCDO_SERVER_DIR/.env
           break
        fi
+       break
    done
 else
    echo "info: lircdo server FQDN set to ${APP_FQDN}"
