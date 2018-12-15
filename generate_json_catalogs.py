@@ -82,11 +82,11 @@ else:
    print 'error: environment vars file {} must set APP_FQDN env var'.format(env_file)
    exit(1)
 
-if 'PORT' in env_vars:
-   PORT=env_vars['PORT']
-   catalog_external['CALLBACK_APP_PORT']=PORT
+if 'APP_PORT' in env_vars:
+   APP_PORT=env_vars['APP_PORT']
+   catalog_external['CALLBACK_APP_PORT']=APP_PORT
 else:
-   print 'error: environment vars file {} must set PORT env var'.format(env_file)
+   print 'error: environment vars file {} must set APP_PORT env var'.format(env_file)
    exit(1)
 
 catalog_external['CALLBACK_APP_SCHEME']='https'
