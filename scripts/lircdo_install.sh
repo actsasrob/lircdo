@@ -462,9 +462,9 @@ echo
 echo "info: checking if lircdo application cert/key files under $LIRCDO_SERVER_DIR/sslcert have been soft linked to /etc/letsencrypt/live/${APP_FQDN} ..."
 if [ ! -h $LIRCDO_SERVER_DIR/sslcert/cacert.pem  ] || [ ! -h $LIRCDO_SERVER_DIR/sslcert/servercert.pem  ] || [ ! -h $LIRCDO_SERVER_DIR/sslcert/serverkey.pem  ]; then
    echo "info: creating soft links for lircdo application cert/key files..."
-   ln -f -s $LIRCDO_SERVER_DIR/sslcert/cacert.pem /etc/letsencrypt/live/$APP_FQDN/chain.pem
-   ln -f -s $LIRCDO_SERVER_DIR/sslcert/servercert.pem /etc/letsencrypt/live/$APP_FQDN/cert.pem
-   ln -f -s $LIRCDO_SERVER_DIR/sslcert/serverkey.pem /etc/letsencrypt/live/$APP_FQDN/privkey.pem
+   ln -f -s /etc/letsencrypt/live/$APP_FQDN/chain.pem $LIRCDO_SERVER_DIR/sslcert/cacert.pem
+   ln -f -s /etc/letsencrypt/live/$APP_FQDN/cert.pem $LIRCDO_SERVER_DIR/sslcert/servercert.pem
+   ln -f -s /etc/letsencrypt/live/$APP_FQDN/privkey.pem $LIRCDO_SERVER_DIR/sslcert/serverkey.pem
 
    if [ ! -h $LIRCDO_SERVER_DIR/sslcert/cacert.pem  ] || [ ! -h $LIRCDO_SERVER_DIR/sslcert/servercert.pem  ] || [ ! -h $LIRCDO_SERVER_DIR/sslcert/serverkey.pem  ]; then
       echo "error: failed to soft link one or more lircdo application cert/key files from $LIRCDO_SERVER_DIR/sslcert to /etc/letsencrypt/live/$APP_FQDN/. exiting..."
