@@ -210,16 +210,16 @@ echo
 echo "info: checking if lircdo server application environment file ${LIRCDO_SERVER_DIR}/.env exists..."
 if [ ! -e ${LIRCDO_SERVER_DIR}/.env ]; then
    echo "info: creating initial lircdo server application environment file" 
-   sudo -H -u $LIRCDO_USER bash -c 'cat "${LIRCDO_SERVER_DIR}/env_file_example" > "${LIRCDO_SERVER_DIR}/.env""
+   sudo -H -u $LIRCDO_USER bash -c 'cat "${LIRCDO_SERVER_DIR}/env_file_example" > "${LIRCDO_SERVER_DIR}/.env"'
    PROTECTED_PAGE_SECRET='ce287cfce8bd11e7ba96d746a6e2ce6e'
    LIRCDO_PAGE_SECRET='1840216ee8be11e7b124e36493f1a3ef'
    SESSION_SECRET='73abf97ee8c811e79bd35bb4b7a148ff'
    SECRET1=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
    SECRET2=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
    SECRET3=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
-   sudo -H -u $LIRCDO_USER bash -c 'sed -ie "s/^PROTECTED_PAGE_SECRET/PROTECTED_PAGE_SECRET=${SECRET1}/" ${LIRCDO_SERVER_DIR}/.env'
-   sudo -H -u $LIRCDO_USER bash -c 'sed -ie "s/^LIRCDO_PAGE_SECRET/LIRCDO_PAGE_SECRET=${SECRET1}/" ${LIRCDO_SERVER_DIR}/.env'
-   sudo -H -u $LIRCDO_USER bash -c 'sed -ie "s/^SESSION_SECRET/SESSION_SECRET=${SECRET1}/" ${LIRCDO_SERVER_DIR}/.env'
+   sed -ie "s/^PROTECTED_PAGE_SECRET/PROTECTED_PAGE_SECRET=${SECRET1}/" ${LIRCDO_SERVER_DIR}/.env
+   sed -ie "s/^LIRCDO_PAGE_SECRET/LIRCDO_PAGE_SECRET=${SECRET1}/" ${LIRCDO_SERVER_DIR}/.env
+   sed -ie "s/^SESSION_SECRET/SESSION_SECRET=${SECRET1}/" ${LIRCDO_SERVER_DIR}/.env
    if [ ! -e ${LIRCDO_SERVER_DIR}/.env ]; then
       echo "error: failed to create lircdo server application environment file ${LIRCDO_SERVER_DIR}/.env. exiting..."
       exit 1
@@ -234,14 +234,14 @@ echo "info: checking if lircdo server env variables have been set..."
 if [ -z "$APP_PORT" ]; then
    echo "info: setting lircdo server application port."
    echo "info: Please select an unused port which the lircdo server application will listen on for incoming requests from the lircd Alexa Skills Kit (ASK) lambda function."
-   echo "info: DO NOT use port 80 as this port is needed by the Let\'s Encrypt service to renew server certificates."
+   echo "info: DO NOT use port 80 as this port is needed by the Lets Encrypt service to renew server certificates."
    echo "info: for a little more safety recommend not using port 443 as this port must be exposed to the internet."
 
    re="^[0-9]+$"
    while true; do
        read -p "Enter lircdo server port: " APP_PORT
        if [[ $APP_PORT =~ $re ]] && [ "$APP_PORT" -gt 0 ] && [ "$APP_PORT" -lt 65537 ] && ! [ "$APP_PORT" -eq 80 ]; then
-	  sed -i -e "s/^APP_PORT=/APP_PORT=$APP_PORT/" $LIRCDO_SERVER_DIR/.env
+	  sed -i -e "s/^APP_PORT=/APP_PORT=$APP_PORT/" "$LIRCDO_SERVER_DIR/.env"
           break 
        else
           echo "error: port number must be between [1 and 65536] and not equal to 80."
