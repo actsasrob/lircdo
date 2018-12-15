@@ -243,7 +243,7 @@ if [ -z "$APP_PORT" ]; then
    while true; do
        read -p "Enter lircdo server port: " APP_PORT
        if [[ $APP_PORT =~ $re ]] && [ "$APP_PORT" -gt 0 ] && [ "$APP_PORT" -lt 65537 ] && ! [ "$APP_PORT" -eq 80 ]; then
-	  sed -i -e "s/^APP_PORT=/APP_PORT=$APP_PORT/" "$LIRCDO_SERVER_DIR/.env"
+	  sed -i -e "s/^APP_PORT=.*/APP_PORT=$APP_PORT/" "$LIRCDO_SERVER_DIR/.env"
           break 
        else
           echo "error: port number must be between [1 and 65536] and not equal to 80."
@@ -286,7 +286,7 @@ if [ -z "$APP_FQDN" ]; then
                     continue
                 ;;
           esac
-          sed -i -e "s/^APP_FQDN=/APP_FQDN=$APP_FQDN/" $LIRCDO_SERVER_DIR/.env
+          sed -i -e "s/^APP_FQDN=.*/APP_FQDN=$APP_FQDN/" $LIRCDO_SERVER_DIR/.env
           break
        fi
        break
