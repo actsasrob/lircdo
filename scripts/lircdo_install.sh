@@ -83,10 +83,12 @@ fi
 
 systemctl enable lirc
 if [ "$NEEDS_LIRCSERVICE_RESTART" -eq 1 ]; then
+   echo
    echo "info: restarting lirc service..."
    systemctl start lirc
 fi
 
+echo
 echo "info: lirc has been installed/configured/started"
 if [ "$NEEDS_REBOOT" -eq 1 ]; then
    echo "info: *** you need to reboot the server to properly load the lirc_rpi module before using lirc ***"
@@ -148,8 +150,8 @@ echo "info: checking if lircdo server application has been installed at ${LIRCDO
 if [ ! -e "${LIRCDO_SERVER_DIR}/server.js" ]; then
    echo "info: installing lircdo server application..."
    apt-get install -y git > /dev/null 2>&1
-   sudo -u $LIRCDO_USER "mkdir -p ${LIRCDO_SERVER_PATH}"
-   sudo -u $LIRCDO_USER "cd ${LIRCDO_SERVER_PATH}; git clone https://github.com/actsasrob/lircdo.git ${LIRCDO_SERVER_DIR}; cd $LIRCDO_SERVER_DIR; git checkout $GIT_BRANCH" 
+   sudo -H -u $LIRCDO_USER bash -c "mkdir -p ${LIRCDO_SERVER_PATH}"
+   sudo -H -u $LIRCDO_USER bash -c "cd ${LIRCDO_SERVER_PATH}; git clone https://github.com/actsasrob/lircdo.git ${LIRCDO_SERVER_DIR}; cd $LIRCDO_SERVER_DIR; git checkout $GIT_BRANCH" 
    cd $current_dir
    if [ ! -e "${LIRCDO_SERVER_DIR}/server.js" ]; then
       echo "error: failed to install lircdo server application. exiting..."
@@ -206,16 +208,16 @@ echo
 echo "info: checking if lircdo server application environment file ${LIRCDO_SERVER_DIR}/.env exists..."
 if [ ! -e ${LIRCDO_SERVER_DIR}/.env ]; then
    echo "info: creating initial lircdo server application environment file" 
-   sudo -u $LIRCDO_USER "cat ${LIRCDO_SERVER_DIR}/env_file_example > ${LIRCDO_SERVER_DIR}/.env"
+   sudo -H -u $LIRCDO_USER bash -c "cat ${LIRCDO_SERVER_DIR}/env_file_example > ${LIRCDO_SERVER_DIR}/.env"
    PROTECTED_PAGE_SECRET='ce287cfce8bd11e7ba96d746a6e2ce6e'
    LIRCDO_PAGE_SECRET='1840216ee8be11e7b124e36493f1a3ef'
    SESSION_SECRET='73abf97ee8c811e79bd35bb4b7a148ff'
    SECRET1=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
    SECRET2=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
    SECRET3=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
-   sudo -u $LIRCDO_USER 'sed -ei "s/^PROTECTED_PAGE_SECRET/PROTECTED_PAGE_SECRET=${SECRET1}"'
-   sudo -u $LIRCDO_USER 'sed -ei "s/^LIRCDO_PAGE_SECRET/LIRCDO_PAGE_SECRET=${SECRET1}"'
-   sudo -u $LIRCDO_USER 'sed -ei "s/^SESSION_SECRET/SESSION_SECRET=${SECRET1}"'
+   sudo -H -u $LIRCDO_USER bash -c 'sed -ei "s/^PROTECTED_PAGE_SECRET/PROTECTED_PAGE_SECRET=${SECRET1}"'
+   sudo -H -u $LIRCDO_USER bash -c 'sed -ei "s/^LIRCDO_PAGE_SECRET/LIRCDO_PAGE_SECRET=${SECRET1}"'
+   sudo -H -u $LIRCDO_USER bash -c 'sed -ei "s/^SESSION_SECRET/SESSION_SECRET=${SECRET1}"'
    if [ ! -e ${LIRCDO_SERVER_DIR}/.env ]; then
       echo "error: failed to create lircdo server application environment file ${LIRCDO_SERVER_DIR}/.env. exiting..."
       exit 1
