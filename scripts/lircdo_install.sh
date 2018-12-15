@@ -138,7 +138,7 @@ EOT
    sudo -H -u $LIRCDO_USER bash -c "nvm install $NODEJS_VERSION"
    sudo -H -u $LIRCDO_USER bash -c "nvm alias default $NODEJS_VERSION"
 
-   if [ ! -d /home/$LIRCDO_USER/.nvm/versions/node/$NODEJS_VERSION ]; then
+   if [ ! -d /home/$LIRCDO_USER/.nvm/versions/node/v${NODEJS_VERSION} ]; then
       echo "error: failed to install nvm and node.js version $NODEJS_VERSION. exiting..."
       exit 1
    fi
@@ -153,7 +153,7 @@ if [ ! -e "${LIRCDO_SERVER_DIR}/server.js" ]; then
    echo "info: installing lircdo server application..."
    apt-get install -y git > /dev/null 2>&1
    sudo -H -u $LIRCDO_USER bash -c "mkdir -p ${LIRCDO_SERVER_PATH}"
-   sudo -H -u $LIRCDO_USER bash -c "cd ${LIRCDO_SERVER_PATH}; git clone https://github.com/actsasrob/lircdo.git ${LIRCDO_SERVER_DIR}; cd $LIRCDO_SERVER_DIR; git checkout $GIT_BRANCH; /home/$LIRCDO_USER/.nvm/versions/node/$NODEJS_VERSION/bin/npm install" 
+   sudo -H -u $LIRCDO_USER bash -c "cd ${LIRCDO_SERVER_PATH}; git clone https://github.com/actsasrob/lircdo.git ${LIRCDO_SERVER_DIR}; cd $LIRCDO_SERVER_DIR; git checkout $GIT_BRANCH; /home/$LIRCDO_USER/.nvm/versions/node/v${NODEJS_VERSION}/bin/npm install" 
    cd $current_dir
    if [ ! -e "${LIRCDO_SERVER_DIR}/server.js" ]; then
       echo "error: failed to install lircdo server application. exiting..."
