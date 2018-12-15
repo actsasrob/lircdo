@@ -287,7 +287,8 @@ if [ -z "$APP_FQDN" ]; then
                 ;;
           esac
           sed -i -e "s/^APP_FQDN=.*/APP_FQDN=$APP_FQDN/" $LIRCDO_SERVER_DIR/.env
-          break
+       else
+          sed -i -e "s/^APP_FQDN=.*/APP_FQDN=$APP_FQDN/" $LIRCDO_SERVER_DIR/.env
        fi
        break
    done
