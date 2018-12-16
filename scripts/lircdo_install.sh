@@ -15,6 +15,8 @@ NODEJS_VERSION="8.10.0"
 LIRC_DRIVER="default"
 LIRC_DEVICE="/dev/lirc0"
 
+DIG_COMMAND="dig +short myip.opendns.com @resolver1.opendns.com"
+
 NEEDS_REBOOT=0
 NEEDS_LIRCSERVICE_RESTART=0
 
@@ -308,9 +310,27 @@ if [ -z "$APP_FQDN" ]; then
 
    while true; do
        read -p "Enter lircdo server FQDN: " APP_FQDN
-       host $APP_FQDN > /dev/null 2>&1
-       if [ "$?" -ne 0 ]; then
-	  echo "error: the entered FQDN does not resolve in DNS."
+       host_output=$(host $APP_FQDN)
+       host_status="$?"
+       host_ip=""
+       dig_output=$($DIG_COMMAND)
+       dig_output_status="$?"
+       compare_ip_check=0
+       if [ "$host_status" -ne 0 ]; then
+	  echo "error: the entered FQDN does not resolve in DNS using 'host $APP_FQDN' command"
+       else
+	  host_ip=$(echo "$host_output" | awk '{ print $NF }')
+	  if [ "$dig_output_status" -eq 0 ] && [ -n "$dig_output" ]; then
+	     echo "$host_output" | grep "$dig_output" > /dev/null 2>&1
+	     if [ "$?" -ne 0 ]; then
+		echo "error: WAN IP address, ${dig_output}, reported by '$DIG_COMMAND' does not match IP address, "${host_ip}", as reported by 'host $APP_FQDN'. This will likely prevent the lircdo service from being able to receive incoming requests from the lircdo alexa skills kit (ASK) lambda function."
+		compare_ip_check=1
+	     fi
+	  fi
+       fi
+
+       if [ "$host_status" -ne 0 ] || [ "$compare_ip_check" -ne 0 ]; then
+	  echo "error: could not verify $APP_FQDN resolves to your WAN IP"
           read -p "do you wish to use this FQDN? y/n: " YN
           case $YN in
             [Yy]*) 
