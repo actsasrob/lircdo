@@ -30,6 +30,43 @@ if [ ! -w $current_dir ]; then
    exit 1
 fi
 
+# Check OS version
+echo
+echo "info: this install script and the lircdo service has only been verified to work with debian jessie"
+echo "info: check for debian jessie operating system using /etc/os-release..."
+if [ -e /etc/os-release ]; then
+   grep -i jessie /etc/os-release > /dev/null 2>&1
+   if [ "$?" -ne 0 ]; then
+      echo "***"
+      echo "warn: operating system doesn't appear to be debian jessie. cannot guarantee install or lircdo service will work. continuing anyway..."
+      echo "***"
+   else
+      echo "info: verified debian jessie operating system. continuing..."
+   fi
+else
+   echo "***"
+   echo "warn: could not determine operating system using /etc/os-release. cannot guarentee install or lirdo service will work. continuing anyway..."
+   echo "***"
+fi
+
+echo
+echo "info: this install script and the lirdo service has only been verified to work with Raspberry Pi 3 Model B Rev 1.2"
+echo "info: check for firmware version..."
+if [ -e /sys/firmware/devicetree/base/model ]; then
+   grep -i "3 model b" /sys/firmware/devicetree/base/model > /dev/null 2>&1
+   if [ "$?" -eq 0 ]; then
+      echo "info: verified Raspberry Pi 3 Model B. continuing..."
+   else
+      echo "***"
+      echo "warn: could not verify firmware is Raspberry Pi 3 Model B. cannot guarantee install or lircdo service will work. continuing anyway..."
+      echo "***"
+   fi
+else
+   echo "***"
+   echo "warn: could not verify firmware is Raspberry Pi 3 Model B. cannot guarantee install or lircdo service will work. continuing anyway..."
+   echo "***"
+fi
+
 echo
 echo "info: install/configure Linux Infrared Remote Control (LIRC) service"
 dpkg -l | grep " lirc " > /dev/null 2>&1
@@ -41,6 +78,7 @@ if [ "$?" -ne 0 ]; then
       echo "error: failed to install lirc package. exiting..."
       exit 1
    fi
+   NEEDS_LIRCSERVICE_RESTART=0
 else
    echo "info: lirc package already installed. nothing to do"
 fi
@@ -420,6 +458,7 @@ grep "certbot-auto" /var/spool/cron/crontabs/root > /dev/null 2>&1
 if [ "$?" -ne 0 ]; then
    echo "info: setting up cron job for root user to renew certificate using Let\'s Encrypt..."
    echo "30 12,6 * * * /usr/local/bin/certbot-auto renew --renew-hook 'systemctl restart node-server' 2>>/var/log/cert-renew.log >>/var/log/cert-renew.log" >> /var/spool/cron/crontabs/root
+   systemctl reload cron
 else
    echo "info: cron job for root user exists to renew Let\'s Encrypt certificate"
 fi
