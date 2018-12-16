@@ -2,7 +2,7 @@
 Description=lircdo nodejs HTTP server
 
 [Service]
-WorkingDirectory=/home/lirc/dev/lircdo_dev
+WorkingDirectory=/home/lirc/lircdo
 ExecStart=/home/lirc/.nvm/versions/node/v8.10.0/bin/node server.js
 Type=simple
 Restart=always
