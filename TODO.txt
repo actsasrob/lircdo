@@ -1,3 +1,4 @@
-Create init script to:
-  - init secrets in .env
-  - generate initial homepage index file
+Create install/configure script
+Test install/configure script
+Remember to change git branch back to master in scripts/lirdo_install.sh
+Sanity check incoming requests can reach lircdo service using APP_FQDN and APP_PORT variables.

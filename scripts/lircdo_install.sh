@@ -310,7 +310,7 @@ if [ -z "$APP_FQDN" ]; then
 
    while true; do
        read -p "Enter lircdo server FQDN: " APP_FQDN
-       host_output=$(host $APP_FQDN)
+       host_output=$(host "$APP_FQDN")
        host_status="$?"
        host_ip=""
        dig_output=$($DIG_COMMAND)
@@ -547,3 +547,12 @@ fi
 echo
 echo "info: note: you need to populate /etc/lirc/lircd.conf with the configuration for the"
 echo "            infrared remote control hardware used in your home."
+echo "            Then restart the lirc service 'sudo systemctl restart lirc'"
+echo "info: note: you need to populate ${LIRCDO_SERVICE_DIR}/lircscripts with shell scripts"
+echo "            to emit infrared signals via LIRC for the lircdo intents you care to implement."
+echo "            Then (re-)generate the catalog as the ${LIRCDO_USER} as:"
+echo "            cd $LIRCDO_SERVICE_DIR"
+echo "            ./generate_json_catalogs.py"
+echo "            Then restart the LIRCDO service as root or pi user:"
+echo "            systemctl restart node-server"
+
