@@ -382,14 +382,17 @@ else
 fi
 
 echo
-echo "info: installing trusted gpg key for Let\'s Encrypt certbot-auto..."
-gpg2 --keyserver pool.sks-keyservers.net --recv-key A2CFB51FA275A7286234E7B24D17C995CD9775F2
-
+echo "info: checking if trusted gpg keys for Let\'s Encrypt team is installed..."
+gpg2 --list-keys | grep "Let's Encrypt" > /dev/null 2>&1
 if [ "$?" -ne 0 ]; then
-   echo "error: failed to install trusted gpg key. exiting..."
-   exit 1
+   echo "info: installing trusted gpg key for Let\'s Encrypt certbot-auto..."
+   gpg2 --keyserver pool.sks-keyservers.net --recv-key A2CFB51FA275A7286234E7B24D17C995CD9775F2
+   if [ "$?" -ne 0 ]; then
+      echo "error: failed to install trusted gpg key. exiting..."
+      exit 1
+   fi
 else
-   echo "info: gpg key installed"
+   echo "info: trusted gpg key for Let\'s Encrypt certbot-auto already installed. nothing to do"
 fi
 
 echo
