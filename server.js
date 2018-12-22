@@ -26,7 +26,7 @@ console.log('TEST_MODE=' + TEST_MODE);
 const PAIR_MODE = process.env.PAIR_MODE && /^true$/i.test(process.env.PAIR_MODE);
 console.log('PAIR_MODE=' + PAIR_MODE);
 
-var applicationPin=Math.floor(Math.random() * 1000).toString();
+var applicationPin = process.env.APP_PIN || Math.floor(Math.random() * 1000).toString();
 
 var privateKey  = fs.readFileSync('sslcert/serverkey.pem', 'utf8');
 var certificate = fs.readFileSync('sslcert/servercert.pem', 'utf8');
@@ -202,8 +202,10 @@ if (PAIR_MODE) {
           json_response.fqdn = APP_FQDN;
           json_response.port = APP_PORT;
           json_response.shared_secret = LIRCDO_PAGE_SECRET;
-	  var ca_cert_string = options.ca.toString();
-          json_response.ca_cert = ca_cert_string.replace(/[\r\n]+/g, ".");
+	  //When using Let's Encrypt signed certificates we no longer need to send
+	  //the self-signed CA cert
+	  //var ca_cert_string = options.ca.toString();
+          //json_response.ca_cert = ca_cert_string.replace(/[\r\n]+/g, ".");
           console.log(`pair_action_ask: success: received valid pin=${pin}`);
       }
 
@@ -216,7 +218,6 @@ if (PAIR_MODE) {
 
    app.get('/', checkSignIn, function(req, res){
       console.log("got a GET request for /");
-      //res.render('protected_page', {id: req.session.user.id})
       res.render('protected_page', {id: req.session.user.id, lirc_catalog: lirc_catalog})
    });
    
@@ -236,13 +237,10 @@ if (PAIR_MODE) {
             if(user.id === req.body.id && user.password === req.body.password){
                console.log('app.post /login. found user ' + user.id + ' with matching password');
                req.session.user = user;
-               //res.redirect('/protected_page');
             }
          });
          
          res.redirect('/');
-         //console.log('app.post /login. user lookup failed. redirecting to login form');
-         //res.render('login', {message: "Invalid credentials!"});
       }
    });
    
@@ -252,17 +250,16 @@ if (PAIR_MODE) {
          console.log("user logged out.")
       });
       res.render('login', {message: "You have been logged out."});
-      //res.redirect('/login', {message: "You have been logged out."});
    });
    
    app.use('/', function(err, req, res, next){
       console.log('in app.use /. ' + err);
-      //User should be authenticated! Redirect him to log in.
+      //User should be authenticated! Redirect them to log in.
       res.redirect('/login');
    });
    
    // This responds to a POST request for /lircdo_ask. 
-   // Meant to be invoked Alexa Skills Kit(sdk)
+   // Meant to be invoked by Alexa Skills Kit(sdk)
    // Params: lircComponent. Not required
    // Params: lircAction. Required
    // Params: shared_secret. Required
