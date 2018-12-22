@@ -1,4 +1,8 @@
-Create install/configure script
+Sanity check incoming requests can reach lircdo service using APP_FQDN and APP_PORT variables.
 Test install/configure script
+Ability to hardcode application pin so that test app can start with known PIN number to use for automated tests
+lircdo server app transitions from test to prod after successful connect from lircdo ask???
+Merge nodejsv8 branch into master.
 Remember to change git branch back to master in scripts/lirdo_install.sh
+Re-deploy test/prod lircdo server instances from master branch
 Sanity check incoming requests can reach lircdo service using APP_FQDN and APP_PORT variables.
