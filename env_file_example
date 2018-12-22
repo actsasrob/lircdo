@@ -1,9 +1,31 @@
+# Only set a static APP_PIN on test servers. Useful so that automated tests
+#  know the pin to use when sending requests to test lircdo server
+#APP_PIN=178
+
+# Application the lircdo server will listen on
 APP_PORT=
+
+# Application fully qualified domain name (FQDN). The FQDN must resolve in
+#  DNS to IP address of the lircdo server. This will likely be the WAN IP of your
+#  home router where your home route forwards incoming connections to the lircdo server
+#  on the port set in APP_PORT
 APP_FQDN=
+
+# ADMIN_USER is not currently used.
 ADMIN_USER=admin
+
+# These three variables should be set to random alphanumeric strings used to secure 
+#  communication between the lircdo Alexa Skills Kit (ASK) lambda function and the lircdo server.
 PROTECTED_PAGE_SECRET='ce287cfce8bd11e7ba96d746a6e2ce6e'
 LIRCDO_PAGE_SECRET='1840216ee8be11e7b124e36493f1a3ef'
 SESSION_SECRET='73abf97ee8c811e79bd35bb4b7a148ff'
+
+# Location of lircdo shell scripts scripts
 LIRCSCRIPTS_LOCATION='./lircscripts'
+
+# Set PAIR_MODE=true during initial pairing of lircdo server with lircdo Alexa Skill, otherwise set to false
 PAIR_MODE=true
+
+# when TEST_MODE=true is set the lircdo server will not execute lirc shell scripts
+#  handy for testing when you don't actually want to emit IR signals
 TEST_MODE=false
