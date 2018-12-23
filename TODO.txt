@@ -1,10 +1,4 @@
-Sanity check incoming requests can reach lircdo service using APP_FQDN and APP_PORT variables.
-Test install/configure script
-
-Ability to hardcode application pin so that test app can start with known PIN number to use for automated tests
-
-think the line below in server.js should be using the session secret not a harcoded string???
-app.use(session({secret: "Your secret key", cookie: { secure: true }}));
+Sanitize all callback parameters before use.
 
 Clean-up messages returned by callback functions. More succinct message on success.
 
