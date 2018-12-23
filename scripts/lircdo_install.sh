@@ -20,6 +20,8 @@ DIG_COMMAND="dig +short myip.opendns.com @resolver1.opendns.com"
 NEEDS_REBOOT=0
 NEEDS_LIRCSERVICE_RESTART=0
 
+EXTRA_PACKAGES="git openssl"
+
 current_dir="$(pwd)"
 
 if [ "$EUID" -ne 0 ]; then
@@ -156,7 +158,13 @@ while true; do
    esac
 done
 
+echo "info: installing extra packages needed for lircdo service install..."
+for package in $EXTRA_PACKAGES; do
+   echo "info: installing ${package}..."
+   apt-get install -y $package
+done
 
+echo
 echo "info: checking if unprivileged user ${LIRCDO_USER} exists..."
 grep $LIRCDO_USER /etc/passwd > /dev/null 2>&1
 if [ "$?" -ne 0 ]; then
@@ -191,7 +199,6 @@ echo
 echo "info: checking if lircdo server application has been installed at ${LIRCDO_SERVER_DIR}..."
 if [ ! -e "${LIRCDO_SERVER_DIR}/server.js" ]; then
    echo "info: installing lircdo server application..."
-   apt-get install -y git > /dev/null 2>&1
    sudo -H -u $LIRCDO_USER bash -c "mkdir -p ${LIRCDO_SERVER_PATH}"
    sudo -i -H -u $LIRCDO_USER bash -c "cd ${LIRCDO_SERVER_PATH}; git clone https://github.com/actsasrob/lircdo.git ${LIRCDO_SERVER_DIR}; cd $LIRCDO_SERVER_DIR; git checkout $GIT_BRANCH; ./scripts/npm_install.sh" 
    cd $current_dir
@@ -567,7 +574,7 @@ fi
 
 echo
 echo "info: verify the lircdo service can be reached at URL: https://${APP_FQDN}:${APP_PORT}..."
-echo "Q" | openssl s_client --connect ${APP_FQDN}:${APP_PORT} > /dev/null 2>&1
+echo "Q" | openssl s_client -connect ${APP_FQDN}:${APP_PORT} > /dev/null 2>&1
 if [ "$?" -ne 0 ]; then
    echo "error: could not connect to lircdo server URL using openssl."
    echo "       possible causes:"
@@ -578,7 +585,7 @@ if [ "$?" -ne 0 ]; then
    echo "       4) you need to configure your router to forward incoming connections on port "
    echo "          ${APP_PORT} to the lircdo server"
    echo "          Use the following openssl command to troubleshoot:"
-   echo "          openssl s_client --connect ${APP_FQDN}:${APP_PORT}"
+   echo "          openssl s_client -connect ${APP_FQDN}:${APP_PORT}"
    echo "       exiting..."
    exit 1
 else
