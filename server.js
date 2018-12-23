@@ -10,11 +10,11 @@ const APP_FQDN = process.env.APP_FQDN || '127.0.0.1';
 const LIRCSCRIPTS_LOCATION = process.env.LIRCSCRIPTS_LOCATION || './lircscripts';
 const SESSION_SECRET = process.env.SESSION_SECRET || 'shh its a secret';
 const LIRCDO_PAGE_SECRET = process.env.LIRCDO_PAGE_SECRET;
-if (LIRCDO_PAGE_SECRET !== 'undefined' && LIRCDO_PAGE_SECRET !== null) {
-   console.log('info: LIRCDO_PAGE_SECRET is ' + LIRCDO_PAGE_SECRET);
-} else {
+if (LIRCDO_PAGE_SECRET == 'undefined' || LIRCDO_PAGE_SECRET == null) {
    console.log('error: LIRCDO_PAGE_SECRET environment variable MUST be set in .env');
    exit(1);
+} else {
+   console.log('info: LIRCDO_PAGE_SECRET is ' + LIRCDO_PAGE_SECRET);
 }
 const NO_EXECUTE_MODE = process.env.NO_EXECUTE_MODE && /^true$/i.test(process.env.NO_EXECUTE_MODE);
 console.log('NO_EXECUTE_MODE=' + NO_EXECUTE_MODE);
