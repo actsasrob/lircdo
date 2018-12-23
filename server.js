@@ -59,7 +59,10 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true })); 
 app.use(upload.array());
 app.use(cookieParser());
-app.use(session({secret: "Your secret key", cookie: { secure: true }}));
+app.use(session({secret: "Your secret key", 
+	         resave: true,
+	         saveUninitialized: true,
+		 cookie: { secure: true }}));
 
 var Users = [];
 
