@@ -4,28 +4,33 @@ var http = require('http');
 var https = require('https');
 
 // Load environment variables if not in production (NODE_ENV=production)
-//if (process.env.NODE_ENV !== 'production') {
-  require('dotenv').load();
-//}
+require('dotenv').load();
 
 const APP_PORT = process.env.APP_PORT || 8843;
 const APP_FQDN = process.env.APP_FQDN || '127.0.0.1';
 const LIRCSCRIPTS_LOCATION = process.env.LIRCSCRIPTS_LOCATION || './lircscripts';
 const SESSION_SECRET = process.env.SESSION_SECRET || 'shh its a secret';
 if (process.env.LIRCDO_PAGE_SECRET !== 'undefined' && process.env.LIRCDO_PAGE_SECRET !== null) {
-   const LIRCDO_PAGE_SECRET = process.env.LIRCDO_PAGE_SECRET;
-   console.log('info: LIRCDO_PAGE_SECRET is ' + LIRCDO_PAGE_SECRET);
+   console.log('info: LIRCDO_PAGE_SECRET is ' + process.env.LIRCDO_PAGE_SECRET);
 } else {
    console.log('error: LIRCDO_PAGE_SECRET environment variable MUST be set in .env');
    exit(1);
 }
 const LIRCDO_PAGE_SECRET = process.env.LIRCDO_PAGE_SECRET
-const TEST_MODE = process.env.TEST_MODE && /^true$/i.test(process.env.TEST_MODE);
-console.log('TEST_MODE=' + TEST_MODE);
+const NO_EXECUTE_MODE = process.env.NO_EXECUTE_MODE && /^true$/i.test(process.env.NO_EXECUTE_MODE);
+console.log('NO_EXECUTE_MODE=' + NO_EXECUTE_MODE);
 
 const PAIR_MODE = process.env.PAIR_MODE && /^true$/i.test(process.env.PAIR_MODE);
 console.log('PAIR_MODE=' + PAIR_MODE);
 
+// if the application pin is hardcoded in the .env file enable test mode (TEST_MODE=true)
+// this allows all the lircdo server-side callbacks to be enabled at one time
+// which is handy for running automated test cases but is a little less secure
+var TEST_MODE=false
+if (process.env.APP_PIN !== 'undefined' && process.env.APP_PIN !== null) {
+   TEST_MODE=true
+}
+   
 var applicationPin = process.env.APP_PIN || Math.floor(Math.random() * 1000).toString();
 
 var privateKey  = fs.readFileSync('sslcert/serverkey.pem', 'utf8');
@@ -173,7 +178,7 @@ function checkSignIn(req, res, next){
    }
 }
 
-if (PAIR_MODE) {
+if (PAIR_MODE || TEST_MODE) {
    console.log(`Application pairing pin number is ${applicationPin}`);
 
    // This responds to a POST request for /pair_action_ask.
@@ -214,49 +219,54 @@ if (PAIR_MODE) {
       
    });
 
-} else { // START OF NON-PAIR MODE
+} 
+if (!PAIR_MODE || TEST_MODE) { // START OF NON-PAIR MODE
 
-   app.get('/', checkSignIn, function(req, res){
-      console.log("got a GET request for /");
-      res.render('protected_page', {id: req.session.user.id, lirc_catalog: lirc_catalog})
-   });
-   
-   app.get('/login', function(req, res){
-      console.log('got a GET request for /login');
-      res.render('login', {message: "Please login with id and password"});
-   });
-   
-   app.post('/login', function(req, res){
-      console.log('got POST request for /login: ', Users);
-      if(!req.body.id || !req.body.password){
-         console.log('app.post /login. user ID or password are missing. render login page again');
-         res.render('login', {message: "User ID or password missing!"});
-      } else {
-         console.log('app.post /login lookup user...');
-         Users.filter(function(user){
-            if(user.id === req.body.id && user.password === req.body.password){
-               console.log('app.post /login. found user ' + user.id + ' with matching password');
-               req.session.user = user;
-            }
-         });
-         
-         res.redirect('/');
-      }
-   });
-   
-   app.get('/logout', function(req, res){
-      console.log('got GET request for /logout');
-      req.session.destroy(function(){
-         console.log("user logged out.")
-      });
-      res.render('login', {message: "You have been logged out."});
-   });
-   
-   app.use('/', function(err, req, res, next){
-      console.log('in app.use /. ' + err);
-      //User should be authenticated! Redirect them to log in.
-      res.redirect('/login');
-   });
+   // The lircdo Alexa Skill provides a "voice-first" interface for the lircdo server
+   // The section below implements a web-based graphical interface to the lircdo server
+   // However it is largely unimplemented at this time and adds a possible attack vector
+   // So for now this section is commented out
+   //app.get('/', checkSignIn, function(req, res){
+   //   console.log("got a GET request for /");
+   //   res.render('protected_page', {id: req.session.user.id, lirc_catalog: lirc_catalog})
+   //});
+   //
+   //app.get('/login', function(req, res){
+   //   console.log('got a GET request for /login');
+   //   res.render('login', {message: "Please login with id and password"});
+   //});
+   //
+   //app.post('/login', function(req, res){
+   //   console.log('got POST request for /login: ', Users);
+   //   if(!req.body.id || !req.body.password){
+   //      console.log('app.post /login. user ID or password are missing. render login page again');
+   //      res.render('login', {message: "User ID or password missing!"});
+   //   } else {
+   //      console.log('app.post /login lookup user...');
+   //      Users.filter(function(user){
+   //         if(user.id === req.body.id && user.password === req.body.password){
+   //            console.log('app.post /login. found user ' + user.id + ' with matching password');
+   //            req.session.user = user;
+   //         }
+   //      });
+   //      
+   //      res.redirect('/');
+   //   }
+   //});
+   //
+   //app.get('/logout', function(req, res){
+   //   console.log('got GET request for /logout');
+   //   req.session.destroy(function(){
+   //      console.log("user logged out.")
+   //   });
+   //   res.render('login', {message: "You have been logged out."});
+   //});
+   //
+   //app.use('/', function(err, req, res, next){
+   //   console.log('in app.use /. ' + err);
+   //   //User should be authenticated! Redirect them to log in.
+   //   res.redirect('/login');
+   //});
    
    // This responds to a POST request for /lircdo_ask. 
    // Meant to be invoked by Alexa Skills Kit(sdk)
@@ -286,7 +296,7 @@ if (PAIR_MODE) {
       var intent = lookup_intent('lircdo', lircAction, lircComponent, '');
       if (intent) {
          console.log('lircdo_ask: found lircscript=' + intent.lircscript);
-         if (!TEST_MODE) {
+         if (!NO_EXECUTE_MODE) {
             var msg = execute_lirc_script(intent.lircscript, '');
             if (msg && msg.length > 0) {
                message = msg;
@@ -332,7 +342,7 @@ if (PAIR_MODE) {
       var intent = lookup_intent('avr_action', lircAVRAction, lircAVDevice, '');
       if (intent) {
          console.log('avr_action_ask: found lircscript=' + intent.lircscript);
-         if (!TEST_MODE) {
+         if (!NO_EXECUTE_MODE) {
             var msg = execute_lirc_script(intent.lircscript, '');
             if (msg && msg.length > 0) {
                message = msg;
@@ -380,7 +390,7 @@ if (PAIR_MODE) {
       var intent = lookup_intent('channel_action', lircChannelAction, lircComponent, lircArgument);
       if (intent) {
          console.log('channel_action_ask: found lircscript=' + intent.lircscript);
-         if (!TEST_MODE) {
+         if (!NO_EXECUTE_MODE) {
             var msg = execute_lirc_script(intent.lircscript, lircArgument);
             if (msg && msg.length > 0) {
                message = msg;
@@ -428,7 +438,7 @@ if (PAIR_MODE) {
       var intent = lookup_intent('volume_action', lircVolumeAction, lircComponent, lircArgument);
       if (intent) {
          console.log('volume_action_ask: found lircscript=' + intent.lircscript);
-         if (!TEST_MODE) {
+         if (!NO_EXECUTE_MODE) {
             var msg = execute_lirc_script(intent.lircscript, lircArgument);
             if (msg && msg.length > 0) {
                message = msg;
