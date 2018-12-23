@@ -16,7 +16,7 @@ if (process.env.LIRCDO_PAGE_SECRET !== 'undefined' && process.env.LIRCDO_PAGE_SE
    console.log('error: LIRCDO_PAGE_SECRET environment variable MUST be set in .env');
    exit(1);
 }
-const LIRCDO_PAGE_SECRET = process.env.LIRCDO_PAGE_SECRET
+const LIRCDO_PAGE_SECRET = process.env.LIRCDO_PAGE_SECRET;
 const NO_EXECUTE_MODE = process.env.NO_EXECUTE_MODE && /^true$/i.test(process.env.NO_EXECUTE_MODE);
 console.log('NO_EXECUTE_MODE=' + NO_EXECUTE_MODE);
 
@@ -26,9 +26,10 @@ console.log('PAIR_MODE=' + PAIR_MODE);
 // if the application pin is hardcoded in the .env file enable test mode (TEST_MODE=true)
 // this allows all the lircdo server-side callbacks to be enabled at one time
 // which is handy for running automated test cases but is a little less secure
-var TEST_MODE=false
+var TEST_MODE=false;
 if (process.env.APP_PIN !== 'undefined' && process.env.APP_PIN !== null) {
-   TEST_MODE=true
+   TEST_MODE=true;
+   console.log('info: TEST_MODE=true. ALL callbacks are available!!!');
 }
    
 var applicationPin = process.env.APP_PIN || Math.floor(Math.random() * 1000).toString();
