@@ -161,7 +161,7 @@ done
 echo "info: installing extra packages needed for lircdo service install..."
 for package in $EXTRA_PACKAGES; do
    echo "info: installing ${package}..."
-   apt-get install -y $package
+   apt-get install -y $package > /dev/null 2>&1
 done
 
 echo
@@ -572,6 +572,8 @@ else
    echo "info: the lircdo service is running"
 fi
 
+sleep 2
+
 echo
 echo "info: verify the lircdo service can be reached at URL: https://${APP_FQDN}:${APP_PORT}..."
 echo "Q" | openssl s_client -connect ${APP_FQDN}:${APP_PORT} > /dev/null 2>&1
@@ -603,13 +605,13 @@ echo
 echo "info: note: you need to populate /etc/lirc/lircd.conf with the configuration for the"
 echo "            infrared remote control hardware used in your home."
 echo "            Then restart the lirc service 'sudo systemctl restart lirc'"
-echo "info: note: you need to populate ${LIRCDO_SERVICE_DIR}/lircscripts with shell scripts"
+echo "info: note: you need to populate ${LIRCDO_SERVER_DIR}/lircscripts with shell scripts"
 echo "            to emit infrared signals via LIRC for the lircdo intents you care to implement."
 echo "            Then (re-)generate the catalog as the ${LIRCDO_USER} as:"
-echo "            cd $LIRCDO_SERVICE_DIR"
+echo "            cd $LIRCDO_SERVER_DIR"
 echo "            ./generate_json_catalogs.py"
 echo "            Then restart the LIRCDO service as root or pi user:"
-echo "            systemctl restart node-server"
+echo "            sudo systemctl restart node-server"
 
 echo
 echo "info: you can view the lircdo server application log via: 'sudo journalctl -a -u ${LIRCDO_USER} -f'"
