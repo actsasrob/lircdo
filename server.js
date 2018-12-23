@@ -8,7 +8,7 @@ require('dotenv').load();
 const APP_PORT = process.env.APP_PORT || 8843;
 const APP_FQDN = process.env.APP_FQDN || '127.0.0.1';
 const LIRCSCRIPTS_LOCATION = process.env.LIRCSCRIPTS_LOCATION || './lircscripts';
-const SESSION_SECRET = process.env.SESSION_SECRET || 'shh its a secret';
+const LIRCDO_SESSION_SECRET = process.env.LIRCDO_SESSION_SECRET || 'shh its a secret';
 if (LIRCDO_SESSION_SECRET == 'undefined' || LIRCDO_SESSION_SECRET == null) {
    console.log('error: LIRCDO_SESSION_SECRET environment variable MUST be set in .env');
    process.exit(1);
