@@ -9,20 +9,24 @@ const APP_PORT = process.env.APP_PORT || 8843;
 const APP_FQDN = process.env.APP_FQDN || '127.0.0.1';
 const LIRCSCRIPTS_LOCATION = process.env.LIRCSCRIPTS_LOCATION || './lircscripts';
 const SESSION_SECRET = process.env.SESSION_SECRET || 'shh its a secret';
+if (LIRCDO_SESSION_SECRET == 'undefined' || LIRCDO_SESSION_SECRET == null) {
+   console.log('error: LIRCDO_SESSION_SECRET environment variable MUST be set in .env');
+   process.exit(1);
+} 
+
 const LIRCDO_PAGE_SECRET = process.env.LIRCDO_PAGE_SECRET;
 if (LIRCDO_PAGE_SECRET == 'undefined' || LIRCDO_PAGE_SECRET == null) {
    console.log('error: LIRCDO_PAGE_SECRET environment variable MUST be set in .env');
    process.exit(1);
-} else {
-   console.log('info: LIRCDO_PAGE_SECRET is ' + LIRCDO_PAGE_SECRET);
-}
+} 
+
 const NO_EXECUTE_MODE = process.env.NO_EXECUTE_MODE && /^true$/i.test(process.env.NO_EXECUTE_MODE);
 console.log('NO_EXECUTE_MODE=' + NO_EXECUTE_MODE);
 
 const PAIR_MODE = process.env.PAIR_MODE && /^true$/i.test(process.env.PAIR_MODE);
 console.log('PAIR_MODE=' + PAIR_MODE);
 
-// if the application pin is hardcoded in the .env file enable test mode (TEST_MODE=true)
+// if the application pin is hardcoded in the .env file then enable test mode (TEST_MODE=true)
 // this allows all the lircdo server-side callbacks to be enabled at one time
 // which is handy for running automated test cases but is a little less secure
 var TEST_MODE=false;
@@ -58,7 +62,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true })); 
 app.use(upload.array());
 app.use(cookieParser());
-app.use(session({secret: "Your secret key", 
+app.use(session({secret: LIRCDO_SESSION_SECRET, 
 	         resave: true,
 	         saveUninitialized: true,
 		 cookie: { secure: true }}));
@@ -161,6 +165,7 @@ function execute_lirc_script(lircscriptpath, argument) {
    return retVal;
 }
 
+console.log(`env LIRCDO_SESSION_SECRET is ${LIRCDO_SESSION_SECRET}`);
 console.log(`env LIRCDO_PAGE_SECRET is ${LIRCDO_PAGE_SECRET}`);
 console.log(`env APP_PORT is ${APP_PORT}`);
 console.log(`env APP_FQDN is ${APP_FQDN}`);
