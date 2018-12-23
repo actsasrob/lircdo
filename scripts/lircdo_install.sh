@@ -253,9 +253,6 @@ if [ ! -e ${LIRCDO_SERVER_DIR}/.env ]; then
    cp ${LIRCDO_SERVER_DIR}/env_file_example ${LIRCDO_SERVER_DIR}/.env
    chown ${LIRCDO_USER}:${LIRCDO_USER} ${LIRCDO_SERVER_DIR}/.env
    chmod 644 ${LIRCDO_SERVER_DIR}/.env
-   PROTECTED_PAGE_SECRET='ce287cfce8bd11e7ba96d746a6e2ce6e'
-   LIRCDO_PAGE_SECRET='1840216ee8be11e7b124e36493f1a3ef'
-   SESSION_SECRET='73abf97ee8c811e79bd35bb4b7a148ff'
    SECRET1="$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | tr 'A-Z' 'a-z' | head -n 1)"
    SECRET2="$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | tr 'A-Z' 'a-z' | head -n 1)"
    SECRET3="$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | tr 'A-Z' 'a-z' | head -n 1)"
@@ -537,10 +534,58 @@ else
    echo "info: lircdo application certificates files already linked to /etc/letsencrypt directory" 
 fi
 
+if [ ! -e $LIRCDO_SERVER_DIR/catalog_internal.json ]; then
+echo "info: generating the initial catalog_internal.json file which maps intents from the lircdo Alexa Skill to local lircdo shell scripts..."
+cat << EOT > $LIRCDO_SERVER_DIR/catalog_internal.json
+{
+       "SHARED_SECRET": "${LIRCDO_PAGE_SECRET}",
+       "intents": []
+}	
+EOT
+fi
+
+chown $LIRCDO_USER:$LIRCDO_USER $LIRCDO_SERVER_DIR/catalog_internal.json > /dev/null 2>&1
+chmod 644 $LIRCDO_SERVER_DIR/catalog_internal.json > /dev/null 2>&1
+
 systemctl restart node-server
 
-echo "info: you can view the lircdo server application log via: 'sudo journalctl -a -u ${LIRCDO_USER} -f'"
+echo
+echo "info: verify the lircdo service is running..."
+systemctl is-active node-server | grep "^active$" > /dev/null 2>&1
+if [ "$?" -ne 0 ]; then
+   echo "error: lircdo service is not running"
+   echo "       possible causes:"
+   echo "       1) there is a configuration issue preventing the lircdo service from starting"
+   echo "          use the following commands to troubleshoot:"
+   echo "          sudo systemctl status node-server"
+   echo "          sudo journalctl -a -u ${LIRCDO_USER} -f"
+   echo "       exiting..."
+   exit 1
+else
+   echo "info: the lircdo service is running"
+fi
 
+echo
+echo "info: verify the lircdo service can be reached at URL: https://${APP_FQDN}:${APP_PORT}..."
+echo "Q" | openssl s_client --connect ${APP_FQDN}:${APP_PORT} > /dev/null 2>&1
+if [ "$?" -ne 0 ]; then
+   echo "error: could not connect to lircdo server URL using openssl."
+   echo "       possible causes:"
+   echo "       1) the lircdo service is not running. verify via 'sudo systemctl status node-server'"
+   echo "       2) there is a configuration issue preventing the lircdo service from starting"
+   echo "          use 'sudo journalctl -a -u ${LIRCDO_USER} -f' to troubleshoot"
+   echo "       3) a firewall is preventing access to port ${APP_PORT}"
+   echo "       4) you need to configure your router to forward incoming connections on port "
+   echo "          ${APP_PORT} to the lircdo server"
+   echo "          Use the following openssl command to troubleshoot:"
+   echo "          openssl s_client --connect ${APP_FQDN}:${APP_PORT}"
+   echo "       exiting..."
+   exit 1
+else
+   echo "info: successfully connected to https://${APP_FQDN}:${APP_PORT} using openssl"
+fi
+
+echo
 echo "info: lirc has been installed/configured/started"
 if [ "$NEEDS_REBOOT" -eq 1 ]; then
    echo "info: *** you need to reboot the server to properly load the lirc_rpi module before using lirc ***"
@@ -559,3 +604,5 @@ echo "            ./generate_json_catalogs.py"
 echo "            Then restart the LIRCDO service as root or pi user:"
 echo "            systemctl restart node-server"
 
+echo
+echo "info: you can view the lircdo server application log via: 'sudo journalctl -a -u ${LIRCDO_USER} -f'"
