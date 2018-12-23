@@ -127,7 +127,7 @@ systemctl enable lirc
 if [ "$NEEDS_LIRCSERVICE_RESTART" -eq 1 ]; then
    echo
    echo "info: restarting lirc service..."
-   systemctl start lirc
+   systemctl restart lirc
 fi
 
 echo

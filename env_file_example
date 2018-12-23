@@ -19,7 +19,7 @@ PROTECTED_PAGE_SECRET='ce287cfce8bd11e7ba96d746a6e2ce6e'
 # These two variables should be set to random alphanumeric strings used to secure 
 #  communication between the lircdo Alexa Skills Kit (ASK) lambda function and the lircdo server.
 LIRCDO_PAGE_SECRET='1840216ee8be11e7b124e36493f1a3ef'
-SESSION_SECRET='73abf97ee8c811e79bd35bb4b7a148ff'
+LIRCDO_SESSION_SECRET='73abf97ee8c811e79bd35bb4b7a148ff'
 
 # Directory containing lircdo shell scripts
 LIRCSCRIPTS_LOCATION='./lircscripts'
