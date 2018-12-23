@@ -12,7 +12,7 @@ const SESSION_SECRET = process.env.SESSION_SECRET || 'shh its a secret';
 const LIRCDO_PAGE_SECRET = process.env.LIRCDO_PAGE_SECRET;
 if (LIRCDO_PAGE_SECRET == 'undefined' || LIRCDO_PAGE_SECRET == null) {
    console.log('error: LIRCDO_PAGE_SECRET environment variable MUST be set in .env');
-   exit(1);
+   process.exit(1);
 } else {
    console.log('info: LIRCDO_PAGE_SECRET is ' + LIRCDO_PAGE_SECRET);
 }
