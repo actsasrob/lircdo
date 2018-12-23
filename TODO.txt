@@ -2,10 +2,11 @@ Sanity check incoming requests can reach lircdo service using APP_FQDN and APP_P
 Test install/configure script
 
 Ability to hardcode application pin so that test app can start with known PIN number to use for automated tests
-lircdo server app transitions from test to prod after successful connect from lircdo ask???
 
-think the line below in server.js should be using the session section not a harcoded string???
+think the line below in server.js should be using the session secret not a harcoded string???
 app.use(session({secret: "Your secret key", cookie: { secure: true }}));
+
+Clean-up messages returned by callback functions. More succinct message on success.
 
 Merge nodejsv8 branch into master.
 Remember to change git branch back to master in scripts/lirdo_install.sh
