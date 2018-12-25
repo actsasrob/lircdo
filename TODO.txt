@@ -1,7 +1,3 @@
-Sanitize all callback parameters before use.
-
-Clean-up messages returned by callback functions. More succinct message on success.
-
 Merge nodejsv8 branch into master.
 Remember to change git branch back to master in scripts/lirdo_install.sh
 
