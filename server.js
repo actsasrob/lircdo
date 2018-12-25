@@ -189,7 +189,7 @@ function checkSignIn(req, res, next){
 if (PAIR_MODE || TEST_MODE) {
    console.log(`Application pairing pin number is ${applicationPin}`);
 
-   // This responds to a POST request for /pair_action_ask.
+   // This responds to a GET request for /pair_action_ask.
    // Meant to be invoked by Alexa Skills Kit lambda function
    //  when pairing this server-side LIRC DO application.
    // Params: pin. Required. Secret shared pin
@@ -276,7 +276,7 @@ if (!PAIR_MODE || TEST_MODE) { // START OF NON-PAIR MODE
    //   res.redirect('/login');
    //});
    
-   // This responds to a POST request for /lircdo_ask. 
+   // This responds to a GET request for /lircdo_ask. 
    // Meant to be invoked by Alexa Skills Kit(sdk)
    // Params: lircComponent. Not required
    // Params: lircAction. Required
@@ -322,7 +322,7 @@ if (!PAIR_MODE || TEST_MODE) { // START OF NON-PAIR MODE
       res.end(json);
    })
     
-   // This responds to a POST request for /avr_action_ask.
+   // This responds to a GET request for /avr_action_ask.
    // Meant to be invoked Alexa Skills Kit(sdk)
    // Params: lircAVDevice. Required
    // Params: lircAVRAction. Required
@@ -368,7 +368,7 @@ if (!PAIR_MODE || TEST_MODE) { // START OF NON-PAIR MODE
       res.end(json);
    })
    
-   // This responds to a POST request for /channel_action_ask.
+   // This responds to a GET request for /channel_action_ask.
    // Meant to be invoked Alexa Skills Kit(sdk)
    // Params: lircComponent. Not Required
    // Params: lircChannelAction. Required
@@ -416,7 +416,7 @@ if (!PAIR_MODE || TEST_MODE) { // START OF NON-PAIR MODE
       res.end(json);
    })
    
-   // This responds to a POST request for /volume_action_ask.
+   // This responds to a GET request for /volume_action_ask.
    // Meant to be invoked Alexa Skills Kit(sdk)
    // Params: lircComponent. Not Required
    // Params: lircVolumeAction. Required
@@ -468,73 +468,70 @@ if (!PAIR_MODE || TEST_MODE) { // START OF NON-PAIR MODE
    
    // This responds to a POST request for /lircdo_gui. 
    // Meant to be used by server-side web GUI and not Alexa Skills Kit(sdk)
-   app.post('/lircdo_gui', function (req, res) {
-      //console.log(util.inspect(child, {showHidden: false, depth: null}))
-      var status = "Success";
-      var intentname=req.query.intentname;
-      var shared_secret=req.query.shared_secret;
-      console.log('debug: lircdo_gui POST: intentname=' + intentname + ' shared_secret=' + shared_secret);
-      res.writeHeader(200, {"Content-Type": "text/html"});
-      res.write("<html><body>");
-      if (typeof intentname !== 'undefined' && intentname !== null &&
-          typeof shared_secret !== 'undefined' && shared_secret !== null &&
-          shared_secret === LIRCDO_PAGE_SECRET){
-            var intentobj=lookup_intent_by_name(intentname);
-            if (intentobj !== 'undefined' && intentobj !== null) { 
-               var lircscriptpath = intentobj.lircscript;
-               console.log("Got a POST request for /lircdo_gui intent=" + intentname + "script=" + lircscriptpath);
-               var testcmd = spawnSync('test', ['-f', lircscriptpath ]);
-               if (testcmd.status === 0) {
-                  var lircscript = spawnSync(lircscriptpath);
-                  if (lircscript.status === 0){
-                     status = "lirc script successful";
-                  } else {
-                     status = "non-zero return status for lircscript";
-                  } 
-               } else {
-                  status="Error: lircscriptpath " + lircscriptpath + " not found";
-               }
-            } else {
-               status="Error: no intent with name " + intentname + " found"
-            } 
-      } else {
-         var message="Error no 'intentname' or 'shared_secret' param or incorrect shared secret";
-         console.log("Got a POST request for /lircdo. " + message);
-         status = message;   
-      }
-      res.write(status);
-      res.write('<br>');
-      res.write(`   <form action = "https://${APP_FQDN}:${APP_PORT}/" method = "GET">`);
-      res.write('      <button type="submit">Back to home page</button>');
-      res.write('   </form>');
-      res.write(status + "</body></html>");
-      res.end();
-   })
+   //app.post('/lircdo_gui', function (req, res) {
+   //   //console.log(util.inspect(child, {showHidden: false, depth: null}))
+   //   var status = "Success";
+   //   var intentname=req.query.intentname;
+   //   var shared_secret=req.query.shared_secret;
+   //   console.log('debug: lircdo_gui POST: intentname=' + intentname + ' shared_secret=' + shared_secret);
+   //   res.writeHeader(200, {"Content-Type": "text/html"});
+   //   res.write("<html><body>");
+   //   if (typeof intentname !== 'undefined' && intentname !== null &&
+   //       typeof shared_secret !== 'undefined' && shared_secret !== null &&
+   //       shared_secret === LIRCDO_PAGE_SECRET){
+   //         var intentobj=lookup_intent_by_name(intentname);
+   //         if (intentobj !== 'undefined' && intentobj !== null) { 
+   //            var lircscriptpath = intentobj.lircscript;
+   //            console.log("Got a POST request for /lircdo_gui intent=" + intentname + "script=" + lircscriptpath);
+   //            var testcmd = spawnSync('test', ['-f', lircscriptpath ]);
+   //            if (testcmd.status === 0) {
+   //               var lircscript = spawnSync(lircscriptpath);
+   //               if (lircscript.status === 0){
+   //                  status = "lirc script successful";
+   //               } else {
+   //                  status = "non-zero return status for lircscript";
+   //               } 
+   //            } else {
+   //               status="Error: lircscriptpath " + lircscriptpath + " not found";
+   //            }
+   //         } else {
+   //            status="Error: no intent with name " + intentname + " found"
+   //         } 
+   //   } else {
+   //      var message="Error no 'intentname' or 'shared_secret' param or incorrect shared secret";
+   //      console.log("Got a POST request for /lircdo. " + message);
+   //      status = message;   
+   //   }
+   //   res.write(status);
+   //   res.write('<br>');
+   //   res.write(`   <form action = "https://${APP_FQDN}:${APP_PORT}/" method = "GET">`);
+   //   res.write('      <button type="submit">Back to home page</button>');
+   //   res.write('   </form>');
+   //   res.write(status + "</body></html>");
+   //   res.end();
+   //})
    
-   app.get('/process_get', function (req, res) {
-      // Prepare output in JSON format
-      response = {
-         first_name:req.query.first_name,
-         last_name:req.query.last_name
-      };
-      console.log(response);
-      res.end(JSON.stringify(response));
-   })
+   //app.get('/process_get', function (req, res) {
+   //   // Prepare output in JSON format
+   //   response = {
+   //      first_name:req.query.first_name,
+   //      last_name:req.query.last_name
+   //   };
+   //   console.log(response);
+   //   res.end(JSON.stringify(response));
+   //})
    
    
-   app.post('/process_post', urlencodedParser, function (req, res) {
-      // Prepare output in JSON format
-      response = {
-         first_name:req.body.first_name,
-         last_name:req.body.last_name
-      };
-      console.log(response);
-      res.end(JSON.stringify(response));
-   })
+   //app.post('/process_post', urlencodedParser, function (req, res) {
+   //   // Prepare output in JSON format
+   //   response = {
+   //      first_name:req.body.first_name,
+   //      last_name:req.body.last_name
+   //   };
+   //   console.log(response);
+   //   res.end(JSON.stringify(response));
+   //})
 } // END NOT PAIR MODE
-
-//var httpServer = http.createServer(app);
-// httpServer.listen(8080);
 
 var httpsServer = https.createServer(options, app);
 httpsServer.listen(APP_PORT, function(){
@@ -543,5 +540,3 @@ httpsServer.listen(APP_PORT, function(){
 
    console.log("App listening at https://%s:%s", host, port)
 });
-
-
