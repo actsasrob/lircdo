@@ -174,17 +174,17 @@ console.log(`env LIRCSCRIPTS_LOCATION is ${LIRCSCRIPTS_LOCATION}`);
 // Execute synchronous shell commands on server
 var spawnSync = require('child_process').spawnSync;
 
-function checkSignIn(req, res, next){
-   console.log("in checkSignIn()");
-   if(req.session.user){
-      console.log('checkSignIn: user object exists in session');
-      next();     //If session exists, proceed to page
-   } else {
-      console.log('checkSignIn: user object not in session');
-      var err = new Error("Not logged in!");
-      next(err);  //Error, trying to access unauthorized page!
-   }
-}
+//function checkSignIn(req, res, next){
+//   console.log("in checkSignIn()");
+//   if(req.session.user){
+//      console.log('checkSignIn: user object exists in session');
+//      next();     //If session exists, proceed to page
+//   } else {
+//      console.log('checkSignIn: user object not in session');
+//      var err = new Error("Not logged in!");
+//      next(err);  //Error, trying to access unauthorized page!
+//   }
+//}
 
 if (PAIR_MODE || TEST_MODE) {
    console.log(`Application pairing pin number is ${applicationPin}`);
@@ -294,9 +294,21 @@ if (!PAIR_MODE || TEST_MODE) { // START OF NON-PAIR MODE
       if (typeof shared_secret === 'undefined' || shared_secret === null ||
           shared_secret !== LIRCDO_PAGE_SECRET) {
           // Error.
-          res.writeHead(402, {"Content-Type": "application/json"});
+          res.writeHead(401, {"Content-Type": "application/json"});
           status = 'error';
           message = 'invalid shared secret';
+      } else if (typeof lircComponent === 'undefined' || lircComponent === null ||
+		      ! /^[a-zA-Z0-9_]{1,50}$/.test(lircComponent)) {
+          // Error.
+          res.writeHead(406, {"Content-Type": "application/json"});
+          status = 'error';
+          message = 'invalid component';
+      } else if (typeof lircAction === 'undefined' || lircAction === null ||
+                      ! /^[a-zA-Z0-9_]{1,50}$/.test(lircAction)) {
+          // Error.
+          res.writeHead(406, {"Content-Type": "application/json"});
+          status = 'error';
+          message = 'invalid action';
       } else {
           res.writeHead(200, {"Content-Type": "application/json"});
       }
@@ -340,9 +352,21 @@ if (!PAIR_MODE || TEST_MODE) { // START OF NON-PAIR MODE
       if (typeof shared_secret === 'undefined' || shared_secret === null ||
           shared_secret !== LIRCDO_PAGE_SECRET) {
           // Error.
-          res.writeHead(402, {"Content-Type": "application/json"});
+          res.writeHead(401, {"Content-Type": "application/json"});
           status = 'error';
           message = 'invalid shared secret';
+      } else if (typeof lircAVDevice === 'undefined' || lircAVDevice === null ||
+                      ! /^[a-zA-Z0-9_]{1,50}$/.test(lircAVDevice)) {
+          // Error.
+          res.writeHead(406, {"Content-Type": "application/json"});
+          status = 'error';
+          message = 'invalid device';
+      } else if (typeof lircAVRAction === 'undefined' || lircAVRAction === null ||
+                      ! /^[a-zA-Z0-9_]{1,50}$/.test(lircAVRAction)) {
+          // Error.
+          res.writeHead(406, {"Content-Type": "application/json"});
+          status = 'error';
+          message = 'invalid action';
       } else {
           res.writeHead(200, {"Content-Type": "application/json"});
       }
@@ -388,9 +412,27 @@ if (!PAIR_MODE || TEST_MODE) { // START OF NON-PAIR MODE
       if (typeof shared_secret === 'undefined' || shared_secret === null ||
           shared_secret !== LIRCDO_PAGE_SECRET) {
           // Error.
-          res.writeHead(402, {"Content-Type": "application/json"});
+          res.writeHead(401, {"Content-Type": "application/json"});
           status = 'error';
           message = 'invalid shared secret';
+      } else if (typeof lircComponent === 'undefined' || lircComponent === null ||
+                      ! /^[a-zA-Z0-9_]{0,50}$/.test(lircComponent)) {
+          // Error.
+          res.writeHead(406, {"Content-Type": "application/json"});
+          status = 'error';
+          message = 'invalid component';
+      } else if (typeof lircChannelAction === 'undefined' || lircChannelAction === null ||
+                      ! /^[a-zA-Z0-9_]{1,50}$/.test(lircChannelAction)) {
+          // Error.
+          res.writeHead(406, {"Content-Type": "application/json"});
+          status = 'error';
+          message = 'invalid channel action';
+      } else if (typeof lircArgument === 'undefined' || lircArgument === null ||
+                      ! /^[1-9]{1,1}[0-9]{,3}$/.test(lircArgument)) {
+          // Error.
+          res.writeHead(406, {"Content-Type": "application/json"});
+          status = 'error';
+          message = 'invalid channel argument';
       } else {
           res.writeHead(200, {"Content-Type": "application/json"});
       }
@@ -436,9 +478,27 @@ if (!PAIR_MODE || TEST_MODE) { // START OF NON-PAIR MODE
       if (typeof shared_secret === 'undefined' || shared_secret === null ||
           shared_secret !== LIRCDO_PAGE_SECRET) {
           // Error.
-          res.writeHead(402, {"Content-Type": "application/json"});
+          res.writeHead(401, {"Content-Type": "application/json"});
           status = 'error';
           message = 'invalid shared secret';
+      } else if (typeof lircComponent === 'undefined' || lircComponent === null ||
+                      ! /^[a-zA-Z0-9_]{0,50}$/.test(lircComponent)) {
+          // Error.
+          res.writeHead(406, {"Content-Type": "application/json"});
+          status = 'error';
+          message = 'invalid component';
+      } else if (typeof lircVolumeAction === 'undefined' || lircVolumeAction === null ||
+                      ! /^[a-zA-Z0-9_]{1,50}$/.test(lircVolumeAction)) {
+          // Error.
+          res.writeHead(406, {"Content-Type": "application/json"});
+          status = 'error';
+          message = 'invalid volume action';
+      } else if (typeof lircArgument === 'undefined' || lircArgument === null ||
+                      ! /^[1-9]{1,1}[0-9]{,1}$/.test(lircArgument)) {
+          // Error.
+          res.writeHead(406, {"Content-Type": "application/json"});
+          status = 'error';
+          message = 'invalid volume argument';
       } else {
           res.writeHead(200, {"Content-Type": "application/json"});
       }
