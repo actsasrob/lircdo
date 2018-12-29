@@ -311,22 +311,21 @@ if (!PAIR_MODE || TEST_MODE) { // START OF NON-PAIR MODE
           message = 'invalid action';
       } else {
           res.writeHead(200, {"Content-Type": "application/json"});
-      }
     
-      var intent = lookup_intent('lircdo', lircAction, lircComponent, '');
-      if (intent) {
-         console.log('lircdo_ask: found lircscript=' + intent.lircscript);
-         if (!NO_EXECUTE_MODE) {
-            var msg = execute_lirc_script(intent.lircscript, '');
-            if (msg && msg.length > 0) {
-               message = msg;
-            }
-         }
-      } else {
-         console.log('lircdo_ask: no matching lircscript found');
-         message = 'No matching LIRC script found';
-      }
-   
+          var intent = lookup_intent('lircdo', lircAction, lircComponent, '');
+          if (intent) {
+             console.log('lircdo_ask: found lircscript=' + intent.lircscript);
+             if (!NO_EXECUTE_MODE) {
+                var msg = execute_lirc_script(intent.lircscript, '');
+                if (msg && msg.length > 0) {
+                   message = msg;
+                }
+             }
+          } else {
+             console.log('lircdo_ask: no matching lircscript found');
+             message = 'No matching LIRC script found';
+          }
+      } 
       var json = JSON.stringify({ 
         status: status, 
         message: message 
@@ -369,22 +368,21 @@ if (!PAIR_MODE || TEST_MODE) { // START OF NON-PAIR MODE
           message = 'invalid action';
       } else {
           res.writeHead(200, {"Content-Type": "application/json"});
-      }
    
-      var intent = lookup_intent('avr_action', lircAVRAction, lircAVDevice, '');
-      if (intent) {
-         console.log('avr_action_ask: found lircscript=' + intent.lircscript);
-         if (!NO_EXECUTE_MODE) {
-            var msg = execute_lirc_script(intent.lircscript, '');
-            if (msg && msg.length > 0) {
-               message = msg;
-            }
-         }
-      } else {
-         console.log('avr_action_ask: no matching lircscript found');
-         message = 'No matching LIRC script found';
-      }
-   
+          var intent = lookup_intent('avr_action', lircAVRAction, lircAVDevice, '');
+          if (intent) {
+             console.log('avr_action_ask: found lircscript=' + intent.lircscript);
+             if (!NO_EXECUTE_MODE) {
+                var msg = execute_lirc_script(intent.lircscript, '');
+                if (msg && msg.length > 0) {
+                   message = msg;
+                }
+             }
+          } else {
+             console.log('avr_action_ask: no matching lircscript found');
+             message = 'No matching LIRC script found';
+          }
+      } 
       var json = JSON.stringify({
         status: status,
         message: message
@@ -435,22 +433,21 @@ if (!PAIR_MODE || TEST_MODE) { // START OF NON-PAIR MODE
           message = 'invalid channel argument';
       } else {
           res.writeHead(200, {"Content-Type": "application/json"});
-      }
    
-      var intent = lookup_intent('channel_action', lircChannelAction, lircComponent, lircArgument);
-      if (intent) {
-         console.log('channel_action_ask: found lircscript=' + intent.lircscript);
-         if (!NO_EXECUTE_MODE) {
-            var msg = execute_lirc_script(intent.lircscript, lircArgument);
-            if (msg && msg.length > 0) {
-               message = msg;
-            }
-         }
-      } else {
-         console.log('channel_action_ask: no matching lircscript found');
-         message = 'No matching LIRC script found';
-      }
-   
+          var intent = lookup_intent('channel_action', lircChannelAction, lircComponent, lircArgument);
+          if (intent) {
+             console.log('channel_action_ask: found lircscript=' + intent.lircscript);
+             if (!NO_EXECUTE_MODE) {
+                var msg = execute_lirc_script(intent.lircscript, lircArgument);
+                if (msg && msg.length > 0) {
+                   message = msg;
+                }
+             }
+          } else {
+             console.log('channel_action_ask: no matching lircscript found');
+             message = 'No matching LIRC script found';
+          }
+      } 
       var json = JSON.stringify({
         status: status,
         message: message
@@ -501,22 +498,21 @@ if (!PAIR_MODE || TEST_MODE) { // START OF NON-PAIR MODE
           message = 'invalid volume argument';
       } else {
           res.writeHead(200, {"Content-Type": "application/json"});
-      }
    
-      var intent = lookup_intent('volume_action', lircVolumeAction, lircComponent, lircArgument);
-      if (intent) {
-         console.log('volume_action_ask: found lircscript=' + intent.lircscript);
-         if (!NO_EXECUTE_MODE) {
-            var msg = execute_lirc_script(intent.lircscript, lircArgument);
-            if (msg && msg.length > 0) {
-               message = msg;
-            }
-         }
-      } else {
-         console.log('volume_ask: no matching lircscript found');
-         message = 'No matching LIRC script found';
-      }
-   
+          var intent = lookup_intent('volume_action', lircVolumeAction, lircComponent, lircArgument);
+          if (intent) {
+             console.log('volume_action_ask: found lircscript=' + intent.lircscript);
+             if (!NO_EXECUTE_MODE) {
+                var msg = execute_lirc_script(intent.lircscript, lircArgument);
+                if (msg && msg.length > 0) {
+                   message = msg;
+                }
+             }
+          } else {
+             console.log('volume_ask: no matching lircscript found');
+             message = 'No matching LIRC script found';
+          }
+      } 
       var json = JSON.stringify({
         status: status,
         message: message
