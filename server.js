@@ -426,7 +426,7 @@ if (!PAIR_MODE || TEST_MODE) { // START OF NON-PAIR MODE
           status = 'error';
           message = 'invalid channel action';
       } else if (typeof lircArgument === 'undefined' || lircArgument === null ||
-                      ! /^[1-9]{1,1}[0-9]{,3}$/.test(lircArgument)) {
+                      ! /^[1-9]{1,1}[0-9]{0,4}$/.test(lircArgument)) {
           // Error.
           res.writeHead(406, {"Content-Type": "application/json"});
           status = 'error';
@@ -491,7 +491,7 @@ if (!PAIR_MODE || TEST_MODE) { // START OF NON-PAIR MODE
           status = 'error';
           message = 'invalid volume action';
       } else if (typeof lircArgument === 'undefined' || lircArgument === null ||
-                      ! /^[1-9]{1,1}[0-9]{,1}$/.test(lircArgument)) {
+                      ! /^[1-9]{1,1}[0-9]{0,1}$/.test(lircArgument)) {
           // Error.
           res.writeHead(406, {"Content-Type": "application/json"});
           status = 'error';
