@@ -300,13 +300,13 @@ if (!PAIR_MODE || TEST_MODE) { // START OF NON-PAIR MODE
       } else if (typeof lircComponent === 'undefined' || lircComponent === null ||
 		      ! /^[a-zA-Z0-9_]{1,50}$/.test(lircComponent)) {
           // Error.
-          res.writeHead(406, {"Content-Type": "application/json"});
+          res.writeHead(200, {"Content-Type": "application/json"});
           status = 'error';
           message = 'invalid component';
       } else if (typeof lircAction === 'undefined' || lircAction === null ||
                       ! /^[a-zA-Z0-9_]{1,50}$/.test(lircAction)) {
           // Error.
-          res.writeHead(406, {"Content-Type": "application/json"});
+          res.writeHead(200, {"Content-Type": "application/json"});
           status = 'error';
           message = 'invalid action';
       } else {
@@ -357,13 +357,13 @@ if (!PAIR_MODE || TEST_MODE) { // START OF NON-PAIR MODE
       } else if (typeof lircAVDevice === 'undefined' || lircAVDevice === null ||
                       ! /^[a-zA-Z0-9_]{1,50}$/.test(lircAVDevice)) {
           // Error.
-          res.writeHead(406, {"Content-Type": "application/json"});
+          res.writeHead(200, {"Content-Type": "application/json"});
           status = 'error';
           message = 'invalid device';
       } else if (typeof lircAVRAction === 'undefined' || lircAVRAction === null ||
                       ! /^[a-zA-Z0-9_]{1,50}$/.test(lircAVRAction)) {
           // Error.
-          res.writeHead(406, {"Content-Type": "application/json"});
+          res.writeHead(200, {"Content-Type": "application/json"});
           status = 'error';
           message = 'invalid action';
       } else {
@@ -416,19 +416,19 @@ if (!PAIR_MODE || TEST_MODE) { // START OF NON-PAIR MODE
       } else if (typeof lircComponent === 'undefined' || lircComponent === null ||
                       ! /^[a-zA-Z0-9_]{0,50}$/.test(lircComponent)) {
           // Error.
-          res.writeHead(406, {"Content-Type": "application/json"});
+          res.writeHead(200, {"Content-Type": "application/json"});
           status = 'error';
           message = 'invalid component';
       } else if (typeof lircChannelAction === 'undefined' || lircChannelAction === null ||
                       ! /^[a-zA-Z0-9_]{1,50}$/.test(lircChannelAction)) {
           // Error.
-          res.writeHead(406, {"Content-Type": "application/json"});
+          res.writeHead(200, {"Content-Type": "application/json"});
           status = 'error';
           message = 'invalid channel action';
       } else if (typeof lircArgument === 'undefined' || lircArgument === null ||
                       ! /^[1-9]{1,1}[0-9]{0,4}$/.test(lircArgument)) {
           // Error.
-          res.writeHead(406, {"Content-Type": "application/json"});
+          res.writeHead(200, {"Content-Type": "application/json"});
           status = 'error';
           message = 'invalid channel argument';
       } else {
@@ -481,19 +481,19 @@ if (!PAIR_MODE || TEST_MODE) { // START OF NON-PAIR MODE
       } else if (typeof lircComponent === 'undefined' || lircComponent === null ||
                       ! /^[a-zA-Z0-9_]{0,50}$/.test(lircComponent)) {
           // Error.
-          res.writeHead(406, {"Content-Type": "application/json"});
+          res.writeHead(200, {"Content-Type": "application/json"});
           status = 'error';
           message = 'invalid component';
       } else if (typeof lircVolumeAction === 'undefined' || lircVolumeAction === null ||
                       ! /^[a-zA-Z0-9_]{1,50}$/.test(lircVolumeAction)) {
           // Error.
-          res.writeHead(406, {"Content-Type": "application/json"});
+          res.writeHead(200, {"Content-Type": "application/json"});
           status = 'error';
           message = 'invalid volume action';
       } else if (typeof lircArgument === 'undefined' || lircArgument === null ||
                       ! /^[1-9]{1,1}[0-9]{0,1}$/.test(lircArgument)) {
           // Error.
-          res.writeHead(402, {"Content-Type": "application/json"});
+          res.writeHead(200, {"Content-Type": "application/json"});
           status = 'error';
           message = 'invalid volume argument';
       } else {
