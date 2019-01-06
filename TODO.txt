@@ -5,3 +5,12 @@ Re-deploy test lircdo server instances from master branch
 Re-build test lircdo server and test install from scratch.
 
 Re-deploy prod lircdo server instances from master branch
+
+Update README file.
+  How to build lircdo server.
+  How to install lircdo service.
+  Overview of configuring home internet router to forward incoming connections on port to lircdo server.
+  Dynamic DNS overview.
+  How to add remote control support for LIRC service.
+  How to create shell scripts that implement lircdo intents
+  How to build an infrared emitter/receiver.
