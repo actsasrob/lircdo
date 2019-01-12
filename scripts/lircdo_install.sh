@@ -95,12 +95,12 @@ if [ "$?" -ne 0 ]; then
    grep "^dtoverlay" /boot/config.txt > /dev/null 2>&1
    if [ "$?" -ne 0 ]; then
       echo "info: no dtoverlay line exists in /boot/config.txt for lirc-rpi module...adding line..."
-      echo "dtoverlay=lirc-rpi,gpio_in_pin=17,gpio_out_pin=18" >> /boot/config.txt
-      echo "info: added dtoverlay line in /boot/config.txt for lirc-rpi module using gpio in pin 17 and gpio out pin 18"
+      echo "dtoverlay=lirc-rpi,gpio_out_pin=17,gpio_in_pin=18" >> /boot/config.txt
+      echo "info: added dtoverlay line in /boot/config.txt for lirc-rpi module using gpio out pin 17 and gpio in pin 18"
    else
       echo "info: dtloverlay line exists in /boot/config.txt but doesn't include lirc-rpi module...adding it..."
-      sed -ie "s/^\(dtoverlay.*\)$/\1,lirc-rpi,gpio_in_pin=17,gpio_out_pin=18/" /boot/config.txt
-      echo "info: added dtoverlay line in /boot/config.txt for lirc-rpi module using gpio in pin 17 and gpio out pin 18"
+      sed -ie "s/^\(dtoverlay.*\)$/\1,lirc-rpi,gpio_out_pin=17,gpio_in_pin=18/" /boot/config.txt
+      echo "info: added dtoverlay line in /boot/config.txt for lirc-rpi module using gpio out pin 17 and gpio in pin 18"
    fi
    NEEDS_REBOOT=1
 else
