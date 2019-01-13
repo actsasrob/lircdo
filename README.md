@@ -8,8 +8,20 @@ Linux Inrared Remote Control (LIRC) Do. Node.js web application that provides ac
 Highly recommend using Raspbian with Debian Jessie operating system. I found the LIRC libraries under Debian Stretch to be unstable. After reverting back to Debian Jessie I've had no problems with the linux LIRC libraries.)
 You can find the zip file containing Raspbian using Debian Jessie here: http://downloads.raspberrypi.org/raspbian/images/raspbian-2017-07-05/
 
+## Write image to SD Card
+I found a instructions [here](https://www.raspberrypi.org/documentation/installation/installing-images/) to use etcher to burn images to SD cards.
+
+## Download etcher from [here](https://www.balena.io/etcher/).
+Run etcher and follow the instructions.
+
 Here's the command I use on Ubuntu 16.04 to burn the image to a 32GB SD card available as device /dev/mmcblk0:
 unzip -p 2017-07-05-raspbian-jessie.zip | sudo dd of=/dev/mmcblk0 bs=4M conv=fsync
+
+## lircdo install script
+```wget https://raw.githubusercontent.com/actsasrob/lircdo/nodejsv8/scripts/lircdo_install.sh
+chmod u+x lircdo_install.sh
+sudo ./lircdo_install.sh
+```
 
 ### Install LIRC packages
 sudo apt-get install lirc
