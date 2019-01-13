@@ -614,4 +614,4 @@ echo "            Then restart the LIRCDO service as root or pi user:"
 echo "            sudo systemctl restart node-server"
 
 echo
-echo "info: you can view the lircdo server application log via: 'sudo journalctl -a -u ${LIRCDO_USER} -f'"
+echo "info: you can view the lircdo server application log via: 'sudo journalctl -a -u node-server -f'"
