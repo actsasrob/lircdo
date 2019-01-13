@@ -420,7 +420,7 @@ if [ ! -e /etc/letsencrypt/live/$APP_FQDN/cert.pem ]; then
    echo "info: when requesting signed server certifates from Let\'s Encrypt you can add an e-mail address"
    echo "       which will be used to send important notifications such as reminders about expiring "
    echo "       certificates."
-   emailswitch=""
+   emailswitch="-m nobody@example.com"
    email=""
    while true; do
       read -p "Do you wish to register an e-mail address with Let\'s Encrypt? y/n: " YN
