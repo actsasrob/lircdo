@@ -183,8 +183,8 @@ if [ ! -d /home/$LIRCDO_USER/.nvm ]; then
 export NVM_DIR="/home/lirc/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
 EOT
-   sudo -H -u $LIRCDO_USER bash -c "nvm install $NODEJS_VERSION"
-   sudo -H -u $LIRCDO_USER bash -c "nvm alias default $NODEJS_VERSION"
+   sudo -H -u $LIRCDO_USER bash -i -c "nvm install $NODEJS_VERSION"
+   sudo -H -u $LIRCDO_USER bash -i -c "nvm alias default $NODEJS_VERSION"
 
    if [ ! -d /home/$LIRCDO_USER/.nvm/versions/node/v${NODEJS_VERSION} ]; then
       echo "error: failed to install nvm and node.js version $NODEJS_VERSION. exiting..."
@@ -200,7 +200,7 @@ echo "info: checking if lircdo server application has been installed at ${LIRCDO
 if [ ! -e "${LIRCDO_SERVER_DIR}/server.js" ]; then
    echo "info: installing lircdo server application..."
    sudo -H -u $LIRCDO_USER bash -c "mkdir -p ${LIRCDO_SERVER_PATH}"
-   sudo -i -H -u $LIRCDO_USER bash -c "cd ${LIRCDO_SERVER_PATH}; git clone https://github.com/actsasrob/lircdo.git ${LIRCDO_SERVER_DIR}; cd $LIRCDO_SERVER_DIR; git checkout $GIT_BRANCH; ./scripts/npm_install.sh" 
+   sudo -i -H -u $LIRCDO_USER bash -i -c "cd ${LIRCDO_SERVER_PATH}; git clone https://github.com/actsasrob/lircdo.git ${LIRCDO_SERVER_DIR}; cd $LIRCDO_SERVER_DIR; git checkout $GIT_BRANCH; ./scripts/npm_install.sh" 
    cd $current_dir
    if [ ! -e "${LIRCDO_SERVER_DIR}/server.js" ]; then
       echo "error: failed to install lircdo server application. exiting..."
