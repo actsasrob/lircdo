@@ -117,8 +117,8 @@ driverstatus=$?
 if [ "$devicestatus" -ne 0 ] || [ "$driverstatus" -ne 0 ]; then
    echo "info: configuring DEVICE and DRIVER in /etc/lirc/hardware.conf..."
    cp -p /etc/lirc/hardware.conf /etc/lirc/hardware.conf.bak
-   sed -ie "s/^DEVICE=/DEVICE='${LIRC_DEVICE}'/" /etc/lirc/hardware.conf
-   sed -ie "s/^DRIVER=/DRIVER='${LIRC_DRIVER}'/" /etc/lirc/hardware.conf
+   sed -ie "s|^DEVICE=.*$|DEVICE='${LIRC_DEVICE}'|" /etc/lirc/hardware.conf
+   sed -ie "s|^DRIVER=.*$|DRIVER='${LIRC_DRIVER}'|" /etc/lirc/hardware.conf
    echo "info: /etc/lirc/hardware.conf has been updated."
    NEEDS_LIRCSERVICE_RESTART=1
 else
