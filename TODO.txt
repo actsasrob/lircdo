@@ -1,10 +1,4 @@
-Merge nodejsv8 branch into master.
 Remember to change git branch back to master in scripts/lirdo_install.sh
-
-Re-deploy test lircdo server instances from master branch
-Re-build test lircdo server and test install from scratch.
-
-Re-deploy prod lircdo server instances from master branch
 
 Update README file.
   How to build lircdo server.
