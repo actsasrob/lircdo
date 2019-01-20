@@ -26,7 +26,7 @@ The lircdo server/service is composed of the following components:
 2. Infrared Emitter/Receiver
 3. The lircdo service
 4. [LIRC](http://www.lirc.org/) service
-5. LIRC shell scripts
+5. LIRC shell scripts and /etc/lirc/lircd.conf
 6. catalog_internal.json
 7. DNS/Domain name/SSL Cert
 
@@ -74,7 +74,7 @@ If you are not familiar with Raspberry Pi gpio pins vs physical pins you may wan
 
 The IR emitter does not work for me if I use a 10K Ohm resister. If I use a lower Ohm resister the IR emitter works but less reliably. Instead I connect the wire from gpio pin (physical pin 11) to the middle leg of the PN2222 Transistor and bypass the resistor.
 
-Austin also includes a nice section to help troubleshoot issues with the IR emitter/receiver circuit and verify LIRC is working on the Raspberry Pi. I recommend testing using his instructions. You won't have to install/configure LIRC. I recommend you install the lircdo service using the instructions below which will install and configure LIRC.
+Austin also includes a nice section to help troubleshoot issues with the IR emitter/receiver circuit and verify LIRC is working on the Raspberry Pi. I recommend testing using his instructions. You won't have to install/configure LIRC. I recommend you first install the lircdo service using the instructions below which will install and configure LIRC.
 
 
 ### lircdo service
@@ -89,36 +89,86 @@ A shell script is provided to install the lircdo service/application and depende
     chmod u+x lircdo_install.sh
     sudo ./lircdo_install.sh
 
+*Always be wary of downloading scripts fron the internet and executing them with root level priviliges. I recommend you download the script and read through it first to verify what it is doing before executing the script.*
+
+Here is a summary of what the script does:
+* Attempts to determine the server hardware and operating system (OS) type
+  * Will warn if the hardware is not Raspberry Pi 3 Model B
+  * Will warn if the OS is other than Debian Jessie
+* Installs packages needed for LIRC service
+* Confgures LIRC service to use gpio pin 17 as out pin to IR emitter and gpio pin 18 as the in pin from IR receiver. Makes sure the lirc_rpi module is loaded at boot time
+* Pauses after LIRC service installation/configuration. Gives you a chance to stop there to test the LIRC installation and the operation of your IR emitter/receiverx
+* Installs additional dependent packages. e.g. git and openssl
+* Creates an unprivliged user "lirc". The lircdo service will run as this user
+* Installs node.js runtime and Node Version Manager (nvm)
+* Installs the lircdo application by git cloning the GitHub project
+* Creates a systemd service to start the application at boot time
+* Creates the initial .env environment file read by the lircdo application
+  * Creates randomly generated secrets used to better secure connections to the lircdo service
+  * Prompts you for application port the application listens on and the fully qualified domain name (FQDN) of the lircdo server
+* Performs some sanity checking to verify the FQDN resolves in DNS and that the FQDN IP resolves to the WAN IP for your home router
+* Uses Let's Encrypt to create a free signed server certificate for the lircdo service. The server certificate is used to create secure HTTPS connections from the lircdo Alexa skill lambda function and the lircdo service
+  * Prompts for an e-mail address to use when registering with Let's Encrypt. This e-mail address is used by Let's Encrypt to notify you when/if server certificates will expire.
+* Creates a CRON job to renew the server certificate
+* Creates filesystem access control list (ACLs) to allow the unpriviliged lirc user to read the server certificate certificate authority (CA), public cert, and private key files
+* Creates softlinks from the lircdo application installation directory to the CA/cert/key files created when registering with Let's Encrypt
+* Creates the initial catalog_internal.json file
+* Restarts the lircdo service if needed
+* Display installation status an next-steps to be performed.
+
+#### lircdo service requirements: 
+1. You need to own a domain name. e.g. mydomain.com, or joesblogspot.net
+2. You need to be able to create sub-domains. E.g. lircdo.mydomain.com or lirc.joesblogspot.net
+3. You may want to create a new sub-domain for use with the lircdo service. This is not required if you already have a domain or sub-domain that resolves to the WAN-side IP address of your home internet router.
+4. The DNS entry for your selected domain/sub-domain **MUST** point to the WAN-side IP address of your home internet router. If your home internet service uses dynamic IPs you must keep the DNS entry for your sub-domain up-to-date.
+5. In your home internet router you must forward port 80 to port 80 of the lircdo server. This port is used by Let's Encrypt to verify you own the registered domain and to renew server certificates.
+6. In your home internet router you must forward the port the lircdo application listens on (e.g. port 8843) to the lircdo server. The lircdo Alexa skill will connect to the lircdo service using the FQDN and port number selected when installing the lircdo service.
+
+
+
+
 ### [LIRC](http://www.lirc.org/) service
 
 The LIRC service is componsed of the LIRC library package which exposes an client API for handling the sending/receiving infrared (IR) signals via attached hardware.
 
-### LIRC shell scripts
+After all is said and done, lircdo wouldn't be possible without the LIRC service. A big **Thank You** to the creators/developers of LIRC.
 
-You must create shell scripts that invoke the LIRC client API to control the AV hardware in your home. Example scripts are provided to help jumpstart this effort.
+The LIRC packages are installed/configured as part of the lircdo service installation. You shouldn't have to install/configure LIRC other than to create the remote control definition file /etc/lirc/lircd.conf which is discussed below.
 
-#### Create the directory where LIRC scripts will reside. The steps below assume this directory is named 'lircscripts' inside the top-level lircdo directory mkdir lircscripts <See section regarding how to create LIRC scripts>
+Initially I tried to use Debian Stretch which, I believe, uses verion 0.94 of the LIRC packages. I found version 0.94 of LIRC on Debian Stretch to be unstable. The service would just randomly stop working. After lots of internet searches and troubleshooting I found others experienced similar results. Eventually I switched back to Debian Jessie which uses version 0.90 of the LIRC packages and I haven't had any problems since. I highly recommend you use Debian Jessie as well.
 
-### Create node.js application .env file. This file is read by node.js application at startup to set various required environment variables.
-cp env_file_example .env
-chmod 600 .env
+
+### LIRC shell scripts and /etc/lirc/lircd.conf
+
+The LIRC service and LIRC shell scripts are where the "rubber meets the road" so to speak. Really the lircdo service is just a glorified shell script runner. The lircdo service receives commands from the lricdo Alexa skill, determines the appropriate shell script to run, then executes that shell script.
+
+You must create shell scripts that invoke the LIRC client API to control the AV hardware in your home. Example scripts are provided in the lircscripts_examples directory to help jumpstart this effort.
+
+#### Create the directory where your LIRC shell scripts will reside 
+
+The steps below assume this directory is named 'lircscripts' inside the top-level lircdo directory.
+
+    sudo su - lirc # become the lirc user
+    cd lircdo # change dir to the top-level lircdo application directory
+    mkdir lircscripts # create the directory where the LIRC shell scripts will reside
+
+**NOTE: If you change the location or name the directory other than lircscripts then you must update the LIRCSCRIPTS_LOCATION variable in the .env file and restart the lircdo application.**
+
+/etc/lirc/lircd.conf contains the definitions of the remote controls that you want to emulate using LIRC. Under LIRC version 0.90 if you have multiple remote control definition files then concatenate them all together in the /etc/lirc/lircd.conf file. *Later versions of LIRC allow you to create multiple files under /etc/lirc/lirc.conf.d*.
+
+A remote control definition specifies things like the frequency used by the remote control, the time gap between IR signal pulses, and the codes for each remote control button.
+
+The LIRC shell scripts and the remote control definitions go hand-in-hand. A given LIRC shell script will use the LIRC api to invoke a code for a named remote control. The LIRC service uses the definitions in /etc/lirc/lircd.conf to look up the details for the specified remote control and code. 
+
+https://www.raspberrypi.org/forums/viewtopic.php?t=159035
+
 
 ### catalog_internal.json
 
-File which maps lircdo actions/intents to your custom LIRC shell scripts. A script is provided which generates the catalog_internal.json file by parsing metadata in the lirc shell scripts you create.
+The catalog_internal.json file maps lircdo actions/intents to your custom LIRC shell scripts. A script is provided which generates the catalog_internal.json file by parsing metadata in the lirc shell scripts you create. Whenever you add or modify LIRC shell scripts you must run the generate_json_catalogs.py script to regenerate the catalog_internal.json file then restart the lircdo service. e.g.
 
-Edit .env and update environment variables as needed.
-Set PORT to the port the application will listen on. This port must be accessible via internet.
-Set APP_FQDN to fully qualified domain name (FQDN) of application. This address must resolve to your application from the internet.
-Change value of all variables that end in \_SECRET. For security purposes DO NOT use the default values.
-Set LIRCSCRIPTS_LOCATION to location of directory which contains LIRC shell scripts. Must be accessible to lirc user.
-Initially set TEST_MODE to false. Set to true to test receiving LIRC actions from alexa lircdo skill without actually executing shell script.
+    ./generate_json_catalogs.py
 
-NOTE: After updating .env you must restart the node.js application for changes to take effect.
-
-./generate_json_catalogs.py
-<snip>
-info: internal catalog written to ./catalog_internal.json
 
 This produces ./catalog_internal.json which is read by the node.js application on startup. This file maps the various HTTPS action callbacks to 0 or 1 LIRC scripts. If a script is found that implements the desired action then it is executed by the node.js application to perform the action (which usually means an IR signal is emitted to control some piece of hardware).
 
@@ -137,7 +187,6 @@ Recommend you proceed as follows:
 
 #### How to start/restart the lircdo service
 
-After making changes to the .env environment file or after re-generating catalog_internal.json you must restart the lircdo service as follows:
-```
-sudo systemctl restart node-server
-```
+After making changes to the .env environment file or after re-generating catalog_internal.json you must restart the lircdo service. The lirc user is an unprivileged user and cannot use the sudo command. Instead use the 'pi' user to execute the following command to restart the lircdo service:
+
+    sudo systemctl restart node-server
