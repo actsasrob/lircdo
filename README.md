@@ -85,12 +85,10 @@ A shell script is provided to install the lircdo service/application and depende
 
 #### lircdo install script
 
-```
-wget https://raw.githubusercontent.com/actsasrob/lircdo/nodejsv8/scripts/lircdo_install.sh
-chmod u+x lircdo_install.sh
-sudo ./lircdo_install.sh
-```
-`
+    wget https://raw.githubusercontent.com/actsasrob/lircdo/nodejsv8/scripts/lircdo_install.sh
+    chmod u+x lircdo_install.sh
+    sudo ./lircdo_install.sh
+
 ### [LIRC](http://www.lirc.org/) service
 
 The LIRC service is componsed of the LIRC library package which exposes an client API for handling the sending/receiving infrared (IR) signals via attached hardware.
