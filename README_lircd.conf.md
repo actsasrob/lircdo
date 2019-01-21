@@ -70,3 +70,56 @@ By default the IR signal will be sent once. Sometimes sending a single pulse wil
 ## Generating A Remote Control Definition File
 
 If you cannot find a definition file for your specific remote control you may be able to use the definition file for another piece of hardware of the same brand. If no publicly availabe definition files can be found you can create your own using an IR receiver attached to your Raspberry Pi and the CLI programs provided by LIRC. 
+
+I'll cover two approaches to create custom remote control definition files:
+* irrecord
+* [IrScrutinizer](http://www.harctoolbox.org/IrScrutinizer.html)
+
+### irrecord
+
+irrecord is one of the CLI executables which is part of the LIRC package.
+
+irrecord can be used to capture IR signals from an attached IR receiver and storing the results in a configuration file in the format recognized by the LIRC service.
+
+I have had mixed results using irrecord. Not trying to blame irrecord. Possibly the issue is with my IR receiver hardware. I recommend trying irrecord before trying IrScrutinizer. Not that irrecord is better but there is a bit of a learning curve to learn how to use IrScrutinizer. irrecord is much more straightforward to use when it works.
+
+Start by reading the irrecord manual page `man irrecord`.
+
+You will need a working IR receiver and the remote control you want to emulate.
+
+Start the irrecord program as follows. This example assumes the default driver is used, the LIRC device is /dev/lirc0, and you want to store the captured remote control definition in ./test.conf:
+
+    irrecord --driver=default --device=/dev/lirc0 test.conf
+
+Read the splash page and then follow the instructions to continue. 
+
+I believe in the first step irrecord is trying to recognize aspects of the remote control such as protocol, frequency, gap, etc. It uses this to populate the section of the config file between the `begin remote` and `begin codes` lines. 
+
+Next irrecord will prompt to start capturing IR signals for individual remote control button presses. Keep going until you've captured all the buttons you care to record. Once complete append the contents of ./test.conf to /etc/lirc/lircd.conf. Restart the LIRC service using `sudo systemctl restart lirc`.
+
+One thing to note about capturing individual button presses is that the button names you select must match one of the namespaces recognized by irrecord. You can see the list of acceptable names using `irrecord --list-namespace`. If you don't want to be constrained by the default namespace then invoke irrecord with the `--disable-namespace` switch.
+
+Use irsend as described above to test that the captured remote control definition works to control your home A/V equipment.
+
+If you read the irrecord man page be sure to note the section that states:
+
+    If file already exists and contains a valid config irrecord will use the protocol  descrip‐
+    tion  found  there and will only try to record the buttons. This is very useful if you want
+    to learn a remote where config files of the same brand are  already  available.  
+
+If the generated remote control definition file doesn't work you could try starting with a publicly available definition file for a similar brand of hardware. Strip out the content between the `begin codes` and `end codes` sections before starting the capture using irrecord. NOTE: the section delimeters may be `begin raw_codes` and `end raw_codes` depending on the type of capture used by irrecord.
+
+
+### IrScrutinizer
+
+IrScrutinizer is a powerful program for capturing, generating, analyzing, importing, and exporting of infrared (IR) signals.
+
+IrScrutinizer is a wonderful tool created by [Dr. Bengt Mårtensson](http://www.bengt-martensson.de/).
+
+You can download the latest version of IrScrutinizer [here](https://github.com/bengtmartensson/harctoolboxbundle/releases/latest). The [AppImage](https://appimage.org/) format can be downloaded and executed on a a Linux 64-bit system such as a Raspberry Pi running the Debian Jessie OS. This makes it a convenient tool to use on a Raspberry Pi with an attached IR receiver to capute IR signals. The captured signals can be exported in the format recognized by LIRC.
+
+You can find IrScrutinizer documentation [here](http://www.harctoolbox.org/IrScrutinizer.html) with a tutorial [here](http://www.hifi-remote.com/wiki/index.php?title=IrScrutinizer_Guide).
+
+## Creating lircdo Shell Scripts
+
+
