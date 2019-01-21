@@ -154,13 +154,15 @@ The steps below assume this directory is named 'lircscripts' inside the top-leve
 
 **NOTE: If you change the location or name the directory other than lircscripts then you must update the LIRCSCRIPTS_LOCATION variable in the .env file and restart the lircdo application.**
 
-/etc/lirc/lircd.conf contains the definitions of the remote controls that you want to emulate using LIRC. Under LIRC version 0.90 if you have multiple remote control definition files then concatenate them all together in the /etc/lirc/lircd.conf file. *Later versions of LIRC allow you to create multiple files under /etc/lirc/lirc.conf.d*.
+/etc/lirc/lircd.conf contains the definitions of the remote controls that you want to emulate using LIRC. Under LIRC version 0.90 if you have multiple remote control definition files then concatenate them all together in the /etc/lirc/lircd.conf file. *Later versions of LIRC allow you to create multiple files under /etc/lirc/lircd.conf.d/*.
 
 A remote control definition specifies things like the frequency used by the remote control, the time gap between IR signal pulses, and the codes for each remote control button.
 
 The LIRC shell scripts and the remote control definitions go hand-in-hand. A given LIRC shell script will use the LIRC api to invoke a code for a named remote control. The LIRC service uses the definitions in /etc/lirc/lircd.conf to look up the details for the specified remote control and code. 
 
 https://www.raspberrypi.org/forums/viewtopic.php?t=159035
+
+Populating /etc/lirc/lircd.conf with remote control definition files to control your home A/V equipment is likely going to involve a sizeable investment in time. As the steps to do this get involved I have broken out this activity into its own README_lircd.conf.md file.
 
 
 ### catalog_internal.json
