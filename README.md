@@ -162,7 +162,7 @@ The LIRC shell scripts and the remote control definitions go hand-in-hand. A giv
 
 https://www.raspberrypi.org/forums/viewtopic.php?t=159035
 
-Populating /etc/lirc/lircd.conf with remote control definition files to control your home A/V equipment is likely going to involve a sizeable investment in time. As the steps to do this get involved I have broken out this activity into its own README_lircd.conf.md file.
+Populating /etc/lirc/lircd.conf with remote control definition files to control your home A/V equipment is likely going to involve a sizeable investment in time. As the steps to do this get involved I have broken out this activity into its own [README_lircd.conf.md](https://github.com/actsasrob/lircdo/blob/master/README_lircd.conf.md) page.
 
 
 ### catalog_internal.json

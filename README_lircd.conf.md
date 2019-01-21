@@ -1,4 +1,4 @@
-# Populating /etc/lirc/lircd.conf
+# Populating /etc/lirc/lircd.conf and Creating lircdo Shell Scripts
 
 The LIRC service looks for the definition for remote controls in /etc/lirc/lircd.conf. If you have multiple remote controls you want to emulate then concatenate all the definitions in /etc/lirc/lircd.conf.
 
@@ -7,17 +7,16 @@ There are a number of sources for these definition files. Some are listed below.
 Debian comes packaged with a number of commonly used config files under:  /usr/share/lirc/remotes.
 
 Also see:
-* [Source Force Remote Control Database](http://lirc-remotes.sourceforge.net/remotes-table.html)
+* [Source Forge Remote Control Database](http://lirc-remotes.sourceforge.net/remotes-table.html)
 
 To use a remote control config file append it to /etc/lirc/lircd.conf and restart the LIRC service 'sudo systemctl restart lirc'.
 
 ## Use irsend CLI to send IR signals
 
-The irsend CLI is used to send IR signals using an attached IR emitter. To use irsend you need two pieces of information from the remote control definition stored in /etc/lirc/lircd.conf.
+The irsend CLI is used to send IR signals using an attached IR emitter. To use irsend you need two pieces of information 1. the remote control name and 2. the button name from the remote control definition stored in /etc/lirc/lircd.conf.
 
-For example, my set top box is a Motorola model QIP6200. I found the remote control definition file [hete](https://sourceforge.net/p/lirc-remotes/code/ci/master/tree/remotes/motorola/QIP6200-2.lircd.conf), downloaded it and added it to /etc/lirc/lircd.conf. The config file for QIP6200 looks like:
+For example, my set top box is a Motorola model QIP6200. I found the remote control definition file [here](https://sourceforge.net/p/lirc-remotes/code/ci/master/tree/remotes/motorola/QIP6200-2.lircd.conf), downloaded it and added it to /etc/lirc/lircd.conf. The config file for QIP6200 looks like:
 
-To use irsend you need the string in the 'name' field and the button name defined within the 'begin codes ... 'end codes' section. e.g. name 'Motorola_QIP6200-2' and let's use 'KEY_POWER' as the button.
 
     begin remote
     
@@ -46,6 +45,8 @@ To use irsend you need the string in the 'name' field and the button name define
           end codes
     end remote
 
+To use irsend you need the string in the 'name' field and the button name defined within the `begin codes` ... `end codes` section (NOTE: The begin/end section may be delimeted by `begin raw_codes` ... `end raw_codes`.) e.g. name 'Motorola_QIP6200-2' and let's use 'KEY_POWER' as the button.
+
 First, verify LIRC recognizes your remote control definition by searching for the name field using `irsend list <remote  name>...`. The example below uses the definition for Motorola_QIP6200-2 as follows:
 
     irsend list Motorola_QIP6200-2 '' ''
@@ -69,10 +70,10 @@ By default the IR signal will be sent once. Sometimes sending a single pulse wil
 
 ## Generating A Remote Control Definition File
 
-If you cannot find a definition file for your specific remote control you may be able to use the definition file for another piece of hardware of the same brand. If no publicly availabe definition files can be found you can create your own using an IR receiver attached to your Raspberry Pi and the CLI programs provided by LIRC. 
+If you cannot find a definition file for your specific remote control you may be able to use the definition file for another piece of hardware of the same brand. If no publicly available definition files can be found you can create your own using an IR receiver attached to your Raspberry Pi and the CLI programs provided by LIRC. 
 
 I'll cover two approaches to create custom remote control definition files:
-* irrecord
+* [irrecord](http://www.lirc.org/html/irrecord.html)
 * [IrScrutinizer](http://www.harctoolbox.org/IrScrutinizer.html)
 
 ### irrecord
@@ -109,6 +110,7 @@ If you read the irrecord man page be sure to note the section that states:
 
 If the generated remote control definition file doesn't work you could try starting with a publicly available definition file for a similar brand of hardware. Strip out the content between the `begin codes` and `end codes` sections before starting the capture using irrecord. NOTE: the section delimeters may be `begin raw_codes` and `end raw_codes` depending on the type of capture used by irrecord.
 
+It is worth reading through the [irrecord documentation](http://www.lirc.org/html/irrecord.html) to glean additional things you can try to get a working remote control definition file.
 
 ### IrScrutinizer
 
