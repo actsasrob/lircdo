@@ -9,13 +9,11 @@ import subprocess
 env_file=".env"
 
 catalog_internal_file="./catalog_internal.json"
-catalog_external_file="./catalog_external.json"
 
 with open('sslcert/cacert.pem', 'r') as myfile:
     cacert=myfile.read()
 
 catalog_internal={'intents': []}
-catalog_external={'ca': cacert}
 
 def read_env_vars(envfilename = '.env'): 
    myvars = {}
@@ -70,26 +68,22 @@ if 'LIRCSCRIPTS_LOCATION' in env_vars:
 if 'LIRCDO_PAGE_SECRET' in env_vars:
    LIRCDO_PAGE_SECRET=env_vars['LIRCDO_PAGE_SECRET']
    catalog_internal['SHARED_SECRET']=LIRCDO_PAGE_SECRET
-   catalog_external['SHARED_SECRET']=LIRCDO_PAGE_SECRET
 else:
    print 'error: environment vars file {} must set LIRCDO_PAGE_SECRET env var'.format(env_file)
    exit(1)
 
 if 'APP_FQDN' in env_vars:
    APP_FQDN=env_vars['APP_FQDN']
-   catalog_external['CALLBACK_APP_FQDN']=APP_FQDN
 else:
    print 'error: environment vars file {} must set APP_FQDN env var'.format(env_file)
    exit(1)
 
 if 'APP_PORT' in env_vars:
    APP_PORT=env_vars['APP_PORT']
-   catalog_external['CALLBACK_APP_PORT']=APP_PORT
 else:
    print 'error: environment vars file {} must set APP_PORT env var'.format(env_file)
    exit(1)
 
-catalog_external['CALLBACK_APP_SCHEME']='https'
 
 print "LIRCSCRIPTS_LOCATION=", LIRCSCRIPTS_LOCATION
 
@@ -111,17 +105,7 @@ print(json.dumps(catalog_internal, indent=4))
 
 #print "\n\n"
 
-#print "catalog_external"
-#print(json.dumps(catalog_external, indent=4))
-
-#with open('data.txt', 'wt') as out:
-#    res = json.dump(obj, out, sort_keys=True, indent=4, separators=(',', ': '))
-
 with open(catalog_internal_file, 'w') as outfile:
     json.dump(catalog_internal, outfile, sort_keys=True, indent=4, separators=(',', ': '))
 
-with open(catalog_external_file, 'w') as outfile:
-    json.dump(catalog_external, outfile, sort_keys=True, indent=4, separators=(',', ': '))
-
 print 'info: internal catalog written to {}'.format(catalog_internal_file)
-print 'info: external catalog written to {}'.format(catalog_external_file)
