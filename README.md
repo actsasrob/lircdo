@@ -167,14 +167,14 @@ Populating /etc/lirc/lircd.conf with remote control definition files to control 
 
 ### catalog_internal.json
 
-The catalog_internal.json file maps lircdo actions/intents to your custom LIRC shell scripts. A script is provided which generates the catalog_internal.json file by parsing metadata in the lirc shell scripts you create. Whenever you add or modify LIRC shell scripts you must run the generate_json_catalogs.py script to regenerate the catalog_internal.json file then restart the lircdo service. e.g.
+The catalog_internal.json file maps lircdo actions/intents to your custom LIRC shell scripts. A script is provided which generates the catalog_internal.json file by parsing metadata in the lirc shell scripts you create. Whenever you add or modify LIRC shell scripts you must run the generate_json_catalog.py script to regenerate the catalog_internal.json file then restart the lircdo service. e.g.
 
-    ./generate_json_catalogs.py
+    ./generate_json_catalog.py
 
 
 This produces ./catalog_internal.json which is read by the node.js application on startup. This file maps the various HTTPS action callbacks to 0 or 1 LIRC scripts. If a script is found that implements the desired action then it is executed by the node.js application to perform the action (which usually means an IR signal is emitted to control some piece of hardware).
 
-NOTE: Re-run generate_json_catalogs.py anytime changes are made to scripts in the LIRC scripts directory then restart the node.js application.
+NOTE: Re-run generate_json_catalog.py anytime changes are made to scripts in the LIRC scripts directory then restart the node.js application.
 
 
 
