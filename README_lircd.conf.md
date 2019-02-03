@@ -151,15 +151,15 @@ You should be able to determine the intent to implement by process of eliminatio
 
 Use the [channel_action](https://github.com/actsasrob/lircdo_ask/blob/master/README_using_skill.md#channel_action_intent) to change channels of A/V components/devices.
 
-Use the [volume_action](https://github.com/actsasrob/lircdo_ask/blob/master/README_using_skill.md#volume_action) intent to raise or lower volumes ov A/V components/devices. NOTE: Muting components falls under the generic [lircdo](https://github.com/actsasrob/lircdo_ask/blob/master/README_using_skill.md#lircdo_intent).
+Use the [volume_action](https://github.com/actsasrob/lircdo_ask/blob/master/README_using_skill.md#volume_action_intent) intent to raise or lower volumes ov A/V components/devices. NOTE: Muting components falls under the generic [lircdo](https://github.com/actsasrob/lircdo_ask/blob/master/README_using_skill.md#lircdo_intent).
 
-Use the [avr_action](https://github.com/actsasrob/lircdo_ask/blob/master/README_using_skill.md#avr_action) intent to change the currently selected component/device for Audio Video Receivers (AVRs).
+Use the [avr_action](https://github.com/actsasrob/lircdo_ask/blob/master/README_using_skill.md#avr_action_intent) intent to change the currently selected component/device for Audio Video Receivers (AVRs).
 
 If the one of the above intents isn't appropriate then check out the generic [lircdo](https://github.com/actsasrob/lircdo_ask/blob/master/README_using_skill.md#lircdo_intent) intent.
 
 Once you select the intent, use the links above to browse to the table for that intent. 
 
-To populate the '# meta: intent=\<value>' line in your script select the appropriate 'intent=\<value>' pair from 'lircdo server Key & Value' column in [this table](https://github.com/actsasrob/lircdo_ask/blob/master/README_using_skill.md#lircdo_intents).
+To populate the '# meta: intent=\<value>' line in your script select the appropriate 'intent=\<value>' pair from 'lircdo server Key & Value' column in [the table in this section](https://github.com/actsasrob/lircdo_ask/blob/master/README_using_skill.md#lircdo_intents).
 
 From the table above you can click the link for each intent to navigate to the table specific link to get more information for each intent.
 
