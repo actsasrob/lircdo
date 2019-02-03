@@ -136,11 +136,11 @@ The following table briefly describes the purpose of each meta key:
 
 | meta key | Description | Required (must appear in script ) | meta key=value pair |
 |-----|-----|-----|-----|
-| name | id/name for the script | yes |  A string unique across all scripts |
-| displayname | A human readable name. Not currently used. Might be used in future by graphical user interface (GUI). | yes | A string |
-| intent | The lircdo Alexa Skill intent implemented by the script | yes | Select an appropriate 'intent=<value>' pair from 'lircdo server Key & Value' column in [this table](https://github.com/actsasrob/lircdo_ask/blob/master/README_using_skill.md#lircdo_intents) |
-| action | The action to perform for the selected intent | yes | Select an appropriate 'action=<value> pair from the 'lircdo server meta Key & Value' column in the [LircAction table](https://github.com/actsasrob/lircdo_ask/blob/master/README_using_skill.md#LircAction), [LircChannelAction table](https://github.com/actsasrob/lircdo_ask/blob/master/README_using_skill.md#LircChannelAction), [LircVolumeAction table](https://github.com/actsasrob/lircdo_ask/blob/master/README_using_skill.md#LircVolumeAction), or [LircAVRAction table](https://github.com/actsasrob/lircdo_ask/blob/master/README_using_skill.md#LircAVRActon) |
-| component | The A/V component or device targeted by the action | yes | Select an appropriate 'component=<value>' pair from 'lircdo server Key & Value' column in the [LircComponent table](https://github.com/actsasrob/lircdo_ask/blob/master/README_using_skill.md#LircComponent) or the [LircAVDevice table](https://github.com/actsasrob/lircdo_ask/blob/master/README_using_skill.md#LircAVDevice) |
+| name | id/name for the script | yes |  The \<value> portion is a string which is unique across all scripts |
+| displayname | A human readable name. Not currently used. Might be used in future by graphical user interface (GUI). | yes | The \<value> portion is a human readable string which succintly describes what action the script performs  |
+| intent | The lircdo Alexa Skill intent implemented by the script | yes | Select an appropriate 'intent=\<value>' pair from 'lircdo server Key & Value' column in [this table](https://github.com/actsasrob/lircdo_ask/blob/master/README_using_skill.md#lircdo_intents) |
+| action | The action to perform for the selected intent | yes | Select an appropriate 'action=\<value> pair from the 'lircdo server meta Key & Value' column in the [LircAction table](https://github.com/actsasrob/lircdo_ask/blob/master/README_using_skill.md#LircAction), [LircChannelAction table](https://github.com/actsasrob/lircdo_ask/blob/master/README_using_skill.md#LircChannelAction), [LircVolumeAction table](https://github.com/actsasrob/lircdo_ask/blob/master/README_using_skill.md#LircVolumeAction), or [LircAVRAction table](https://github.com/actsasrob/lircdo_ask/blob/master/README_using_skill.md#LircAVRActon) |
+| component | The A/V component or device targeted by the action | yes | Select an appropriate 'component=\<value>' pair from 'lircdo server Key & Value' column in the [LircComponent table](https://github.com/actsasrob/lircdo_ask/blob/master/README_using_skill.md#LircComponent) or the [LircAVDevice table](https://github.com/actsasrob/lircdo_ask/blob/master/README_using_skill.md#LircAVDevice) |
 | default_component | If no component/device is specified when invoking the lircdo Alexa skill will this script implement a default component/device? |  no | You only need to add this key for true values. List of true values: true, 1, t, y, yes List of false values: false, 0, f, n, no |
 | numargs | The number of optional arguments. Currently only used by volume_action and channel_action intents to specify the numeric argument for the amount to raise/lower the volume and the channel to set, respectively | no | You only need to add this key for volume_action and channel_action intents | 1 for volume_action and channel_action intents otherwise 0 |
 
@@ -159,7 +159,7 @@ If the one of the above intents isn't appropriate then check out the generic [li
 
 Once you select the intent, use the links above to browse to the table for that intent. 
 
-To populate the '# meta: intent=<value>' line in your script select the appropriate 'intent=<value>' pair from 'lircdo server Key & Value' column in [this table](https://github.com/actsasrob/lircdo_ask/blob/master/README_using_skill.md#lircdo_intents).
+To populate the '# meta: intent=\<value>' line in your script select the appropriate 'intent=\<value>' pair from 'lircdo server Key & Value' column in [this table](https://github.com/actsasrob/lircdo_ask/blob/master/README_using_skill.md#lircdo_intents).
 
 From the table above you can click the link for each intent to navigate to the table specific link to get more information for each intent.
 
@@ -167,7 +167,7 @@ In each intent specific table you will see the "slots" accepted by the intent. I
 
 ### Action meta key and value
 
-To populate the '# meta: action=<value>' line in the script first navigate to the table for the intent from one of the links above. Click on the link for the action slot. You will be taken to the table which shows all the possible utterances (i.e. what you can say) for that action. Find the appropriate action and then use the key=value pair from the 'lircdo server Key & Value' column.
+To populate the '# meta: action=\<value>' line in the script first navigate to the table for the intent from one of the links above. Click on the link for the action slot. You will be taken to the table which shows all the possible utterances (i.e. what you can say) for that action. Find the appropriate action and then use the key=value pair from the 'lircdo server Key & Value' column.
 
 NOTE: A script can handle multiple actions for the same intent. A good example might be a script that toggles opening/closing the DVD Player tray. The remote control for my DVD Player has an open/close tray button which acts as a toggle as opposed to separate button to open the tran and a button to close the tray. In my case it makes sense for the script to handle both TRAY_OPEN actions and TRAY_CLOSE actions. To do this I would add a line to the script like:
 
@@ -177,7 +177,7 @@ For multi-valued actions add each of the supported actions seperated by commas.
 
 ### Components/Devices  meta key and value
 
-To populate the '# meta: component=<value>' line in the script first navigate to the table for the intent from one of the links above. Click on the link for the component slot. You will be taken to the table which shows all the possible utterances (i.e. what you can say) for that component. Find the appropriate component and then use the key=value pair from the 'lircdo server Key & Value' column.
+To populate the '# meta: component=\<value>' line in the script first navigate to the table for the intent from one of the links above. Click on the link for the component slot. You will be taken to the table which shows all the possible utterances (i.e. what you can say) for that component. Find the appropriate component and then use the key=value pair from the 'lircdo server Key & Value' column.
 
 NOTE: If the intent takes a [LircComponent table](https://github.com/actsasrob/lircdo_ask/blob/master/README_using_skill.md#LircComponent) slot then there is one special component with key=value pair 'component=COMPONENT_SYSTEM'. The 'system' component is handy if you want to implement an intent where multiple components/devices are affected. Let's say you want to be able to power on multiple components at one time. For me when I say 'Alexa, tell lircdo, turn on system' I want the Set Top Box, Audio Video Receiver (AVR) and TV to be powered on. You can use the 'system' component to implement a script to do this. For example, see [this script](https://github.com/actsasrob/lircdo/blob/master/lircscripts_examples/SystemPowerOn.sh).
 
@@ -195,11 +195,11 @@ If your script implements an action for the channel_action or volume_action inte
 
 ### Name meta key
 
-The 'name' meta key is required for every script. Add a line like '# meta: name=<value>' where <value> is a unique string across all of your scripts. This value acts as a unique id.
+The 'name' meta key is required for every script. Add a line like '# meta: name=\<value>' where \<value> is a unique string across all of your scripts. This value acts as a unique id.
 
 ### Display Name meta key
 
-The 'displayname' meta key is required for every script but is unused at this time. In the future the value may be used via a graphical user interface (GUI). Ad line line like '# meta: displayname=<value>' where <value> is an appropriate human readable label that succintly describes what the script does.
+The 'displayname' meta key is required for every script but is unused at this time. In the future the value may be used via a graphical user interface (GUI). Ad line line like '# meta: displayname=<value>' where \<value> is an appropriate human readable label that succintly describes what the script does.
 
 ### Examples
 
