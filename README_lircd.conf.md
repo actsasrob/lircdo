@@ -169,7 +169,7 @@ In each intent specific table you will see the "slots" accepted by the intent. I
 
 To populate the '# meta: action=\<value>' line in the script first navigate to the table for the intent from one of the links above. Click on the link for the action slot. You will be taken to the table which shows all the possible utterances (i.e. what you can say) for that action. Find the appropriate action and then use the key=value pair from the 'lircdo server Key & Value' column.
 
-NOTE: A script can handle multiple actions for the same intent. A good example might be a script that toggles opening/closing the DVD Player tray. The remote control for my DVD Player has an open/close tray button which acts as a toggle as opposed to separate button to open the tran and a button to close the tray. In my case it makes sense for the script to handle both TRAY_OPEN actions and TRAY_CLOSE actions. To do this I would add a line to the script like:
+NOTE: A script can handle multiple actions for the same intent. A good example might be a script that toggles opening/closing the DVD player tray. The remote control for my DVD player has an open/close tray button which acts as a toggle as opposed to a separate button to open the tray and a button to close the tray. In my case it makes sense for the script to handle both TRAY_OPEN actions and TRAY_CLOSE actions. To do this I would add a line to the script like:
 
     # meta: action=TRAY_OPEN,TRAY_CLOSE
 
@@ -183,7 +183,7 @@ NOTE: If the intent takes a [LircComponent table](https://github.com/actsasrob/l
 
 ### Default Component meta key and value
 
-For some intents it is handy to not have to speak the component when interacting with the lircdo Alexa skill. This especially makes sense when you only have one component/device in your home that would be an appropriate target for the intent. In my house a good example is opening/closing the tray on the DVD Player. I have more than one device with a tray but only the DVD player has a non-proprietary remote control that can be invoked via LIRC. So for me, if I invoke the lircdo skill as 'Alexa, tell lircdo, open dvd player tray' having to explicitly specify the component is wasted effort because the only valid component in my house is the dvd player. I want to be able to say 'Alexa, tell lircdo, open tray' and have the lircdo server figure out the default target is the dvd player. The default_component key allows you to do just that. If your script handles the default component for an intent/action combination add the line '# meta: default_component=true' otherwise leave that line out.
+For some intents it is handy to not have to speak the component when interacting with the lircdo Alexa skill. This especially makes sense when you only have one component/device in your home that would be an appropriate target for the intent. In my house a good example is opening/closing the tray on the DVD player. I have more than one device with a tray but only the DVD player has a non-proprietary remote control that can be invoked via LIRC. So for me, if I invoke the lircdo skill as 'Alexa, tell lircdo, open dvd player tray' having to explicitly specify the component is wasted effort because the only valid component in my house is the dvd player. I want to be able to say 'Alexa, tell lircdo, open tray' and have the lircdo server figure out the default target is the dvd player. The default_component key allows you to do just that. If your script handles the default component for an intent/action combination add the line '# meta: default_component=true' otherwise leave that line out.
 
 ### Num args meta key and value
 
@@ -199,7 +199,7 @@ The 'name' meta key is required for every script. Add a line like '# meta: name=
 
 ### Display Name meta key
 
-The 'displayname' meta key is required for every script but is unused at this time. In the future the value may be used via a graphical user interface (GUI). Ad line line like '# meta: displayname=<value>' where \<value> is an appropriate human readable label that succintly describes what the script does.
+The 'displayname' meta key is required for every script but is unused at this time. In the future the value may be used via a graphical user interface (GUI). Add a line like '# meta: displayname=<value>' where \<value> is an appropriate human readable label that succintly describes what the script does.
 
 ### Examples
 
@@ -209,7 +209,7 @@ Hopefully a couple of examples will help pull all this together.
 
 Let's say you want to implement a script that toggles the open/close state of the DVD Player.
 
-Looking in [this table](https://github.com/actsasrob/lircdo_ask/blob/master/README_using_skill.md#lircdo_intents) you would quickly surmise this is a generic [lircdo](https://github.com/actsasrob/lircdo_ask/blob/master/README_using_skill.md#lircdo_intent) intent.
+Looking in [the table in this section](https://github.com/actsasrob/lircdo_ask/blob/master/README_using_skill.md#lircdo_intents) you would quickly surmise this is a generic [lircdo](https://github.com/actsasrob/lircdo_ask/blob/master/README_using_skill.md#lircdo_intent) intent.
 
 Add this line to the script:
 
@@ -255,7 +255,7 @@ Example 2 Change Set Top Box Channel
 
 Let's say you want to implement a script that sets the channel for the Set Top Box component. 
 
-Looking in [this table](https://github.com/actsasrob/lircdo_ask/blob/master/README_using_skill.md#lircdo_intents) you would quickly surmise this is a [channel_action](https://github.com/actsasrob/lircdo_ask/blob/master/README_using_skill.md#channel_action_intent) intent.
+Looking in [the table in this section](https://github.com/actsasrob/lircdo_ask/blob/master/README_using_skill.md#lircdo_intents) you would quickly surmise this is a [channel_action](https://github.com/actsasrob/lircdo_ask/blob/master/README_using_skill.md#channel_action_intent) intent.
 
 Add this line to the script:
 
