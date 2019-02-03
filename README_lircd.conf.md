@@ -128,9 +128,9 @@ From the information above you should be able to get scripts working to send IR 
 
 Look at the sample scripts in the lircscripts_examples directory to get started.
 
-You need to embed metadata in each script. This metadata is read by the generate_json_catalog.py scriptto produce the catalog_internal.json file read by the lircdo server. catalog_internal.json contains the mapping between the lircdo intents and the shell scripts that you provide that implement intents. You do not need to provide a script for every possible combination of intents and slot values. Only implement the scripts for the actions that make sense for your A/V equipment.
+You need to embed metadata in each script. This metadata is read by the generate_json_catalog.py script to produce the catalog_internal.json file read by the lircdo server. catalog_internal.json contains the mapping between the lircdo intents and the shell scripts that you provide that implement intents. You do not need to provide a script for every possible combination of intents and slot values. Only implement the scripts for the actions that make sense for your A/V equipment.
 
-metadata lines start with "# meta:" and end with <key>=<value> pairs.
+metadata lines start with "# meta:" and end with /<key>=/<value> pairs.
 
 The following table briefly describes the purpose of each meta key:
 
