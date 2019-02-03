@@ -13,7 +13,7 @@ To use a remote control config file append it to /etc/lirc/lircd.conf and restar
 
 ## Use irsend CLI to send IR signals
 
-The irsend CLI is used to send IR signals using an attached IR emitter. To use irsend you need two pieces of information 1. the remote control name and 2. the button name from the remote control definition stored in /etc/lirc/lircd.conf.
+The irsend command line interface (CLI) is used to send IR signals using an attached IR emitter. To use irsend you need two pieces of information 1. the remote control name and 2. the button name from the remote control definition stored in /etc/lirc/lircd.conf.
 
 For example, my set top box is a Motorola model QIP6200. I found the remote control definition file [here](https://sourceforge.net/p/lirc-remotes/code/ci/master/tree/remotes/motorola/QIP6200-2.lircd.conf), downloaded it and added it to /etc/lirc/lircd.conf. The config file for QIP6200 looks like:
 
@@ -59,7 +59,7 @@ If you see the message 'unknown remote' then maybe you forgot to restart the lir
 
 Now, to send an IR signal use `irsend SEND_ONCE <remote name> <code name>`:
 
-For example using the remote named 'Motorola_QIP6200-2' and button code named 'KEY_POWER':
+The example in this section sues the remote named 'Motorola_QIP6200-2' and button code named 'KEY_POWER':
 
     irsend SEND_ONCE Motorola_QIP6200-2 KEY_POWER
 
@@ -123,5 +123,26 @@ You can download the latest version of IrScrutinizer [here](https://github.com/b
 You can find IrScrutinizer documentation [here](http://www.harctoolbox.org/IrScrutinizer.html) with a tutorial [here](http://www.hifi-remote.com/wiki/index.php?title=IrScrutinizer_Guide).
 
 ## Creating lircdo Shell Scripts
+
+From the information above you should be able to get scripts working to send IR signals using the irsend command. The next step is to add metadata that can be used by the lircdo server to find and execute scripts which implement desired intents.
+
+Look at the sample scripts in the lircscripts_examples directory to get started.
+
+You need to embed metadata in each script. This metadata is read by the generate_json_catalog.py scriptto produce the catalog_internal.json file read by the lircdo server. catalog_internal.json contains the mapping between the lircdo intents and the shell scripts that you provide that implement intents. You do not need to provide a script for every possible combination of intents and slot values. Only implement the scripts for the actions that make sense for your A/V equipment.
+
+metadata lines start with "# meta:" and end with <key>=<value> pairs.
+
+The following table briefly describes the purpose of each meta key:
+
+| meta key | Description | Required (must appear in script ) | meta key value |
+|-----|-----|
+| name | id/name for the script | yes |  A string unique across all scripts |
+| displayname | A human readable name. Not currently used. Might be used in future by graphical user interface (GUI). | yes | A string |
+| intent | The lircdo Alexa Skill intent implemented by the script | yes | A key/value pair from this [table](https://github.com/actsasrob/lircdo_ask/blob/master/README_using_skill.md#lircdo_intents) |
+| action | The action to perform for the selected intent | yes | A value from TBD |
+| component | The A/V component or device targeted by the action | yes | A value from TBD |
+| default_component | If no component/device is specified will this script implement a default component/device? |  no | You only need to add this key for true values. List of true values: true, 1, t, y, yes List of false values: false, 0, f, n, no |
+| numargs | The number of optional arguments. Currently only used by volume_action and channel_action intents to specify the numeric argument for the amount to raise/lower the volume and the channel to set, respectively | no | You only need to add this key for volume_action and channel_action intents | 1 for volume_action and channel_action intents otherwise 0 |
+
 
 
