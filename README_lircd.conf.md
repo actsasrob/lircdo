@@ -263,7 +263,7 @@ Add this line to the script:
 
 From the [channel_action](https://github.com/actsasrob/lircdo_ask/blob/master/README_using_skill.md#channel_action_intent) table click the link for the [LircChannelAction table](https://github.com/actsasrob/lircdo_ask/blob/master/README_using_skill.md#LircChannelAction) slot.
 
-From the 'lircdo server meta Key & Value' column you see the action value change the channel is "CHANNEL_CHANGE". Add the following action meta key line to the script:
+From the 'lircdo server meta Key & Value' column you see the action value to change the channel is "CHANNEL_CHANGE". Add the following action meta key line to the script:
 
     # meta: action=CHANNEL_CHANGE
 
@@ -296,3 +296,14 @@ For this example the meta key section of the script would look something like:
     # meta: default_component=true
     # meta: numargs=1
 
+### generate_json_catalog.py
+
+Remember to re-run the generate_json_catalog.py script after adding scripts or modifying meta keys in existing scripts. Then restart the lircdo server to re-read the catalog_internal.json file.
+
+Run generate_json_catalog.py from the top-level lircdo directory. Specify the path to the scripts directory. e.g.
+
+    ./generate_json_catalog.py ./lircscripts
+
+Then, as a privileged user:
+
+    sudo systemctl restart node-server
