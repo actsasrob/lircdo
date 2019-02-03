@@ -135,7 +135,7 @@ metadata lines start with "# meta:" and end with <key>=<value> pairs.
 The following table briefly describes the purpose of each meta key:
 
 | meta key | Description | Required (must appear in script ) | meta key value |
-|-----|-----|
+|-----|-----|-----|-----|
 | name | id/name for the script | yes |  A string unique across all scripts |
 | displayname | A human readable name. Not currently used. Might be used in future by graphical user interface (GUI). | yes | A string |
 | intent | The lircdo Alexa Skill intent implemented by the script | yes | A key/value pair from this [table](https://github.com/actsasrob/lircdo_ask/blob/master/README_using_skill.md#lircdo_intents) |
