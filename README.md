@@ -1,4 +1,4 @@
-# **L**inux **I**nfrared **R**emote **C**ontrol ([LIRC](http://www.lirc.org/))
+# **L**inux **I**nfrared **R**emote **C**ontrol ([LIRC](http://www.lirc.org/)) **Do**
 
 lircdo is a "voice first" interface for controlling your home audio/video equipment. There are two components:
 
@@ -9,7 +9,7 @@ lircdo is a "voice first" interface for controlling your home audio/video equipm
 
 This component is written in node.js and implements the [AWS](https://aws.amazon.com/what-is-aws/) [lambda](https://aws.amazon.com/lambda/) function that is called by the Amazon Alexa service when you invoke the lircdo skill via your Alexa-enabled device. You invoke the skill by saying something like \*Alexa, open lircdo\*. **NOTE: The lircdo Alexa skill has not yet been published and is not currently available to the public. Hopefully it will be available soon.**
 
-To learn more about this component navigate to to this [link](https://github.com/actsasrob/lircdo_ask)
+To learn more about this component navigate to to this [link](https://github.com/actsasrob/lircdo_ask/blob/master/README.md)
 
 I recommend you start at the README page for the above link to learn about the lircdo Alexa skill and then navigate back here to learn about the lircdo server/service.
 
