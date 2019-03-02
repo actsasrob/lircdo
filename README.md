@@ -192,3 +192,9 @@ Recommend you proceed as follows:
 After making changes to the .env environment file or after re-generating catalog_internal.json you must restart the lircdo service. The lirc user is an unprivileged user and cannot use the sudo command. Instead use the 'pi' user to execute the following command to restart the lircdo service:
 
     sudo systemctl restart node-server
+
+### Credits
+
+A big Thank You to the creators/maintainers of [LIRC](http://www.lirc.org/). This project wouldn't be possible without LIRC.
+
+A big Thank You to Austin Stanton over at [Hackster.io](https://www.hackster.io/) for the awesome project to create an IR emitter/receiver.
