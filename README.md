@@ -1,4 +1,4 @@
-# **L**inux **I**nfrared **R**emote **C**ontrol ([LIRC](http://www.lirc.org/)) **Do**
+# **L**inux **I**nfrared **R**emote **C**ontrol ([LIRC](http://www.lirc.org/)) **Do** Server/Service
 
 lircdo is a "voice first" interface for controlling your home audio/video equipment. There are two components:
 
