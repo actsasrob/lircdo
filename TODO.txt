@@ -6,3 +6,5 @@ Update README file.
   How to add remote control support for LIRC service.
   How to create shell scripts that implement lircdo intents
   How to build an infrared emitter/receiver.
+  
+  lircdo server should not accept action intents when in pairing mode mode unless also in test mode
