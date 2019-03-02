@@ -1,7 +1,7 @@
 {
   "name": "lircdo",
   "version": "1.0.0",
-  "description": "Linux Infrared Remote Control (LIRC) Do",
+  "description": "Linux Infrared Remote Control (LIRC) Do server/service component of Baba Zoo (aka LIRC Do) Alexa Skill.",
   "main": "server.js",
   "dependencies": {
     "body-parser": "^1.18.2",
@@ -17,21 +17,21 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
   },
+  "author": "Rob Hughes",
+  "lcense": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/actsasrob/lircdo.git"
   },
+  "bugs": {
+    "url": "https://github.com/actsasrob/lircdo/issues"
+  },
+  "homepage": "https://github.com/actsasrob/lircdo#readme",
   "keywords": [
     "lirc",
     "alexa",
     "ask",
     "infrared",
     "automation"
-  ],
-  "author": "Rob Hughes",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/actsasrob/lircdo/issues"
-  },
-  "homepage": "https://github.com/actsasrob/lircdo#readme"
+  ]
 }
