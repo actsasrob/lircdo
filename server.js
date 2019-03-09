@@ -31,17 +31,21 @@ console.log('PAIR_MODE=' + PAIR_MODE);
 // this allows all the lircdo server-side callbacks to be enabled at one time
 // which is handy for running automated test cases but is a little less secure
 var TEST_MODE=false;
-if (process.env.APP_PIN !== 'undefined' && process.env.APP_PIN !== null) {
-   TEST_MODE=true;
-   console.log('warn: TEST_MODE=true. ALL callbacks are available!!!');
+var applicationPin = Math.floor(Math.random() * 1000).toString();
+if (typeof process.env.APP_PIN !== 'undefined' && process.env.APP_PIN !== null) {
+   TEST_MODE=true; 
+   applicationPin = process.env.APP_PIN;
+   console.log(`warn: TEST_MODE=${TEST_MODE} ALL callbacks are available!!!`);
+} else {
+
+   console.log(`info: TEST_MODE=${TEST_MODE}.`);
 }
    
-var applicationPin = process.env.APP_PIN || Math.floor(Math.random() * 1000).toString();
+console.log(`Application pairing pin number is ${applicationPin}`);
 
 var privateKey  = fs.readFileSync('sslcert/serverkey.pem', 'utf8');
 var certificate = fs.readFileSync('sslcert/servercert.pem', 'utf8');
 
-//var credentials = {key: privateKey, cert: certificate};
 var options = {
    ca: [fs.readFileSync('sslcert/cacert.pem')],
    cert: fs.readFileSync('sslcert/servercert.pem'),
@@ -188,7 +192,7 @@ var spawnSync = require('child_process').spawnSync;
 //}
 
 if (PAIR_MODE || TEST_MODE) {
-   console.log(`Application pairing pin number is ${applicationPin}`);
+   console.log("info: pairing mode enabled");
 
    // This responds to a GET request for /pair_action_ask.
    // Meant to be invoked by Alexa Skills Kit lambda function
@@ -230,6 +234,7 @@ if (PAIR_MODE || TEST_MODE) {
 
 } 
 if (!PAIR_MODE || TEST_MODE) { // START OF NON-PAIR MODE
+   console.log("info: action mode enabled");
 
    // The lircdo Alexa Skill provides a "voice-first" interface for the lircdo server
    // The section below implements a web-based graphical interface to the lircdo server
