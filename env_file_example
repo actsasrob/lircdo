@@ -2,12 +2,12 @@
 #  know the pin to use when sending requests to test lircdo server
 #APP_PIN=178
 
-# Application the lircdo server will listen on
+# Application port the lircdo server will listen on
 APP_PORT=
 
 # Application fully qualified domain name (FQDN). The FQDN must resolve in
 #  DNS to IP address of the lircdo server. This will likely be the WAN IP of your
-#  home router where your home route forwards incoming connections to the lircdo server
+#  home router where your home router forwards incoming connections to the lircdo server
 #  on the port set in APP_PORT
 APP_FQDN=
 
