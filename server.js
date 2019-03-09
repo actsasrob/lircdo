@@ -8,7 +8,8 @@ require('dotenv').load();
 const APP_PORT = process.env.APP_PORT || 8843;
 const APP_FQDN = process.env.APP_FQDN || '127.0.0.1';
 const LIRCSCRIPTS_LOCATION = process.env.LIRCSCRIPTS_LOCATION || './lircscripts';
-const LIRCDO_SESSION_SECRET = process.env.LIRCDO_SESSION_SECRET || 'shh its a secret';
+//const LIRCDO_SESSION_SECRET = process.env.LIRCDO_SESSION_SECRET || 'shh its a secret';
+const LIRCDO_SESSION_SECRET = process.env.LIRCDO_SESSION_SECRET;
 if (LIRCDO_SESSION_SECRET == 'undefined' || LIRCDO_SESSION_SECRET == null) {
    console.log('error: LIRCDO_SESSION_SECRET environment variable MUST be set in .env');
    process.exit(1);
@@ -32,7 +33,7 @@ console.log('PAIR_MODE=' + PAIR_MODE);
 var TEST_MODE=false;
 if (process.env.APP_PIN !== 'undefined' && process.env.APP_PIN !== null) {
    TEST_MODE=true;
-   console.log('info: TEST_MODE=true. ALL callbacks are available!!!');
+   console.log('warn: TEST_MODE=true. ALL callbacks are available!!!');
 }
    
 var applicationPin = process.env.APP_PIN || Math.floor(Math.random() * 1000).toString();
@@ -40,7 +41,7 @@ var applicationPin = process.env.APP_PIN || Math.floor(Math.random() * 1000).toS
 var privateKey  = fs.readFileSync('sslcert/serverkey.pem', 'utf8');
 var certificate = fs.readFileSync('sslcert/servercert.pem', 'utf8');
 
-var credentials = {key: privateKey, cert: certificate};
+//var credentials = {key: privateKey, cert: certificate};
 var options = {
    ca: [fs.readFileSync('sslcert/cacert.pem')],
    cert: fs.readFileSync('sslcert/servercert.pem'),
