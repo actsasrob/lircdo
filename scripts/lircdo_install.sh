@@ -483,7 +483,7 @@ echo "info: checking if cron job exists to renew server certificate..."
 grep "certbot-auto" /var/spool/cron/crontabs/root > /dev/null 2>&1
 if [ "$?" -ne 0 ]; then
    echo "info: setting up cron job for root user to renew certificate using Let\'s Encrypt..."
-   echo "30 12,6 * * * /usr/local/bin/certbot-auto renew --renew-hook 'systemctl restart node-server' 2>>/var/log/cert-renew.log >>/var/log/cert-renew.log" >> /var/spool/cron/crontabs/root
+   echo "30 6,18 * * * /usr/local/bin/certbot-auto renew --renew-hook 'systemctl restart node-server' 2>>/var/log/cert-renew.log 2>&1 | /usr/bin/logger -t certupdate" >> /var/spool/cron/crontabs/root
    systemctl reload cron
 else
    echo "info: cron job for root user exists to renew Let\'s Encrypt certificate"
