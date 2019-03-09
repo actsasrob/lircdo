@@ -79,18 +79,13 @@ var adminUser = {id: 'admin', password: process.env.PROTECTED_PAGE_SECRET };
 Users.push(adminUser);
 
 // Create application/x-www-form-urlencoded parser
-var urlencodedParser = bodyParser.urlencoded({ extended: false })
+var urlencodedParser = bodyParser.urlencoded({ extended: false });
 
-	// Allow use of static objects under 'public' directory
-	app.use(express.static('public'));
-	app.use(logErrors);
+// Allow use of static objects under 'public' directory
+app.use(express.static('public'));
 
-	var lirc_catalog = require('./catalog_internal.json') 
+var lirc_catalog = require('./catalog_internal.json') 
 
-	function logErrors (err, req, res, next) {
-		console.error(err.stack)
-			next(err)
-	}
 
 //console.log("lirc_catalog: ", lirc_catalog);
 //console.log("just intents: ", lirc_catalog.intents);
@@ -600,8 +595,10 @@ if (!PAIR_MODE || TEST_MODE) { // START OF NON-PAIR MODE
 } // END NOT PAIR MODE
 
 app.get('*',function (req, res) {
+	console.log(`redirecting unexpected request to /.`);
 	res.redirect('/');
 });	     
+
 
 var httpsServer = https.createServer(options, app);
 httpsServer.listen(APP_PORT, function(){
