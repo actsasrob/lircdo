@@ -83,8 +83,14 @@ var urlencodedParser = bodyParser.urlencoded({ extended: false })
 
 // Allow use of static objects under 'public' directory
 app.use(express.static('public'));
+app.use(logErrors);
 
 var lirc_catalog = require('./catalog_internal.json') 
+
+function logErrors (err, req, res, next) {
+	  console.error(err.stack)
+		    next(err)
+}
 
 //console.log("lirc_catalog: ", lirc_catalog);
 //console.log("just intents: ", lirc_catalog.intents);
