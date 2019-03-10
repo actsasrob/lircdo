@@ -45,7 +45,7 @@ For example, my set top box is a Motorola model QIP6200. I found the remote cont
           end codes
     end remote
 
-To use irsend you need the string in the 'name' field and the button name defined within the `begin codes` ... `end codes` section (NOTE: The begin/end section may be delimeted by `begin raw_codes` ... `end raw_codes`.) e.g. name 'Motorola_QIP6200-2' and let's use 'KEY_POWER' as the button.
+To use irsend you need the string in the 'name' field and the button name defined within the `begin codes` ... `end codes` section (NOTE: The begin/end section may be delimited by `begin raw_codes` ... `end raw_codes`.) e.g. name 'Motorola_QIP6200-2' and let's use 'KEY_POWER' as the button.
 
 First, verify LIRC recognizes your remote control definition by searching for the name field using `irsend list <remote  name>...`. The example below uses the definition for Motorola_QIP6200-2 as follows:
 
@@ -59,7 +59,7 @@ If you see the message 'unknown remote' then maybe you forgot to restart the lir
 
 Now, to send an IR signal use `irsend SEND_ONCE <remote name> <code name>`:
 
-The example in this section sues the remote named 'Motorola_QIP6200-2' and button code named 'KEY_POWER':
+The example in this section uses the remote named 'Motorola_QIP6200-2' and button code named 'KEY_POWER':
 
     irsend SEND_ONCE Motorola_QIP6200-2 KEY_POWER
 
@@ -108,7 +108,7 @@ If you read the irrecord man page be sure to note the section that states:
     tion  found  there and will only try to record the buttons. This is very useful if you want
     to learn a remote where config files of the same brand are  already  available.  
 
-If the generated remote control definition file doesn't work you could try starting with a publicly available definition file for a similar brand of hardware. Strip out the content between the `begin codes` and `end codes` sections before starting the capture using irrecord. NOTE: the section delimeters may be `begin raw_codes` and `end raw_codes` depending on the type of capture used by irrecord.
+If the generated remote control definition file doesn't work you could try starting with a publicly available definition file for a similar brand of hardware. Strip out the content between the `begin codes` and `end codes` sections before starting the capture using irrecord. NOTE: the section delimiters may be `begin raw_codes` and `end raw_codes` depending on the type of capture used by irrecord.
 
 It is worth reading through the [irrecord documentation](http://www.lirc.org/html/irrecord.html) to glean additional things you can try to get a working remote control definition file.
 
@@ -118,17 +118,18 @@ IrScrutinizer is a powerful program for capturing, generating, analyzing, import
 
 IrScrutinizer is a wonderful tool created by [Dr. Bengt Mårtensson](http://www.bengt-martensson.de/).
 
-You can download the latest version of IrScrutinizer [here](https://github.com/bengtmartensson/harctoolboxbundle/releases/latest). The [AppImage](https://appimage.org/) format can be downloaded and executed on a a Linux 64-bit system such as a Raspberry Pi running the Debian Jessie OS. This makes it a convenient tool to use on a Raspberry Pi with an attached IR receiver to capute IR signals. The captured signals can be exported in the format recognized by LIRC.
+You can download the latest version of IrScrutinizer [here](https://github.com/bengtmartensson/harctoolboxbundle/releases/latest). The [AppImage](https://appimage.org/) format can be downloaded and executed on a Linux 64-bit system such as a Raspberry Pi running the Debian Jessie OS. This makes it a convenient tool to use on a Raspberry Pi with an attached IR receiver to capute IR signals. The captured signals can be exported in the format recognized by LIRC. IrScrutinizer requires a graphical interface. Recommend installing/configuring VNC on your Raspberry Pi so that you can connect remotely via a graphical terminal.
+
 
 You can find IrScrutinizer documentation [here](http://www.harctoolbox.org/IrScrutinizer.html) with a tutorial [here](http://www.hifi-remote.com/wiki/index.php?title=IrScrutinizer_Guide).
 
 ## Creating lircdo Shell Scripts
 
-From the information above you should be able to get scripts working to send IR signals using the irsend command. The next step is to add metadata that can be used by the lircdo server to find and execute scripts which implement desired intents.
+From the information above you should be able to get scripts working to send IR signals using the irsend command. The next step is to add metadata that can be used by the lircdo service to find and execute scripts which implement desired intents.
 
 Look at the sample scripts in the lircscripts_examples directory to get started.
 
-You need to embed metadata in each script. This metadata is read by the generate_json_catalog.py script to produce the catalog_internal.json file read by the lircdo server. catalog_internal.json contains the mapping between the lircdo intents and the shell scripts that you provide that implement intents. You do not need to provide a script for every possible combination of intents and slot values. Only implement the scripts for the actions that make sense for your A/V equipment.
+You need to embed metadata in each script. This metadata is read by the generate_json_catalog.py script to produce the catalog_internal.json file read by the lircdo service. catalog_internal.json contains the mapping between the lircdo intents and the shell scripts that you provide that implement intents. You do not need to provide a script for every possible combination of intents and slot values. Only implement the scripts for the actions that make sense for your A/V equipment.
 
 metadata lines start with "# meta:" and end with \<key>=\<value> pairs.
 
@@ -179,11 +180,11 @@ For multi-valued actions add each of the supported actions seperated by commas.
 
 To populate the '# meta: component=\<value>' line in the script first navigate to the table for the intent from one of the links above. Click on the link for the component slot. You will be taken to the table which shows all the possible utterances (i.e. what you can say) for that component. Find the appropriate component and then use the key=value pair from the 'lircdo server Key & Value' column.
 
-NOTE: If the intent takes a [LircComponent table](https://github.com/actsasrob/lircdo_ask/blob/master/README_using_skill.md#LircComponent) slot then there is one special component with key=value pair 'component=COMPONENT_SYSTEM'. The 'system' component is handy if you want to implement an intent where multiple components/devices are affected. Let's say you want to be able to power on multiple components at one time. For me when I say 'Alexa, tell lircdo, turn on system' I want the Set Top Box, Audio Video Receiver (AVR) and TV to be powered on. You can use the 'system' component to implement a script to do this. For example, see [this script](https://github.com/actsasrob/lircdo/blob/master/lircscripts_examples/SystemPowerOn.sh).
+NOTE: If the intent takes a [LircComponent table](https://github.com/actsasrob/lircdo_ask/blob/master/README_using_skill.md#LircComponent) slot then there is one special component with key=value pair 'component=COMPONENT_SYSTEM'. The 'system' component is handy if you want to implement an intent where multiple components/devices are affected. Let's say you want to be able to power on multiple components at one time. For me when I say 'Alexa, tell baba zoo, turn on system' I want the Set Top Box, Audio Video Receiver (AVR) and TV to be powered on. You can use the 'system' component to implement a script to do this. For example, see [this script](https://github.com/actsasrob/lircdo/blob/master/lircscripts_examples/SystemPowerOn.sh).
 
 ### Default Component meta key and value
 
-For some intents it is handy to not have to speak the component when interacting with the lircdo Alexa skill. This especially makes sense when you only have one component/device in your home that would be an appropriate target for the intent. In my house a good example is opening/closing the tray on the DVD player. I have more than one device with a tray but only the DVD player has a non-proprietary remote control that can be invoked via LIRC. So for me, if I invoke the lircdo skill as 'Alexa, tell lircdo, open dvd player tray' having to explicitly specify the component is wasted effort because the only valid component in my house is the dvd player. I want to be able to say 'Alexa, tell lircdo, open tray' and have the lircdo server figure out the default target is the dvd player. The default_component key allows you to do just that. If your script handles the default component for an intent/action combination add the line '# meta: default_component=true' otherwise leave that line out.
+For some intents it is handy to not have to speak the component when interacting with the lircdo Alexa skill. This especially makes sense when you only have one component/device in your home that would be an appropriate target for the intent. In my house a good example is opening/closing the tray on the DVD player. I have more than one device with a tray but only the DVD player has a non-proprietary remote control that can be invoked via LIRC. So for me, if I invoke the lircdo skill as 'Alexa, tell baba zoo, open dvd player tray' having to explicitly specify the component is wasted effort because the only valid component in my house is the dvd player. I want to be able to say 'Alexa, tell baba zoo, open tray' and have the lircdo service figure out the default target is the dvd player. The default_component key allows you to do just that. If your script handles the default component for an intent/action combination add the line '# meta: default_component=true' otherwise leave that line out.
 
 ### Num args meta key and value
 
@@ -298,7 +299,7 @@ For this example the meta key section of the script would look something like:
 
 ### generate_json_catalog.py
 
-Remember to re-run the generate_json_catalog.py script after adding scripts or modifying meta keys in existing scripts. Then restart the lircdo server to re-read the catalog_internal.json file.
+Remember to re-run the generate_json_catalog.py script after adding scripts or modifying meta keys in existing scripts. Then restart the lircdo service to re-read the catalog_internal.json file.
 
 Run generate_json_catalog.py from the top-level lircdo directory. Specify the path to the scripts directory. e.g.
 
