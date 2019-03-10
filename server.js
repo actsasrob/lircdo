@@ -595,10 +595,14 @@ if (!PAIR_MODE || TEST_MODE) { // START OF NON-PAIR MODE
 } // END NOT PAIR MODE
 
 app.get('*',function (req, res) {
-	console.log(`redirecting unexpected request to /.`);
+	console.log(`redirecting unexpected GET request to /.`);
 	res.redirect('/');
 });	     
 
+app.post('*',function (req, res) {
+	console.log(`redirecting unexpected POST request to /.`);
+	res.redirect('/');
+});	     
 
 var httpsServer = https.createServer(options, app);
 httpsServer.listen(APP_PORT, function(){
