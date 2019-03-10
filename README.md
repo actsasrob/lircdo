@@ -78,8 +78,17 @@ Austin also includes a nice section to help troubleshoot issues with the IR emit
 
 To help, here are some screen snaps of my Raspberry Pi and IR emitter/receiver:
 
-
+Raspberry Pi Model 3 GPIO pin connections:
 ![Raspberry Pi Model 3 GPIO pin connections](https://raw.githubusercontent.com/actsasrob/lircdo/master/public/images/Rasp_Pi_3_GPIO_Pins.jpg)
+
+IR Emitter/Receiver View 1:
+![IR Emitter/Receiver View 1](https://raw.githubusercontent.com/actsasrob/lircdo/master/public/images/IR_Emitter_Receiver_View1.jpg)
+
+IR Emitter/Receiver View 2:
+![IR Emitter/Receiver View 2](https://raw.githubusercontent.com/actsasrob/lircdo/master/public/images/IR_Emitter_Receiver_View2.jpg)
+
+Raspberry Pi and IR Emitter/Receiver View:
+![Raspberry Pi and IR Emitter/Receiver View](https://raw.githubusercontent.com/actsasrob/lircdo/master/public/images/Rasp_Pi_3_and_IR_Emitter_Receiver.jpg)
 
 ### lircdo service
 
