@@ -76,6 +76,10 @@ The IR emitter does not work for me if I use a 10K Ohm resister. If I use a lowe
 
 Austin also includes a nice section to help troubleshoot issues with the IR emitter/receiver circuit and verify LIRC is working on the Raspberry Pi. I recommend testing using his instructions. You won't have to install/configure LIRC. I recommend you first install the lircdo service using the instructions below which will install and configure LIRC.
 
+To help, here are some screen snaps of my Raspberry Pi and IR emitter/receiver:
+
+
+![Raspberry Pi Model 3 GPIO pin connections](https://raw.githubusercontent.com/actsasrob/lircdo/master/public/images/Rasp_Pi_3_GPIO_Pins.jpg)
 
 ### lircdo service
 
