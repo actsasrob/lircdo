@@ -221,10 +221,8 @@ if (PAIR_MODE || TEST_MODE) {
 			json_response.fqdn = APP_FQDN;
 			json_response.port = APP_PORT;
 			json_response.shared_secret = LIRCDO_PAGE_SECRET;
-			//When using Let's Encrypt signed certificates we no longer need to send
-			//the self-signed CA cert
-			//var ca_cert_string = options.ca.toString();
-			//json_response.ca_cert = ca_cert_string.replace(/[\r\n]+/g, ".");
+			var ca_cert_string = options.ca.toString();
+			json_response.ca_cert = ca_cert_string.replace(/[\r\n]+/g, ".");
 			console.log(`pair_action_ask: success: received valid pin=${pin}`);
 		}
 
