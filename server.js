@@ -24,7 +24,7 @@ if (LIRCDO_PAGE_SECRET == 'undefined' || LIRCDO_PAGE_SECRET == null) {
 const NO_EXECUTE_MODE = process.env.NO_EXECUTE_MODE && /^true$/i.test(process.env.NO_EXECUTE_MODE);
 console.log('NO_EXECUTE_MODE=' + NO_EXECUTE_MODE);
 
-const USES_SELF_SIGNED_CERTS = process.env.USES_SELF_SIGNED_CERTS && /^true$/i.test(process.env.NO_EXECUTE_MODE);
+const USES_SELF_SIGNED_CERTS = process.env.USES_SELF_SIGNED_CERTS && /^true$/i.test(process.env.USES_SELF_SIGNED_CERTS);
 console.log('USES_SELF_SIGNED_CERTS=' + USES_SELF_SIGNED_CERTS);
 
 const PAIR_MODE = process.env.PAIR_MODE && /^true$/i.test(process.env.PAIR_MODE);
