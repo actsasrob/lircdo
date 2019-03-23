@@ -301,16 +301,16 @@ if [ -z "$APP_FQDN" ]; then
    echo "info: you will be prompted to enter the FQDN for the lircdo server." 
    echo "info: NOTE: The FQDN must resolve in DNS."
    echo "info:       It is likely that the FQDN will resolve to the WAN-side IP address for your home router"
-   echo "info:       It is likely you will need to configure your home router to forward incoming traffic"
+   echo "info:       It is also likely you will need to configure your home router to forward incoming traffic"
    echo "info:         to the lircdo server in your home network and port selected above." 
-   echo "info:       For a little more safety recommended not using port 443 as this port must be exposed to the internet."
+   echo "info:       For a little more safety recommend not using port 443 as this port must be exposed to the internet."
 
    while true; do
        read -p "Enter lircdo server FQDN: " APP_FQDN
        host_output=$(host "$APP_FQDN")
        host_status="$?"
        host_ip=""
-       dig_output=$($DIG_COMMAND)
+       dig_output=$("$DIG_COMMAND")
        dig_output_status="$?"
        compare_ip_check=0
        if [ "$host_status" -ne 0 ]; then
@@ -360,7 +360,7 @@ echo "info: checking if server certificates have been created..."
 if [ ! -f $LIRCDO_SERVER_DIR/sslcert/cacert.pem  ] || [ ! -f $LIRCDO_SERVER_DIR/sslcert/servercert.pem  ] || [ ! -f $LIRCDO_SERVER_DIR/sslcert/serverkey.pem  ]; then 
 
    echo "info: creating server certificates..."
-sudo -i -H -u $LIRCDO_USER bash -i -c "cd ${LIRCDO_SERVER_PATH}/openssl; ./make-all.sh $APP_FQDN"
+sudo -i -H -u $LIRCDO_USER bash -i -c "cd ${LIRCDO_SERVER_DIR}/openssl; ./make-all.sh $APP_FQDN"
    cd $current_dir
 
    if [ ! -h $LIRCDO_SERVER_DIR/sslcert/cacert.pem  ] || [ ! -h $LIRCDO_SERVER_DIR/sslcert/servercert.pem  ] || [ ! -h $LIRCDO_SERVER_DIR/sslcert/serverkey.pem  ]; then
