@@ -320,7 +320,7 @@ if [ -z "$APP_FQDN" ]; then
        if [ "$host_status" -ne 0 ]; then
 	  echo "error: the entered FQDN does not resolve in DNS using 'host $APP_FQDN' command"
        else
-	  echo "info: '$APP_FQDN' resolves in DNS"
+	  echo "info: '$APP_FQDN' resolves in DNS to $host_output"
 	  host_ip=$(echo "$host_output" | awk '{ print $NF }')
 	  echo "info: checking if '$APP_FQDN' resolves in DNS to the WAN-side IP for this server..."
 	  if [ "$dig_output_status" -eq 0 ] && [ -n "$dig_output" ]; then
@@ -328,9 +328,11 @@ if [ -z "$APP_FQDN" ]; then
 	     if [ "$?" -ne 0 ]; then
 		echo "error: WAN IP address, ${dig_output}, reported by '$DIG_COMMAND' does not match IP address, "${host_ip}", as reported by 'host $APP_FQDN'. This will likely prevent the lircdo service from being able to receive incoming requests from the lircdo alexa skills kit (ASK) lambda function."
 		compare_ip_check=1
+	     else
+	        echo "info: '$APP_FQDN' resolves to the WAN-side IP ($dig_output) of this server"
 	     fi
 	  else
-	     echo "info: '$APP_FQDN' resolves to the WAN-side IP ($dig_output) of this server"
+	     echo "error: failed to determine WAN-side IP address"
 	  fi
        fi
 
