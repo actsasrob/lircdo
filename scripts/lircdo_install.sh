@@ -158,6 +158,8 @@ while true; do
 done
 
 echo "info: installing extra packages needed for lircdo service install..."
+sudo apt-get update > /dev/null 2>&1
+
 for package in $EXTRA_PACKAGES; do
    echo "info: installing ${package}..."
    apt-get install -y $package > /dev/null 2>&1
