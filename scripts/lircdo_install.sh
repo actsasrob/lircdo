@@ -75,6 +75,7 @@ echo "info: install/configure Linux Infrared Remote Control (LIRC) service"
 dpkg -l | grep " lirc " > /dev/null 2>&1
 if [ "$?" -ne 0 ]; then
    echo "info: installing lirc package..."
+   sudo apt-get update > /dev/null 2>&1
    apt-get install -y lirc
    dpkg -l | grep " lirc " > /dev/null 2>&1
    if [ "$?" -ne 0 ]; then
