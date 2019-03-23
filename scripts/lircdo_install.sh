@@ -320,7 +320,7 @@ if [ -z "$APP_FQDN" ]; then
        if [ "$host_status" -ne 0 ]; then
 	  echo "error: the entered FQDN does not resolve in DNS using 'host $APP_FQDN' command"
        else
-	  echo "info: '$APP_FQDN' resolves in DNS to $host_output"
+	  echo "info: '$host_output in DNS"
 	  host_ip=$(echo "$host_output" | awk '{ print $NF }')
 	  echo "info: checking if '$APP_FQDN' resolves in DNS to the WAN-side IP for this server..."
 	  if [ "$dig_output_status" -eq 0 ] && [ -n "$dig_output" ]; then
