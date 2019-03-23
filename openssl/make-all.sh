@@ -11,4 +11,4 @@ mkdir -p ../sslcert 2> /dev/null
 cp -f cacert.pem ../sslcert
 cp -f servercert.pem ../sslcert
 cp -f serverkey.pem ../sslcert
-
+chmod 640 ../sslcert/*.pem

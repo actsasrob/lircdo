@@ -363,7 +363,7 @@ if [ ! -f $LIRCDO_SERVER_DIR/sslcert/cacert.pem  ] || [ ! -f $LIRCDO_SERVER_DIR/
 sudo -i -H -u $LIRCDO_USER bash -i -c "cd ${LIRCDO_SERVER_DIR}/openssl; ./make-all.sh $APP_FQDN"
    cd $current_dir
 
-   if [ ! -h $LIRCDO_SERVER_DIR/sslcert/cacert.pem  ] || [ ! -h $LIRCDO_SERVER_DIR/sslcert/servercert.pem  ] || [ ! -h $LIRCDO_SERVER_DIR/sslcert/serverkey.pem  ]; then
+   if [ ! -f $LIRCDO_SERVER_DIR/sslcert/cacert.pem  ] || [ ! -f $LIRCDO_SERVER_DIR/sslcert/servercert.pem  ] || [ ! -f $LIRCDO_SERVER_DIR/sslcert/serverkey.pem  ]; then
       echo "error: failed to create one or more lircdo application cert/key files under $LIRCDO_SERVER_DIR/sslcert. exiting..."
       exit 1
    fi
