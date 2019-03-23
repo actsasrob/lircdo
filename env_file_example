@@ -30,3 +30,6 @@ PAIR_MODE=true
 # when NO_EXECUTE_MODE=true is set the lircdo server will not execute lirc shell scripts
 #  handy for testing when you don't actually want to emit IR signals
 NO_EXECUTE_MODE=false
+
+# Does the lircdo server use self-signed certificates (true) or not (false)
+USES_SELF_SIGNED_CERTS=true

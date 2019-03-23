@@ -24,6 +24,9 @@ if (LIRCDO_PAGE_SECRET == 'undefined' || LIRCDO_PAGE_SECRET == null) {
 const NO_EXECUTE_MODE = process.env.NO_EXECUTE_MODE && /^true$/i.test(process.env.NO_EXECUTE_MODE);
 console.log('NO_EXECUTE_MODE=' + NO_EXECUTE_MODE);
 
+const USES_SELF_SIGNED_CERTS = process.env.USES_SELF_SIGNED_CERTS && /^true$/i.test(process.env.NO_EXECUTE_MODE);
+console.log('USES_SELF_SIGNED_CERTS=' + USES_SELF_SIGNED_CERTS);
+
 const PAIR_MODE = process.env.PAIR_MODE && /^true$/i.test(process.env.PAIR_MODE);
 console.log('PAIR_MODE=' + PAIR_MODE);
 
@@ -221,8 +224,10 @@ if (PAIR_MODE || TEST_MODE) {
 			json_response.fqdn = APP_FQDN;
 			json_response.port = APP_PORT;
 			json_response.shared_secret = LIRCDO_PAGE_SECRET;
-			var ca_cert_string = options.ca.toString();
-			json_response.ca_cert = ca_cert_string.replace(/[\r\n]+/g, ".");
+			if (USES_SELF_SIGNED_CERTS) {
+			    var ca_cert_string = options.ca.toString();
+			    json_response.ca_cert = ca_cert_string.replace(/[\r\n]+/g, ".");
+			}
 			console.log(`pair_action_ask: success: received valid pin=${pin}`);
 		}
 
