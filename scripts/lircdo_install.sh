@@ -19,7 +19,7 @@ DIG_COMMAND="dig +short myip.opendns.com @resolver1.opendns.com"
 NEEDS_REBOOT=0
 NEEDS_LIRCSERVICE_RESTART=0
 
-EXTRA_PACKAGES="git openssl"
+EXTRA_PACKAGES="dnsutils git openssl"
 
 current_dir="$(pwd)"
 
