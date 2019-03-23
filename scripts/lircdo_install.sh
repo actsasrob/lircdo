@@ -313,7 +313,7 @@ if [ -z "$APP_FQDN" ]; then
        host_output=$(host "$APP_FQDN")
        host_status="$?"
        host_ip=""
-       dig_output=$("$DIG_COMMAND")
+       dig_output=$($DIG_COMMAND)
        dig_output_status="$?"
        compare_ip_check=0
        if [ "$host_status" -ne 0 ]; then
