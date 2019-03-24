@@ -650,7 +650,7 @@ else
    echo "info: the lircdo service is running"
 fi
 
-sleep 2
+sleep 4 
 
 echo
 echo "info: verify the lircdo service can be reached at URL: https://${APP_FQDN}:${APP_PORT}..."
