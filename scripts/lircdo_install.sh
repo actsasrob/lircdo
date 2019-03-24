@@ -13,6 +13,7 @@ NVM_VERSION="0.33.11"
 NODEJS_VERSION="8.10.0"
 LIRC_DRIVER="default"
 LIRC_DEVICE="/dev/lirc0"
+USE_LETS_ENCRYPT_CERTS="false" # "false"=self-signed certs, "true"=Let's Encrypt certs
 
 DIG_COMMAND="dig +short myip.opendns.com @resolver1.opendns.com"
 
@@ -32,6 +33,254 @@ if [ ! -w $current_dir ]; then
    echo "error: the current directory must be writable. exiting..."
    exit 1
 fi
+
+function install_lets_encrypt_certificates {
+   APP_FQDN=$1
+   echo
+   echo "info: checking if Let\'s Encrypt certbot-auto script has been downloaded..."
+   if [ ! -e ./certbot-auto ]; then
+      echo "info: installing Let\'s Encrypt certbot-auto script used to generate TLS certificates..."
+      wget https://dl.eff.org/certbot-auto
+      if [ "$?" -ne 0  ]; then
+         echo "error: could not download certbot-auto. exiting..."
+         exit 1
+      fi
+   else
+      echo "info: certbot-auto successfully downloaded."
+   fi
+   
+   echo
+   echo "info: checking if certbot-auto.asc file exists..."
+   if [ ! -e ./certbot-auto.asc ]; then
+      echo "info: downloading certbot-auto.asc to verify integrity of certbot-auto..."
+      wget -N https://dl.eff.org/certbot-auto.asc
+      if [ "$?" -ne 0  ]; then
+         echo "error: could not download certbot-auto.asc to verify certbot-auto install. exiting..."
+         exit 1
+      fi
+   else
+      echo "info: certbot-auto.asc successfully downloaded."
+   fi
+   
+   echo
+   echo "info: checking if trusted gpg keys for Let\'s Encrypt team is installed..."
+   gpg2 --list-keys | grep "Let's Encrypt" > /dev/null 2>&1
+   if [ "$?" -ne 0 ]; then
+      echo "info: installing trusted gpg key for Let\'s Encrypt certbot-auto..."
+      gpg2 --keyserver pool.sks-keyservers.net --recv-key A2CFB51FA275A7286234E7B24D17C995CD9775F2
+      if [ "$?" -ne 0 ]; then
+         echo "error: failed to install trusted gpg key. exiting..."
+         exit 1
+      fi
+   else
+      echo "info: trusted gpg key for Let\'s Encrypt certbot-auto already installed. nothing to do"
+   fi
+   
+   echo
+   echo "info: verifying integrity of Let\'s Encrypt certbot-auto script..."
+   gpg2 --trusted-key 4D17C995CD9775F2 --verify certbot-auto.asc certbot-auto 2>&1 | grep "gpg: Good signature"
+   
+   if [ "$?" -ne 0 ]; then
+      echo "error: failed to validate certbot-auto script. exiting..."
+      exit 1
+   else
+      echo "info: certbot-auto script successfully verified" 
+   fi   
+   
+   echo
+   echo "info: checking if certbot-auto.asc file exists..."
+   if [ ! -e ./certbot-auto.asc ]; then
+      echo "info: downloading certbot-auto.asc to verify integrity of certbot-auto..."
+      wget -N https://dl.eff.org/certbot-auto.asc
+      if [ "$?" -ne 0  ]; then
+         echo "error: could not download certbot-auto.asc to verify certbot-auto install. exiting..."
+         exit 1
+      fi
+   else
+      echo "info: certbot-auto.asc successfully downloaded."
+   fi
+   
+   echo
+   echo "info: checking if trusted gpg keys for Let\'s Encrypt team is installed..."
+   gpg2 --list-keys | grep "Let's Encrypt" > /dev/null 2>&1
+   if [ "$?" -ne 0 ]; then
+      echo "info: installing trusted gpg key for Let\'s Encrypt certbot-auto..."
+      gpg2 --keyserver pool.sks-keyservers.net --recv-key A2CFB51FA275A7286234E7B24D17C995CD9775F2
+      if [ "$?" -ne 0 ]; then
+         echo "error: failed to install trusted gpg key. exiting..."
+         exit 1
+      fi
+   else
+      echo "info: trusted gpg key for Let\'s Encrypt certbot-auto already installed. nothing to do"
+   fi
+   
+   echo
+   echo "info: verifying integrity of Let\'s Encrypt certbot-auto script..."
+   gpg2 --trusted-key 4D17C995CD9775F2 --verify certbot-auto.asc certbot-auto 2>&1 | grep "gpg: Good signature"
+   
+   if [ "$?" -ne 0 ]; then
+      echo "error: failed to validate certbot-auto script. exiting..."
+      exit 1
+   else
+      echo "info: certbot-auto script successfully verified" 
+   fi   
+   
+   cp certbot-auto /usr/local/bin
+   chmod a+x /usr/local/bin/certbot-auto
+   # ./certbot-auto --help
+   
+   echo "info: checking if Let\'s Encrypt signed server certificate exists for domain $APP_FQDN..."
+   if [ ! -e /etc/letsencrypt/live/$APP_FQDN/cert.pem ]; then
+      echo "info: registering $APP_FQDN domain with Let\'s Encrypt and requesting signed certificate..."
+      echo "info: when requesting signed server certifates from Let\'s Encrypt you can add an e-mail address"
+      echo "       which will be used to send important notifications such as reminders about expiring "
+      echo "       certificates."
+      emailswitch="-m nobody@example.com"
+      email=""
+   
+      while true; do
+         read -p "Do you wish to register an e-mail address with Let\'s Encrypt? y/n: " YN
+         case $YN in
+           [Yy]*)
+                  read -p "What e-mail address would you like to register with Let\'s Encrypt? " email
+                  char='[[:alnum:]!#\$%&'\''\*\+/=?^_\`{|}~-]'
+                  name_part="${char}+(\.${char}+)*"
+                  domain="([[:alnum:]]([[:alnum:]-]*[[:alnum:]])?\.)+[[:alnum:]]([[:alnum:]-]*[[:alnum:]])?"
+                  begin='(^|[[:space:]])'
+                  end='($|[[:space:]])'
+                  
+                  # include capturing parentheses, 
+                  # these are the ** 2nd ** set of parentheses (there's a pair in $begin)
+                  re_email="${begin}(${name_part}@${domain})${end}"
+                  if [[ $email =~ $re_email ]]; then
+                     email=${BASH_REMATCH[2]}
+                     echo "info: address ${email} will be registered with Let\'s Encrypt"
+                  else
+                     echo "warn: ${email} doesn't appear to be a valid e-mail address. Will use it anyway."  
+                  fi
+                  emailswitch="-m $email"
+                  break 
+               ;;
+           [Nn]*)
+                   break 
+               ;;
+   
+               *)
+                   continue
+               ;;
+         esac
+      done
+      echo "info: invoking Let\'s Encrypt certbot-auto script tp register/download signed certificate"
+      echo "       for domain $APP_FQDN..."
+      /usr/local/bin/certbot-auto certonly --standalone -n --agree-tos ${emailswitch} --preferred-challenges http  -d $APP_FQDN 
+      certbot_status=$?
+      if [ "$certbot_status" -ne 0 ]; then
+         echo "error: certbot-auto script returned non-zero status"
+      fi
+      if [ ! -e /etc/letsencrypt/live/$APP_FQDN/cert.pem ]; then
+         echo "error: the certbot-auto script executed without error but no server certificate was found in"
+         echo "         /etc/letsencrypt/live/$APP_FQDN/cert.pem"
+      fi
+      if [ "$certbot_status" -ne 0 ] || [ ! -e /etc/letsencrypt/live/$APP_FQDN/cert.pem ]; then
+         echo "error: failed to register/download signed certificate from Let\'s Encrypt"
+         echo "       here\'s a list of things that could cause the registration/download to fail:"
+         echo "       $APP_FQDN is the incorrect FQDN"
+         echo "       $APP_FQDN does not resolve in DNS to the correct IP (probably the WAN-side IP for your home router"
+         echo "       You did not configure port forwarding to allow HTTP port 80 to be forwarded to your lircdo server"
+         echo "       Possibly some other application is listening on HTTP port 80"
+         echo "       exiting..."
+         exit 1
+      fi
+   else
+      echo "info: certificates exist for $APP_FQDN under /etc/letsencypt/live/$APP_FQDN. nothing to do"
+   fi
+   
+   echo
+   echo "info: checking if cron job exists to renew server certificate..."
+   grep "certbot-auto" /var/spool/cron/crontabs/root > /dev/null 2>&1
+   if [ "$?" -ne 0 ]; then
+      echo "info: setting up cron job for root user to renew certificate using Let\'s Encrypt..."
+      echo "30 6,18 * * * /usr/local/bin/certbot-auto renew --renew-hook 'systemctl restart node-server' 2>&1 | /usr/bin/logger -t certupdate" >> /var/spool/cron/crontabs/root
+      systemctl reload cron
+   else
+      echo "info: cron job for root user exists to renew Let\'s Encrypt certificate"
+   fi
+   
+   
+   echo
+   echo "info: setting up file system access control lists (ACLs) to allow $LIRCDO_USER to read Let\'s Encrypt certificates and keys under /etc/letsencrypt directory..."
+   
+   cd /etc/letsencrypt
+   getfacl -R live > acl_backup_for_live_folder
+   getfacl -R archive > acl_backup_for_archive_folder
+   
+   setfacl -m u:${LIRCDO_USER}:rx /etc/letsencrypt/live
+   setfacl -m u:${LIRCDO_USER}:rx /etc/letsencrypt/live/$APP_FQDN
+   setfacl -m u:${LIRCDO_USER}:r /etc/letsencrypt/live/$APP_FQDN/*.pem
+   setfacl -m u:${LIRCDO_USER}:rx /etc/letsencrypt/archive
+   setfacl -m u:${LIRCDO_USER}:rx /etc/letsencrypt/archive/$APP_FQDN
+   setfacl -m u:${LIRCDO_USER}:r /etc/letsencrypt/archive/$APP_FQDN/*.pem
+   
+   # Set directory default ACLs in case they are deleted/recreated
+   setfacl -d -m u:${LIRCDO_USER}:rx /etc/letsencrypt/live
+   setfacl -d -m u:${LIRCDO_USER}:rx /etc/letsencrypt/live/$APP_FQDN
+   setfacl -d -m u:${LIRCDO_USER}:rx /etc/letsencrypt/archive
+   setfacl -d -m u:${LIRCDO_USER}:rx /etc/letsencrypt/archive/$APP_FQDN
+   
+   cd $current_dir
+   
+   getfacl /etc/letsencrypt/live | grep $LIRCDO_USER > /dev/null 2>&1
+   if [ "$?" -ne 0 ]; then
+      echo "error: failed to create file system ACLs. exiting..."
+      exit 1
+   fi
+   
+   echo "info: file system ACLs have been created"
+   
+   mkdir -p $LIRCDO_SERVER_DIR/sslcert
+   
+   chown ${LIRCDO_USER}:${LIRCDO_USER} $LIRCDO_SERVER_DIR/sslcert
+   chmod 700 $LIRCDO_SERVER_DIR/sslcert
+   
+   echo
+   echo "info: checking if lircdo application cert/key files under $LIRCDO_SERVER_DIR/sslcert have been soft linked to /etc/letsencrypt/live/${APP_FQDN} ..."
+   if [ ! -h $LIRCDO_SERVER_DIR/sslcert/cacert.pem  ] || [ ! -h $LIRCDO_SERVER_DIR/sslcert/servercert.pem  ] || [ ! -h $LIRCDO_SERVER_DIR/sslcert/serverkey.pem  ]; then
+      echo "info: creating soft links for lircdo application cert/key files..."
+      ln -f -s /etc/letsencrypt/live/$APP_FQDN/chain.pem $LIRCDO_SERVER_DIR/sslcert/cacert.pem
+      ln -f -s /etc/letsencrypt/live/$APP_FQDN/cert.pem $LIRCDO_SERVER_DIR/sslcert/servercert.pem
+      ln -f -s /etc/letsencrypt/live/$APP_FQDN/privkey.pem $LIRCDO_SERVER_DIR/sslcert/serverkey.pem
+   
+      if [ ! -h $LIRCDO_SERVER_DIR/sslcert/cacert.pem  ] || [ ! -h $LIRCDO_SERVER_DIR/sslcert/servercert.pem  ] || [ ! -h $LIRCDO_SERVER_DIR/sslcert/serverkey.pem  ]; then
+         echo "error: failed to soft link one or more lircdo application cert/key files from $LIRCDO_SERVER_DIR/sslcert to /etc/letsencrypt/live/$APP_FQDN/. exiting..."
+         exit 1
+      fi
+   else
+      echo "info: lircdo application certificates files already linked to /etc/letsencrypt directory" 
+   fi
+
+}
+
+function install_self_signed_certificates {
+   APP_FQDN=$1
+   mkdir -p $LIRCDO_SERVER_DIR/sslcert
+   chown ${LIRCDO_USER}:${LIRCDO_USER} $LIRCDO_SERVER_DIR/sslcert
+   chmod 700 $LIRCDO_SERVER_DIR/sslcert
+   
+   echo "info: checking if server certificates have been created..."
+   if [ ! -f $LIRCDO_SERVER_DIR/sslcert/cacert.pem  ] || [ ! -f $LIRCDO_SERVER_DIR/sslcert/servercert.pem  ] || [ ! -f $LIRCDO_SERVER_DIR/sslcert/serverkey.pem  ]; then 
+   
+      echo "info: creating server certificates..."
+   sudo -i -H -u $LIRCDO_USER bash -i -c "cd ${LIRCDO_SERVER_DIR}/openssl; ./make-all.sh $APP_FQDN"
+      cd $current_dir
+   
+      if [ ! -f $LIRCDO_SERVER_DIR/sslcert/cacert.pem  ] || [ ! -f $LIRCDO_SERVER_DIR/sslcert/servercert.pem  ] || [ ! -f $LIRCDO_SERVER_DIR/sslcert/serverkey.pem  ]; then
+         echo "error: failed to create one or more lircdo application cert/key files under $LIRCDO_SERVER_DIR/sslcert. exiting..."
+         exit 1
+      fi
+   else
+      echo "info: lircdo server certificates files already already exist. nothing to do" 
+   fi
+}
 
 # Check OS version
 echo
@@ -362,23 +611,10 @@ else
    echo "info: NOTE: you can change this setting by editing $LIRCDO_SERVER_DIR/.env" 
 fi
 
-mkdir -p $LIRCDO_SERVER_DIR/sslcert
-chown ${LIRCDO_USER}:${LIRCDO_USER} $LIRCDO_SERVER_DIR/sslcert
-chmod 700 $LIRCDO_SERVER_DIR/sslcert
-
-echo "info: checking if server certificates have been created..."
-if [ ! -f $LIRCDO_SERVER_DIR/sslcert/cacert.pem  ] || [ ! -f $LIRCDO_SERVER_DIR/sslcert/servercert.pem  ] || [ ! -f $LIRCDO_SERVER_DIR/sslcert/serverkey.pem  ]; then 
-
-   echo "info: creating server certificates..."
-sudo -i -H -u $LIRCDO_USER bash -i -c "cd ${LIRCDO_SERVER_DIR}/openssl; ./make-all.sh $APP_FQDN"
-   cd $current_dir
-
-   if [ ! -f $LIRCDO_SERVER_DIR/sslcert/cacert.pem  ] || [ ! -f $LIRCDO_SERVER_DIR/sslcert/servercert.pem  ] || [ ! -f $LIRCDO_SERVER_DIR/sslcert/serverkey.pem  ]; then
-      echo "error: failed to create one or more lircdo application cert/key files under $LIRCDO_SERVER_DIR/sslcert. exiting..."
-      exit 1
-   fi
+if [ "$USE_LETS_ENCRYPT_CERTS" == "true" ]; then
+   install_lets_encrypt_certificates $APP_FQDN
 else
-   echo "info: lircdo server certificates files already already exist. nothing to do" 
+   install_self_signed_certificates $APP_FQDN
 fi
 
 if [ ! -e $LIRCDO_SERVER_DIR/catalog_internal.json ]; then
