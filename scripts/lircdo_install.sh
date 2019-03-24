@@ -613,8 +613,10 @@ fi
 
 if [ "$USE_LETS_ENCRYPT_CERTS" == "true" ]; then
    install_lets_encrypt_certificates $APP_FQDN
+   sed -i "s/^USES_SELF_SIGNED_CERTS=.*/USES_SELF_SIGNED_CERTS=false/" $LIRCDO_SERVER_DIR/.env
 else
    install_self_signed_certificates $APP_FQDN
+   sed -i "s/^USES_SELF_SIGNED_CERTS=.*/USES_SELF_SIGNED_CERTS=true/" $LIRCDO_SERVER_DIR/.env
 fi
 
 if [ ! -e $LIRCDO_SERVER_DIR/catalog_internal.json ]; then
