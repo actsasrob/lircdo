@@ -120,12 +120,13 @@ Here is a summary of what the script does:
   * Creates randomly generated secrets used to better secure connections to the lircdo service
   * Prompts you for the application port the application listens on and the fully qualified domain name (FQDN) of the lircdo server
 * Performs some sanity checking to verify the FQDN resolves in DNS and that the FQDN IP resolves to the WAN IP for your home router
-* Uses [Let's Encrypt](https://letsencrypt.org/) to create a free signed server certificate for the lircdo service. The server certificate is used to create secure HTTPS connections from the lircdo Alexa skill lambda function and the lircdo service
+* Create server certificates to secure HTTPS connections from the lircdo Alexa skill lambda function and the lircdo service. The default is to use self-signed certificates. There is an option to use [Let's Encrypt](https://letsencrypt.org/)
+* When using Let's Encrypt:
   * Prompts for an e-mail address to use when registering with Let's Encrypt. This e-mail address is used by Let's Encrypt to notify you when/if server certificates will expire.
-* Creates a CRON job to renew the server certificate
-* Creates filesystem access control list (ACLs) to allow the unpriviliged lirc user to read the server certificate certificate authority (CA), public cert, and private key files
-* Creates softlinks from the lircdo application installation directory to the CA/cert/key files created when registering with Let's Encrypt
-* Creates the initial catalog_internal.json file
+  * Creates a CRON job to renew the server certificate
+  * Creates softlinks from the lircdo application installation directory to the CA/cert/key files created when registering with Let's Encrypt
+  * Creates filesystem access control list (ACLs) to allow the unpriviliged lirc user to read the server certificate certificate authority (CA), public cert, and private key files
+* Creates the initial (empty) catalog_internal.json file
 * Restarts the lircdo service if needed
 * Display installation status an next-steps to be performed.
 
@@ -134,7 +135,7 @@ Here is a summary of what the script does:
 2. You need to be able to create sub-domains. E.g. lircdo.mydomain.com or lirc.joesblogspot.net
 3. You may want to create a new sub-domain for use with the lircdo service. This is not required if you already have a domain or sub-domain that resolves to the WAN-side IP address of your home internet router.
 4. The DNS entry for your selected domain/sub-domain **MUST** point to the WAN-side IP address of your home internet router. If your home internet service uses dynamic IPs you must keep the DNS entry for your sub-domain up-to-date when your IP address changes.
-5. In your home internet router you must forward port 80 to port 80 of the lircdo server. This port is used by Let's Encrypt to verify you own the registered domain and to renew server certificates.
+5. When using Let's Encrypt: In your home internet router you must forward port 80 to port 80 of the lircdo server. This port is used by Let's Encrypt to verify you own the registered domain and to renew server certificates.
 6. In your home internet router you must forward the port the lircdo application listens on (e.g. port 8843) to the lircdo server. The lircdo Alexa skill will connect to the lircdo service using the FQDN and port number selected when installing the lircdo service.
 
 
@@ -189,9 +190,11 @@ NOTE: Re-run generate_json_catalog.py after changes are made to scripts in the L
 
 ### DNS/Domain name/SSL Cert
 
-When the lircdo service is installed it will use [Let's Encrypt](https://letsencrypt.org/) to install and configure an SSL server certificate used to secure and encrypt all communication between the lircdo Alexa skill and the lircdo service. The common name (CN) of the server certificate will match the fully qualified domain name (FQDN) of your lircdo server that you entered when you ran the install script. Let's Encrypt will perform tests to verify you actually own the FQDN. The Let's Encrypt client listens on port 80 and then sends a request to the Let's Encrypt servers specifying the FQDN. The Let's Encrypt servers will perform a DNS lookup on the FQDN to obtain the IP address associated with the FQDN. The Let's Encrypt server will then attempt to connect to port 80 using the IP. When everything is configured properly the Let's Encrypt client listening on port 80 will receive the request and can verify the FQDN/IP maps to the current server. 
+When the lircdo service is installed server certificates will be used to secure and encrypt all communication between the lircdo Alexa skill and the lircdo service. The common name (CN) of the server certificate will match the fully qualified domain name (FQDN) of your lircdo server that you entered when you ran the install script. By default self-signed certificates are used. There is an option to use [Let's Encrypt](https://letsencrypt.org/).
 
-When the lircdo Alexa skill connects to the lircdo service via HTTPS it is configured to verify the common name (CN) of the server certificate sent by the lircdo server matches the FQDN. If the CN doesn't match the the lircdo Alexa skill will refuse the connection. In addition the server certificate must be signed by a trusted certificate authority (CA). The Let's Encrypt service also acts as a trusted CA.
+When using Let's Encrypt: The Let's Encrypt installer will perform tests to verify you actually own the FQDN. The Let's Encrypt client listens on port 80 and then sends a request to the Let's Encrypt servers specifying the FQDN. The Let's Encrypt servers will perform a DNS lookup on the FQDN to obtain the IP address associated with the FQDN. The Let's Encrypt server will then attempt to connect to port 80 using the IP. When everything is configured properly the Let's Encrypt client listening on port 80 will receive the request and can verify the FQDN/IP maps to the current server. There is no real advantaage to using Let's Encrypt certificates. If you already use Let's Encrypt to generate certificates for your domain you may wish to use the Let's Encrypt option. It does require that port 80 is tied up for your home network which may be undesireable if you already have an application that uses port 80.
+
+When the lircdo Alexa skill connects to the lircdo service via HTTPS it is configured to verify the common name (CN) of the server certificate sent by the lircdo server matches the FQDN. If the CN doesn't match the the lircdo Alexa skill will refuse the connection. When using self-signed certificates the public CA certificate is sent to the lircdo Alexa skill during the pairing process. The public CA certificate is used to trust the self-signed certificate later when the lircdo Alexa skill communicates with the lircdo service. When using Let's Encrypt the public CA certificate is not transmitted as the Let's Encrypt service also acts as a trusted CA.
 
 ### Pulling It All Together
 
@@ -202,10 +205,11 @@ Recommend you proceed as follows:
 3. Use the [README page](https://github.com/actsasrob/lircdo/blob/master/README_lircd.conf.md) to populate /etc/lirc/lircd.conf with the definition of at least one remote control. Then follow the instructions in that README to test that you can use the LIRC daemon to successfully generate IR signals using the LIRC irsend client.
 4. Create and attach an IR emitter/receiver to your lircdo server. You might need to implement this step before the step above if you find you need an IR receiver to clone IR signals.
 5. If needed, create the DNS domain and or subdomain used by the lircdo Alexa skill to communicate with your lircdo server. If using a dynamic IP, implement a mechanism to keep your FQDN updated as your IP address changes.
-6. If needed, forward ports in your home router to the desired ports in the lircdo server. You need to forward port 80 for use by Let's Encrypt and the port (e.g. 8843) that the lircdo service will listen on.
-7. Finish running the lircdo_install.sh script to complete the lircdo service installation.
-8. Pair the lircdo Alexa skill (aka Baba Zoo) with your lircdo server. Remember to update the lircdo service .env file to set PAIR_MODE=false after successfully pairing with the lircdo service. Then restart the lircdo service. At this point the lircdo Alexa skill can send commands to the lircdo server/service.
-9. Create the lircdo shell scripts that will be invoked by the lircdo service to emit IR signals based on commands received from the lircdo Alexa skill. Use the [README page](https://github.com/actsasrob/lircdo/blob/master/README_lircd.conf.md) to learn how to populate the lircdo shell scripts with metadata which will be used by the lircdo service to map incoming commands to lircdo shell scripts. Remember to run generate_json_catalog.py to regenerate catalog_internal.json then restart the lircdo service.
+6. If using Let's Encrypt to create/renew server certificates: In your home router forward port 80 to the lircdo server for use by Let's Encrypt.
+7. In your home router forward the port (e.g. 8843) to the lircdo server that the lircdo service will listen on.
+8. Finish running the lircdo_install.sh script to complete the lircdo service installation.
+9. Pair the lircdo Alexa skill (aka Baba Zoo) with your lircdo server. Remember to update the lircdo service .env file to set PAIR_MODE=false after successfully pairing with the lircdo service. Then restart the lircdo service. At this point the lircdo Alexa skill can send commands to the lircdo server/service.
+10. Create the lircdo shell scripts that will be invoked by the lircdo service to emit IR signals based on commands received from the lircdo Alexa skill. Use the [README page](https://github.com/actsasrob/lircdo/blob/master/README_lircd.conf.md) to learn how to populate the lircdo shell scripts with metadata which will be used by the lircdo service to map incoming commands to lircdo shell scripts. Remember to run generate_json_catalog.py to regenerate catalog_internal.json then restart the lircdo service.
  
 ### Misc.
 
