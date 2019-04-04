@@ -213,6 +213,10 @@ Recommend you proceed as follows:
  
 ### Misc.
 
+#### Q&A and Web Forum
+
+https://groups.google.com/forum/#!forum/lircdo
+
 #### How to start/restart the lircdo service
 
 After making changes to the .env environment file or after re-generating catalog_internal.json you must restart the lircdo service. The lirc user is an unprivileged user and cannot use the sudo command. Instead use the 'pi' user to execute the following command to restart the lircdo service:
