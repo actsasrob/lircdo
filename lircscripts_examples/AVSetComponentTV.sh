@@ -8,5 +8,5 @@
 # meta: default_component=false
 # meta: numargs=0
 
-irsend SEND_ONCE Denon_RC-1070_raw TV_CBL 
+irsend SEND_ONCE Denon_RC-1070_raw KEY_DVD 
 exit $?
