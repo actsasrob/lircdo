@@ -465,6 +465,76 @@ if (!PAIR_MODE || TEST_MODE) { // START OF NON-PAIR MODE
 		res.end(json);
 	})
 
+
+	// This responds to a GET request for /navigate_action_ask.
+	// Meant to be invoked Alexa Skills Kit(sdk)
+	// Params: lircComponent. Not Required
+	// Params: lircNavigateAction. Required
+	// Params: lircArgument. Not Requred
+	// Params: shared_secret. Required
+	app.get('/navigate_action_ask', function (req, res) {
+		var status = 'success';
+		var message = 'action successful';
+
+		var lircComponent=req.query.lircComponent;
+		var lircNavigateAction=req.query.lircNavigateAction;
+		var lircArgument=req.query.lircArgument;
+
+		console.log(`nagivate_action_ask: lircNavigateAction=${lircNavigateAction} lircComponent=${lircComponent} lircArgument=${lircArgument}`);
+
+		var shared_secret=req.query.shared_secret;
+		if (typeof shared_secret === 'undefined' || shared_secret === null ||
+				shared_secret !== LIRCDO_PAGE_SECRET) {
+			// Error.
+			res.writeHead(401, {"Content-Type": "application/json"});
+			status = 'error';
+			message = 'invalid shared secret';
+		} else if (typeof lircComponent !== 'undefined' && lircComponent !== null && 
+				! /^[a-zA-Z0-9_]{0,50}$/.test(lircComponent)) {
+			// Error.
+			res.writeHead(200, {"Content-Type": "application/json"});
+			status = 'error';
+			message = 'invalid component';
+		} else if (typeof lircChannelAction === 'undefined' || lircNavigateAction === null ||
+				! /^[a-zA-Z0-9_]{1,50}$/.test(lircNavigateAction)) {
+			// Error.
+			res.writeHead(200, {"Content-Type": "application/json"});
+			status = 'error';
+			message = 'invalid navigate action';
+		} else if (typeof lircArgument !== 'undefined' && lircArgument !== null && 
+				! /^[1-9]{1,1}[0-9]{0,2}$/.test(lircArgument)) {
+			// Error.
+			res.writeHead(200, {"Content-Type": "application/json"});
+			status = 'error';
+			message = 'invalid navigate argument';
+		} else {
+			res.writeHead(200, {"Content-Type": "application/json"});
+
+		        // If lircArgument unset then set to "1"
+			if (typeof lircArgument === 'undefined' || lircArgument === null) {
+				lircArgument="1"
+			}
+			var intent = lookup_intent('navigate_action', lircNavigateAction, lircComponent, lircArgument);
+			if (intent) {
+				console.log('navigate_action_ask: found lircscript=' + intent.lircscript);
+				if (!NO_EXECUTE_MODE) {
+					var msg = execute_lirc_script(intent.lircscript, lircArgument);
+					if (msg && msg.length > 0) {
+						message = msg;
+					}
+				}
+			} else {
+				console.log('navigate_action_ask: no matching lircscript found');
+				message = 'No matching LIRC script found';
+			}
+		} 
+		var json = JSON.stringify({
+			status: status,
+			message: message
+		});
+		res.end(json);
+	})
+
 	// This responds to a GET request for /volume_action_ask.
 	// Meant to be invoked Alexa Skills Kit(sdk)
 	// Params: lircComponent. Not Required
