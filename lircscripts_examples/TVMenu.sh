@@ -3,7 +3,7 @@
 # meta: name=tvkeymenu
 # meta: displayname=TV Menu
 # meta: intent=lircdo
-# meta: action=SHOW_MENU
+# meta: action=MENU_SHOW
 # meta: component=COMPONENT_TV
 # meta: default_component=false
 # meta: numargs=0
