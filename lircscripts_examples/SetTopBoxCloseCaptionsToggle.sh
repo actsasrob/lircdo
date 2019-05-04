@@ -3,7 +3,7 @@
 # meta: name=settopboxclosecaptionstoggle
 # meta: displayname=Set Top Box Toggle Close Captions 
 # meta: intent=lircdo
-# meta: action=CLOSE_CAPTIONS
+# meta: action=SUBTITLES,CLOSE_CAPTIONS
 # meta: component=COMPONENT_STB
 # meta: default_component=true
 # meta: numargs=0

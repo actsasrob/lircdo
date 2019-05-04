@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # meta: name=settopboxkeyleft
-# meta: displayname=Set Top Box Key Left
-# meta: intent=lircdo
-# meta: action=KEY_LEFT
+# meta: displayname=Set Top Box Nav Left
+# meta: intent=navigate_action
+# meta: action=NAVIGATE_LEFT
 # meta: component=COMPONENT_STB
 # meta: default_component=true
 # meta: numargs=1

@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# meta: name=settopboxkeydown
-# meta: displayname=Set Top Box Nav Down
+# meta: name=settopboxchanneldown
+# meta: displayname=Set Top Box Channel Down
 # meta: intent=navigate_action
-# meta: action=NAVIGATE_DOWN
+# meta: action=CHANNEL_DOWN
 # meta: component=COMPONENT_STB
 # meta: default_component=true
 # meta: numargs=1
@@ -16,7 +16,7 @@ if [ "$#" -eq 1 ]; then
          argument="10"
       fi
       for ((i=0; i<"${argument}"; i++)); do
-        irsend SEND_ONCE Motorola_QIP6200-2 KEY_DOWN --count=2
+        irsend SEND_ONCE Motorola_QIP6200-2 KEY_CHANNELDOWN --count=2
         sleepenh 0.1
         status=$?
       done

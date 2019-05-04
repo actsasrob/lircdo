@@ -1,12 +1,12 @@
 #!/bin/bash
 
-# meta: name=settopboxkeydown
-# meta: displayname=Set Top Box Nav Down
-# meta: intent=navigate_action
-# meta: action=NAVIGATE_DOWN
-# meta: component=COMPONENT_STB
+# meta: name=tvmute
+# meta: displayname=TV Mute Toggle
+# meta: intent=lircdo
+# meta: action=MUTE,UNMUTE
+# meta: component=COMPONENT_TV
 # meta: default_component=true
-# meta: numargs=1
+# meta: numargs=0
 
 status=0
 if [ "$#" -eq 1 ]; then
@@ -16,7 +16,7 @@ if [ "$#" -eq 1 ]; then
          argument="10"
       fi
       for ((i=0; i<"${argument}"; i++)); do
-        irsend SEND_ONCE Motorola_QIP6200-2 KEY_DOWN --count=2
+        irsend SEND_ONCE Samsung_BN59-00516A_TV KEY_MUTE --count=2
         sleepenh 0.1
         status=$?
       done

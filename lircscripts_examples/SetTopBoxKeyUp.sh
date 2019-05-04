@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # meta: name=settopboxkeyup
-# meta: displayname=Set Top Box Key Up
-# meta: intent=lircdo
-# meta: action=KEY_UP
+# meta: displayname=Set Top Box Nav Up
+# meta: intent=navigate_action
+# meta: action=NAVIGATE_UP
 # meta: component=COMPONENT_STB
 # meta: default_component=true
 # meta: numargs=1

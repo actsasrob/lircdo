@@ -8,6 +8,7 @@
 # meta: default_component=true
 # meta: numargs=0
 
+status=0
 if [ "$#" -eq 1 ]; then
    argument="$1"
    if [[ "$argument" =~ ^[0-9]+$ ]]; then

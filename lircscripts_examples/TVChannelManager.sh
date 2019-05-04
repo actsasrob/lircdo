@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# meta: name=tvhomemenu
-# meta: displayname=TV Home Menu 
+# meta: name=tvchannelguide
+# meta: displayname=TV Channel Guide 
 # meta: intent=lircdo
-# meta: action=KEY_MENU
+# meta: action=GUIDE
 # meta: component=COMPONENT_TV
 # meta: default_component=false
 # meta: numargs=0

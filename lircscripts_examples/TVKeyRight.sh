@@ -2,8 +2,8 @@
 
 # meta: name=tvkeyright
 # meta: displayname=TV Key Right
-# meta: intent=lircdo
-# meta: action=KEY_RIGHT
+# meta: intent=navigate_action
+# meta: action=NAVIGATE_RIGHT
 # meta: component=COMPONENT_TV
 # meta: default_component=false
 # meta: numargs=1
@@ -17,7 +17,7 @@ if [ "$#" -eq 1 ]; then
       fi
       for ((i=0; i<"${argument}"; i++)); do
         irsend SEND_ONCE Samsung_BN59-00516A_TV KEY_RIGHT --count=2
-        sleepenh 0.25
+        sleepenh 0.1
         status=$?
       done
    fi

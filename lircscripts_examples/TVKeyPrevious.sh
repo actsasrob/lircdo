@@ -2,12 +2,13 @@
 
 # meta: name=tvkeyprevious
 # meta: displayname=TV Key Previous
-# meta: intent=lircdo
-# meta: action=KEY_PREVIOUS
+# meta: intent=navigate_action
+# meta: action=NAVIGATE_RETURN
 # meta: component=COMPONENT_TV
 # meta: default_component=false
 # meta: numargs=1
 
+status=0
 if [ "$#" -eq 1 ]; then
    argument="$1"
    if [[ "$argument" =~ ^[0-9]+$ ]]; then
@@ -22,4 +23,4 @@ if [ "$#" -eq 1 ]; then
    fi
 fi
 
-exit $?
+exit $status
