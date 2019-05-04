@@ -495,7 +495,7 @@ if (!PAIR_MODE || TEST_MODE) { // START OF NON-PAIR MODE
 			res.writeHead(200, {"Content-Type": "application/json"});
 			status = 'error';
 			message = 'invalid component';
-		} else if (typeof lircChannelAction === 'undefined' || lircNavigateAction === null ||
+		} else if (typeof lircNavigateAction === 'undefined' || lircNavigateAction === null ||
 				! /^[a-zA-Z0-9_]{1,50}$/.test(lircNavigateAction)) {
 			// Error.
 			res.writeHead(200, {"Content-Type": "application/json"});
