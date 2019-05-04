@@ -1,3 +1,3 @@
 TODO:
 
-If multiple lircdo servers/services exist in a home, how to allow Let's Encrypt to renew server certificates as the certbot-auto script will need to bind to port 80. The home router can only be forward port 80 to one server at a time. Is there a way to have Let's Encrypt use different ports for each server?
+- Add intent to enable/disable consise responses. The idea is to minimize the amount of time between subsequent action requests for things like scrolling/navigating.
