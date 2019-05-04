@@ -3,7 +3,7 @@
 # meta: name=tvsource
 # meta: displayname=TV Source 
 # meta: intent=lircdo
-# meta: action=KEY_SOURCE
+# meta: action=SOURCE_SELECT
 # meta: component=COMPONENT_TV
 # meta: default_component=true
 # meta: numargs=0
