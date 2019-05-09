@@ -7,7 +7,7 @@ lircdo is a "voice first" interface for controlling your home audio/video equipm
 
 ## lircdo [Alexa](https://en.wikipedia.org/wiki/Amazon_Echo) Skill 
 
-This component is written in node.js and implements the [AWS](https://aws.amazon.com/what-is-aws/) [lambda](https://aws.amazon.com/lambda/) function that is called by the Amazon Alexa service when you invoke the lircdo skill via your Alexa-enabled device. You invoke the skill by saying something like \*Alexa, open baba zoo\*. **NOTE: The lircdo Alexa skill has not yet been published and is not currently available to the public. Hopefully it will be available soon.**
+This component is written in node.js and implements the [AWS](https://aws.amazon.com/what-is-aws/) [lambda](https://aws.amazon.com/lambda/) function that is called by the Amazon Alexa service when you invoke the lircdo skill via your Alexa-enabled device. You invoke the skill by saying something like \*Alexa, open baba zoo\*.
 
 To learn more about this component navigate to the [README page](https://github.com/actsasrob/lircdo_ask/blob/master/README.md).
 

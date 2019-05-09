@@ -336,6 +336,12 @@ else
    echo "info: lirc package already installed. nothing to do"
 fi
 
+LIRC090=0 # DEFAULT to not LIRC 0.9.0
+lircd -v | grep "0.9.0" > /dev/null 2>&1
+if [ "$?" -eq 0 ]; then
+   LIRC090=1 # IT IS LIRC 0.9.0
+fi
+
 echo
 echo "info: install/configure Linux Infrared Remote Control (LIRC) service. configure /boot/config.txt"
 grep "^dtoverlay.*lirc" /boot/config.txt > /dev/null 2>&1
@@ -344,11 +350,19 @@ if [ "$?" -ne 0 ]; then
    grep "^dtoverlay" /boot/config.txt > /dev/null 2>&1
    if [ "$?" -ne 0 ]; then
       echo "info: no dtoverlay line exists in /boot/config.txt for lirc-rpi module...adding line..."
-      echo "dtoverlay=lirc-rpi,gpio_out_pin=17,gpio_in_pin=18" >> /boot/config.txt
+      if [ "$LIRC090" -eq 1 ]; then
+         echo "dtoverlay=lirc-rpi,gpio_out_pin=17,gpio_in_pin=18" >> /boot/config.txt
+      else
+	 echo "dtoverlay=lirc-rpi,gpio_out_pin=17,gpio_in_pin=18,gpio_in_pull=up" >> /boot/config.txt
+      fi
       echo "info: added dtoverlay line in /boot/config.txt for lirc-rpi module using gpio out pin 17 and gpio in pin 18"
    else
       echo "info: dtloverlay line exists in /boot/config.txt but doesn't include lirc-rpi module...adding it..."
-      sed -ie "s/^\(dtoverlay.*\)$/\1,lirc-rpi,gpio_out_pin=17,gpio_in_pin=18/" /boot/config.txt
+      if [ "$LIRC090" -eq 1 ]; then
+         sed -ie "s/^\(dtoverlay.*\)$/\1,lirc-rpi,gpio_out_pin=17,gpio_in_pin=18/" /boot/config.txt
+      else
+         sed -ie "s/^\(dtoverlay.*\)$/\1,lirc-rpi,gpio_out_pin=17,gpio_in_pin=18,gpio_in_pull=up/" /boot/config.txt
+      fi
       echo "info: added dtoverlay line in /boot/config.txt for lirc-rpi module using gpio out pin 17 and gpio in pin 18"
    fi
    NEEDS_REBOOT=1
@@ -358,20 +372,49 @@ fi
 
 
 echo
-echo "info: install/configure Linux Infrared Remote Control (LIRC) service. configure /etc/lirc/hardware.conf"
-grep "^DEVICE=\"${LIRC_DEVICE}\"" /etc/lirc/hardware.conf > /dev/null 2>&1
-devicestatus=$?
-grep "^DRIVER=\"${LIRC_DRIVER}\"" /etc/lirc/hardware.conf > /dev/null 2>&1
-driverstatus=$?
-if [ "$devicestatus" -ne 0 ] || [ "$driverstatus" -ne 0 ]; then
-   echo "info: configuring DEVICE and DRIVER in /etc/lirc/hardware.conf..."
-   cp -p /etc/lirc/hardware.conf /etc/lirc/hardware.conf.bak
-   sed -ie "s|^DEVICE=.*$|DEVICE='${LIRC_DEVICE}'|" /etc/lirc/hardware.conf
-   sed -ie "s|^DRIVER=.*$|DRIVER='${LIRC_DRIVER}'|" /etc/lirc/hardware.conf
-   echo "info: /etc/lirc/hardware.conf has been updated."
-   NEEDS_LIRCSERVICE_RESTART=1
-else
-   echo "info: latest /etc/lirc/hardware.conf file already installed. nothing to do"
+if [ "$LIRC090" -eq 1 ]; then
+   echo "info: install/configure Linux Infrared Remote Control (LIRC) service. configure /etc/lirc/hardware.conf"
+   grep "^DEVICE=\"${LIRC_DEVICE}\"" /etc/lirc/hardware.conf > /dev/null 2>&1
+   devicestatus=$?
+   grep "^DRIVER=\"${LIRC_DRIVER}\"" /etc/lirc/hardware.conf > /dev/null 2>&1
+   driverstatus=$?
+   if [ "$devicestatus" -ne 0 ] || [ "$driverstatus" -ne 0 ]; then
+      echo "info: configuring DEVICE and DRIVER in /etc/lirc/hardware.conf..."
+      cp -p /etc/lirc/hardware.conf /etc/lirc/hardware.conf.bak
+      sed -ie "s|^DEVICE=.*$|DEVICE='${LIRC_DEVICE}'|" /etc/lirc/hardware.conf
+      sed -ie "s|^DRIVER=.*$|DRIVER='${LIRC_DRIVER}'|" /etc/lirc/hardware.conf
+      echo "info: /etc/lirc/hardware.conf has been updated."
+      NEEDS_LIRCSERVICE_RESTART=1
+   else
+      echo "info: latest /etc/lirc/hardware.conf file already installed. nothing to do"
+   fi
+else # After lirc 0.9.0 use /etc/lirc/lirc_options.conf
+   echo "info: install/configure Linux Infrared Remote Control (LIRC) service. configure /etc/lirc/lirc_options.conf"
+   grep -iE "^device *= *${LIRC_DEVICE}" /etc/lirc/lirc_options.conf > /dev/null 2>&1
+   devicestatus=$?
+   grep -iE "^driver *= *${LIRC_DRIVER}" /etc/lirc/lirc_options.conf
+   driverstatus=$?
+   if [ "$devicestatus" -ne 0 ] || [ "$driverstatus" -ne 0 ]; then
+      echo "info: configuring DEVICE and DRIVER in /etc/lirc/lirc_options.conf..."
+      cp -p /etc/lirc/lirc_options.conf /etc/lirc/lirc_options.conf.bak
+      sed -ie "s|\(^device *=\).*$|\1 '${LIRC_DEVICE}'|" /etc/lirc/lirc_options.conf
+      sed -ie "s|^\(^driver *=\).*$|\1 ${LIRC_DRIVER}|" /etc/lirc/lirc_options.conf
+      echo "info: /etc/lirc/lirc_options.conf has been updated."
+      NEEDS_LIRCSERVICE_RESTART=1
+   else
+      echo "info: latest /etc/lirc/lirc_options.conf file already installed. nothing to do"
+   fi
+
+   echo
+   echo "info: install/configure Linux Infrared Remote Control (LIRC) service. configure /etc/modules"
+   grep "^lirc_" /etc/modules > /dev/null 2>&1
+   if [ "$?" -eq 1 ]; then
+      echo "info: adding lirc_dev and lirc_rpi modules to /etc/modules..."
+      echo "lirc_dev" >> /etc/modules
+      echo "lirc_rpi gpio_in_pin=18 gpio_out_pin=17" >> /etc/modules
+   else
+      echo "info: lirc modules have already been added to /etc/modules. nothing to do"
+   fi
 fi
 
 systemctl enable lirc
