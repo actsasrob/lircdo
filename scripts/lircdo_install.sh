@@ -392,7 +392,7 @@ else # After lirc 0.9.0 use /etc/lirc/lirc_options.conf
    echo "info: install/configure Linux Infrared Remote Control (LIRC) service. configure /etc/lirc/lirc_options.conf"
    grep -iE "^device *= *'${LIRC_DEVICE}'" /etc/lirc/lirc_options.conf > /dev/null 2>&1
    devicestatus=$?
-   grep -iE "^driver *= *${LIRC_DRIVER}" /etc/lirc/lirc_options.conf
+   grep -iE "^driver *= *${LIRC_DRIVER}" /etc/lirc/lirc_options.conf > /dev/null 2>&1
    driverstatus=$?
    if [ "$devicestatus" -ne 0 ] || [ "$driverstatus" -ne 0 ]; then
       echo "info: configuring DEVICE and DRIVER in /etc/lirc/lirc_options.conf..."
@@ -424,7 +424,7 @@ else # After lirc 0.9.0 use /etc/lirc/lirc_options.conf
       mv /etc/lirc/lircd.conf.d/devinput.lircd.conf /etc/lirc/lircd.conf.d/devinput.lircd.conf.dist
       NEEDS_LIRCSERVICE_RESTART=1
    else
-      "info: /etc/lirc/lircd.conf.d/devinput.lircd.conf doesn't exist. nothing to do"
+      echo "info: /etc/lirc/lircd.conf.d/devinput.lircd.conf doesn't exist. nothing to do"
    fi
 fi
 
