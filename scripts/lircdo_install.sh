@@ -390,7 +390,7 @@ if [ "$LIRC090" -eq 1 ]; then
    fi
 else # After lirc 0.9.0 use /etc/lirc/lirc_options.conf
    echo "info: install/configure Linux Infrared Remote Control (LIRC) service. configure /etc/lirc/lirc_options.conf"
-   grep -iE "^device *= *${LIRC_DEVICE}" /etc/lirc/lirc_options.conf > /dev/null 2>&1
+   grep -iE "^device *= *'${LIRC_DEVICE}'" /etc/lirc/lirc_options.conf > /dev/null 2>&1
    devicestatus=$?
    grep -iE "^driver *= *${LIRC_DRIVER}" /etc/lirc/lirc_options.conf
    driverstatus=$?
