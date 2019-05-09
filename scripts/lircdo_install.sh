@@ -412,25 +412,32 @@ else # After lirc 0.9.0 use /etc/lirc/lirc_options.conf
       echo "info: adding lirc_dev and lirc_rpi modules to /etc/modules..."
       echo "lirc_dev" >> /etc/modules
       echo "lirc_rpi gpio_in_pin=18 gpio_out_pin=17" >> /etc/modules
+      NEEDS_REBOOT=1
    else
       echo "info: lirc modules have already been added to /etc/modules. nothing to do"
    fi
 
    echo
    echo "info: install/configure Linux Infrared Remote Control (LIRC) service. check if /etc/lirc/lircd.conf.d/devinput.lircd.conf exists..."
-   if [ -e /etc/lirc/lircd.conf.d/devinput.lircd.conf ]; then
+   if [ -e "/etc/lirc/lircd.conf.d/devinput.lircd.conf" ]; then
       echo "info: moving /etc/lirc/lircd.conf.d/devinput.lircd.conf to devinput.lircd.conf.dist..."
       mv /etc/lirc/lircd.conf.d/devinput.lircd.conf /etc/lirc/lircd.conf.d/devinput.lircd.conf.dist
+      NEEDS_LIRCSERVICE_RESTART=1
    else
       "info: /etc/lirc/lircd.conf.d/devinput.lircd.conf doesn't exist. nothing to do"
    fi
 fi
 
-systemctl enable lirc
+LIRC_SERVICE=lircd
+if [ "$LIRC090" -eq 1 ]; then
+   LIRC_SERVICE=lirc
+fi
+
+systemctl enable $LIRC_SERVICE 
 if [ "$NEEDS_LIRCSERVICE_RESTART" -eq 1 ]; then
    echo
    echo "info: restarting lirc service..."
-   systemctl restart lirc
+   systemctl restart $LIRC_SERVICE 
 fi
 
 echo
