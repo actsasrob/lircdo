@@ -3,7 +3,7 @@
 # meta: name=tvdismissmenu
 # meta: displayname=TV Dismiss Menu
 # meta: intent=lircdo
-# meta: action=KEY_EXIT
+# meta: action=MENU_DISMISS
 # meta: component=COMPONENT_TV
 # meta: default_component=true
 # meta: numargs=0

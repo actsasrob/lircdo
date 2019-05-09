@@ -23,4 +23,4 @@ if [ "$#" -eq 1 ]; then
    fi
 fi
 
-exit ?status
+exit $status
