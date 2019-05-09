@@ -415,6 +415,15 @@ else # After lirc 0.9.0 use /etc/lirc/lirc_options.conf
    else
       echo "info: lirc modules have already been added to /etc/modules. nothing to do"
    fi
+
+   echo
+   echo "info: install/configure Linux Infrared Remote Control (LIRC) service. check if /etc/lirc/lircd.conf.d/devinput.lircd.conf exists..."
+   if [ -e /etc/lirc/lircd.conf.d/devinput.lircd.conf ]; then
+      echo "info: moving /etc/lirc/lircd.conf.d/devinput.lircd.conf to devinput.lircd.conf.dist..."
+      mv /etc/lirc/lircd.conf.d/devinput.lircd.conf /etc/lirc/lircd.conf.d/devinput.lircd.conf.dist
+   else
+      "info: /etc/lirc/lircd.conf.d/devinput.lircd.conf doesn't exist. nothing to do"
+   fi
 fi
 
 systemctl enable lirc
