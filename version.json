@@ -1,0 +1,34 @@
+{
+	"currentVersion": "1.1.0",
+	"versions": [
+		{
+			"version": "1.1.0",
+			"changes": [
+				"Added callback for lircdo Alexa skill navigation_action intent",
+				"Adds ability to perform menu directional navigation",
+				"Adds ability to page between menu screens",
+				"Menu navigation accepts an optional numeric argument (default 1) which indicates the number of times to scroll in the given direction",
+				"Adds ability to return or go back to previous menu screens",
+				"Adds abililty to navigate up and down channels",
+				"Added additional lircdo generic intent actions",
+				"Adds ability to go to select current menu option",
+				"Adds ability to go to previous channel",
+				"Adds ability to go to home menu",
+				"Adds picture-in-picture (PIP) option",
+				"Adds channel guide option",
+				"Adds source select option"
+			]
+		}, 
+		{
+                        "version": "1.0.0",
+                        "changes": [
+                                "Initial release",
+				"Adds ability to pair lircdo server/service with lircdo Alexa skill",
+				"Adds lircdo generic intent callback to support things like displaying/dismissing menus, play/pause/record video/audio, display subtitles/captions, etc.",
+                                "Adds channel_action intent callback to support changing channels",
+				"Adds volume_action intent callback to raise/lower volume",
+                                "Adds avr_action intent callback to allow selecting audio/video receiver (AVR) component"
+                        ]
+                }
+	]
+}
