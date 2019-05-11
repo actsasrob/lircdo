@@ -2,7 +2,7 @@
 
 # meta: name=tvkeydown
 # meta: displayname=TV Key Down
-# meta: intent=nagivate_action
+# meta: intent=navigate_action
 # meta: action=NAVIGATE_DOWN
 # meta: component=COMPONENT_TV
 # meta: default_component=true
