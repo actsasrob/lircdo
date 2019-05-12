@@ -16,7 +16,7 @@ if [ "$#" -eq 1 ]; then
          argument="10"
       fi
       for ((i=0; i<"${argument}"; i++)); do
-        irsend SEND_ONCE Motorola_QIP6200-2 KEY_DOWN --count=2
+        irsend SEND_ONCE Motorola_QIP6200-2 KEY_DOWN --count=1
         sleepenh 0.1
         status=$?
       done

@@ -16,8 +16,8 @@ if [ "$#" -eq 1 ]; then
          argument="10"
       fi
       for ((i=0; i<"${argument}"; i++)); do
-        irsend SEND_ONCE Samsung_BN59-00516A_TV KEY_UP --count=2
-        sleepenh 0.1
+        irsend SEND_ONCE Samsung_BN59-00516A_TV KEY_UP --count=1
+        sleepenh 0.3
         status=$?
       done
    fi
