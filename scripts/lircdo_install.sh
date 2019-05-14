@@ -284,16 +284,16 @@ function install_self_signed_certificates {
 
 # Check OS version
 echo
-echo "info: this install script and the lircdo service has only been verified to work with debian jessie"
-echo "info: check for debian jessie operating system using /etc/os-release..."
+echo "info: this install script and the lircdo service has only been verified to work with debian jessie/stretch"
+echo "info: check for debian jessie/stretch operating system using /etc/os-release..."
 if [ -e /etc/os-release ]; then
-   grep -i jessie /etc/os-release > /dev/null 2>&1
+   grep -i -E "jessie|stretch" /etc/os-release > /dev/null 2>&1
    if [ "$?" -ne 0 ]; then
       echo "***"
-      echo "warn: operating system doesn't appear to be debian jessie. cannot guarantee install or lircdo service will work. continuing anyway..."
+      echo "warn: operating system doesn't appear to be debian jessie or stretch. cannot guarantee install or lircdo service will work. continuing anyway..."
       echo "***"
    else
-      echo "info: verified debian jessie operating system. continuing..."
+      echo "info: verified debian jessie/stretch operating system. continuing..."
    fi
 else
    echo "***"
