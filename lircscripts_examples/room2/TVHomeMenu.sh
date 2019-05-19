@@ -9,7 +9,8 @@
 # meta: numargs=0
 
 irsend SEND_ONCE Samsung_BN59-00516A_TV KEY_MENU --count=1
-status=$?
+sleepenh 1.0
 irsend SEND_ONCE Samsung_BN59-00516A_TV KEY_MENU --count=1
+status=$?
 
-exit $?
+exit $status
