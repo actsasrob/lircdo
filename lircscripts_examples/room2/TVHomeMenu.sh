@@ -5,7 +5,7 @@
 # meta: intent=lircdo
 # meta: action=TOP_MENU
 # meta: component=COMPONENT_TV
-# meta: default_component=false
+# meta: default_component=true
 # meta: numargs=0
 
 irsend SEND_ONCE Samsung_BN59-00516A_TV KEY_MENU --count=1
