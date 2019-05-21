@@ -21,7 +21,7 @@ if [ "$#" -eq 1 ]; then
       fi
       argument=1
       for ((i=0; i<"${argument}"; i++)); do
-        irsend SEND_ONCE RMT-VB201U FAST_FORWARD --count=1
+        irsend SEND_ONCE RMT-VB201U KEY_FASTFORWARD --count=1
         sleepenh 0.1
         status=$?
       done
