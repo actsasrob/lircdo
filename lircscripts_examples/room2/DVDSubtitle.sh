@@ -8,5 +8,5 @@
 # meta: default_component=true
 # meta: numargs=0
 
-irsend SEND_ONCE RMT-D185A_para_from_irscrut KEY_SUBTITLE --count=2
+irsend SEND_ONCE RMT-VB201U KEY_SUBTITLE
 exit $?

@@ -1,12 +1,12 @@
 #!/bin/bash
 
-# meta: name=dvdplay
-# meta: displayname=DVD Play
+# meta: name=dvdstopplay
+# meta: displayname=DVD Stop Play 
 # meta: intent=lircdo
-# meta: action=UNPAUSE
+# meta: action=STOP_PLAY
 # meta: component=COMPONENT_DVD
 # meta: default_component=false
 # meta: numargs=0
 
-irsend SEND_ONCE RMT-VB201U KEY_PLAY
+irsend SEND_ONCE RMT-VB201U KEY_STOP
 exit $?
