@@ -78,7 +78,7 @@ I use the homemade IR emitter/receiver discussed below for two of my lircdo serv
 
 I am using the IR Remote Shield with one of my lircdo servers (Debian Jessie/Raspian-based). The IR Remote Shield works great. 
 
-A couple of caveats:
+A few of caveats:
 * I tried using the IR Remote Shield with Debian Stretch/LIRC v0.9.4c. The setup works great for the LIRC remote for my Samsung TV. I created a new LIRC configuration file for a new Blu Ray player. I can send a couple of IR signals and then it stops working. So far I have not been able to determine if the issue is with my LIRC remote config file, IR Remote Shield, something with Debian Stretch, or LIRC v0.9.4c related. That same LIRC configuration file works great when using the IR Remote Shield with Debian Jessie/LIRC v0.9.0-pre.
 * If you use a case with your Raspberry Pi you will probably need to use a clear case. When the IR Remote Shield is installed the top of the component is below the top of the case which blocks the ability to emit IR signals.
 * The IR Remote Shield blocks both power GPIO pins. If you need both power pins then the IR Remote Shield may not be a good choice.
@@ -87,7 +87,7 @@ The range of the IR Remote Shoeld is pretty good. This would be my recommended a
 
 Install the IR Remote Shield over the gpio pins on the Raspberry Pi as shown in the picture in the [link over at www.raspberrypiwiki.com](http://www.raspberrypiwiki.com/index.php/Raspberry_Pi_IR_Control_Expansion_Board). 
 
-NOTE: The LIRC software setup discussed on that page is for older versions of LIRC v0.9.1 and earlier. If you use the lircdo installation script it will install/configure LIRC for Debian Jessie or Debian Strech (which uses LIRC v0.9.4) using the configuration that works for me. Hopefully it will just work for you as well. See the "lircdo install script" section below for details.
+NOTE: The LIRC software setup discussed on that page is for older versions of LIRC v0.9.1 and earlier. If you use the lircdo installation script it will install/configure LIRC for Debian Jessie or Debian Stretch (which uses LIRC v0.9.4) using the configuration that works for me. Hopefully it will just work for you as well. See the "lircdo install script" section below for details.
 
 #### [Make Your Own Emitter/Receiver](https://www.hackster.io/austin-stanton/creating-a-raspberry-pi-universal-remote-with-lirc-2fd581) 
 
@@ -197,7 +197,7 @@ The steps below assume this directory is named 'lircscripts' inside the top-leve
 
 **NOTE: If you change the location or name the directory other than lircscripts then you must update the LIRCSCRIPTS_LOCATION variable in the .env file and restart the lircdo application.**
 
-/etc/lirc/lircd.conf contains the definitions of the remote controls (LIRC v0.9.1 or earlier) that you want to emulate using LIRC. Under LIRC version 0.9.1 (or ealier) if you have multiple remote control definition files then concatenate them all together in the /etc/lirc/lircd.conf file. *Later versions of LIRC (v0.9.2 and later) allow you to create multiple files under /etc/lirc/lircd.conf.d/*.
+/etc/lirc/lircd.conf contains the definitions of the remote controls (LIRC v0.9.1 or earlier) that you want to emulate using LIRC. Under LIRC version 0.9.1 (or ealier) if you have multiple remote control definition files then concatenate them all together in the /etc/lirc/lircd.conf file. Later versions of LIRC (v0.9.2 and later) allow you to create multiple files under /etc/lirc/lircd.conf.d/\*.conf.
 
 A remote control definition specifies things like the frequency used by the remote control, the time gap between IR signal pulses, and the codes for each remote control button.
 
