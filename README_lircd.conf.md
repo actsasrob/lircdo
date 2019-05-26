@@ -120,8 +120,11 @@ IrScrutinizer is a wonderful tool created by [Dr. Bengt Mårtensson](http://www.
 
 You can download the latest version of IrScrutinizer [here](https://github.com/bengtmartensson/harctoolboxbundle/releases/latest). The [AppImage](https://appimage.org/) format can be downloaded and executed on a Linux 64-bit system such as a Raspberry Pi running the Debian Jessie OS. This makes it a convenient tool to use on a Raspberry Pi with an attached IR receiver to capute IR signals. The captured signals can be exported in the format recognized by LIRC. IrScrutinizer requires a graphical interface. Recommend installing/configuring VNC on your Raspberry Pi so that you can connect remotely via a graphical terminal.
 
+*CAVEAT: I recently tried to use IrScrutinizer v1.4.2 on a Raspberry Pi 3+ Model B running Debian Stretch. The AppImage format would not load for me. I was able to use the .zip based installation working by downloading the zip file, extracting it, making the irscrutinizer.sh file executable, and then launching IrScrutinizer via irscrutinizer.sh.*
 
 You can find IrScrutinizer documentation [here](http://www.harctoolbox.org/IrScrutinizer.html) with a tutorial [here](http://www.hifi-remote.com/wiki/index.php?title=IrScrutinizer_Guide).
+
+If you use IrScrutinizer I highly recommend you at least read the tutorial before attempting to use it.
 
 ## Creating lircdo Shell Scripts
 
@@ -140,7 +143,7 @@ The following table briefly describes the purpose of each meta key:
 | name | id/name for the script | yes |  The \<value> portion is a string which is unique across all scripts |
 | displayname | A human readable name. Not currently used. Might be used in future by graphical user interface (GUI). | yes | The \<value> portion is a human readable string which succintly describes what action the script performs  |
 | intent | The lircdo Alexa Skill intent implemented by the script | yes | Select an appropriate 'intent=\<value>' pair from 'lircdo server Key & Value' column in [this table](https://github.com/actsasrob/lircdo_ask/blob/master/README_using_skill.md#lircdo_intents) |
-| action | The action to perform for the selected intent | yes | Select an appropriate 'action=\<value>' pair from the 'lircdo server meta Key & Value' column in the [LircAction table](https://github.com/actsasrob/lircdo_ask/blob/master/README_using_skill.md#LircAction), [LircChannelAction table](https://github.com/actsasrob/lircdo_ask/blob/master/README_using_skill.md#LircChannelAction), [LircVolumeAction table](https://github.com/actsasrob/lircdo_ask/blob/master/README_using_skill.md#LircVolumeAction), or [LircAVRAction table](https://github.com/actsasrob/lircdo_ask/blob/master/README_using_skill.md#LircAVRAction) |
+| action | The action to perform for the selected intent | yes | Select an appropriate 'action=\<value>' pair from the 'lircdo server meta Key & Value' column in the [LircAction table](https://github.com/actsasrob/lircdo_ask/blob/master/README_using_skill.md#LircAction), [LircChannelAction table](https://github.com/actsasrob/lircdo_ask/blob/master/README_using_skill.md#LircChannelAction), [LircVolumeAction table](https://github.com/actsasrob/lircdo_ask/blob/master/README_using_skill.md#LircVolumeAction), [LircNavigateAction table](https://github.com/actsasrob/lircdo_ask/blob/master/README_using_skill.md#LircNavigationAction)m or [LircAVRAction table](https://github.com/actsasrob/lircdo_ask/blob/master/README_using_skill.md#LircAVRAction) |
 | component | The A/V component or device targeted by the action | yes | Select an appropriate 'component=\<value>' pair from 'lircdo server Key & Value' column in the [LircComponent table](https://github.com/actsasrob/lircdo_ask/blob/master/README_using_skill.md#LircComponent) or the [LircAVDevice table](https://github.com/actsasrob/lircdo_ask/blob/master/README_using_skill.md#LircAVDevice) |
 | default_component | If no component/device is specified when invoking the lircdo Alexa skill will this script implement a default component/device? |  no | You only need to add this key for true values. List of true values: true, 1, t, y, yes. List of false values: false, 0, f, n, no |
 | numargs | The number of optional arguments. Currently only used by volume_action and channel_action intents to specify the numeric argument for the amount to raise/lower the volume and the channel to set, respectively | no | You only need to add this key for volume_action and channel_action intents. Use 1 for volume_action and channel_action intents otherwise 0 |
@@ -152,7 +155,9 @@ You should be able to determine the intent to implement by process of eliminatio
 
 Use the [channel_action](https://github.com/actsasrob/lircdo_ask/blob/master/README_using_skill.md#channel_action_intent) to change channels of A/V components/devices.
 
-Use the [volume_action](https://github.com/actsasrob/lircdo_ask/blob/master/README_using_skill.md#volume_action_intent) intent to raise or lower volumes ov A/V components/devices. NOTE: Muting components falls under the generic [lircdo](https://github.com/actsasrob/lircdo_ask/blob/master/README_using_skill.md#lircdo_intent).
+Use the [volume_action](https://github.com/actsasrob/lircdo_ask/blob/master/README_using_skill.md#volume_action_intent) intent to raise or lower volumes ov A/V components/devices. NOTE: Muting components falls under the generic [lircdo](https://github.com/actsasrob/lircdo_ask/blob/master/README_using_skill.md#lircdo_intent) intent .
+
+Use the [navigate_action](https://github.com/actsasrob/lircdo_ask/blob/master/README_using_skill.md#navigate_action_intent) to navigate menus. NOTE: Menu navigation actions that do not require a numeric argument are found under the generic [lircdo](https://github.com/actsasrob/lircdo_ask/blob/master/README_using_skill.md#lircdo_intent) intent. 
 
 Use the [avr_action](https://github.com/actsasrob/lircdo_ask/blob/master/README_using_skill.md#avr_action_intent) intent to change the currently selected component/device for Audio Video Receivers (AVRs).
 
