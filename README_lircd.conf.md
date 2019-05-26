@@ -197,7 +197,7 @@ Only the [channel_action](https://github.com/actsasrob/lircdo_ask/blob/master/RE
 
 Currently only one argument is accepted. More than one argument may be accepted in the future.
 
-If your script implements an action for the channel_action or volume_action intents then add the line '# meta: numargs=1' otherwise add the line '# meta: numargs=0' or leave the line out entirely.
+If your script implements an action for the channel_action, volume_action, or navigate_action intents then add the line '# meta: numargs=1' otherwise add the line '# meta: numargs=0' or leave the line out entirely.
 
 ### Name meta key
 
