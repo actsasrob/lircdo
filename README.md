@@ -26,7 +26,7 @@ The lircdo server/service is composed of the following components:
 2. Infrared Emitter/Receiver
 3. The lircdo service
 4. [LIRC](http://www.lirc.org/) service
-5. LIRC shell scripts and /etc/lirc/lircd.conf (LIRC daemon configuration file)
+5. LIRC shell scripts and /etc/lirc/lircd.conf or /etc/lirc/lircd.conf.d/\*.conf (LIRC daemon configuration file)
 6. catalog_internal.json
 7. DNS/Domain name/SSL Cert
 
@@ -68,7 +68,7 @@ I won't cover installation for Debian Stretch. Recent NOOBS builds contain Debia
 
 ### Infrared Emitter/Receiver
 
-You don't strictly need an IR receiver to use lircdo. However, you must populate the /etc/lirc/lircd.conf LIRC daemon configuration file (more on that later) containing configuration sections that emulate the remote control(s) for your home AV equipment. Often you can find publically available configuration files. But if you cannot find a pre-made configuration file for one or more of your remote controls you may find you need to generate these configuration files yourself by cloning signals from the remote controls in your home. An IR receiver is needed to clone these signals. The lircdo server/service itself does not require an IR receiver. To set expectations, it is worth mentioning that for some of your physical remote controls you will likely not be able to find publically available LIRC configuration files and you will not be able to clone the signals because of proprietary protocols or because the remote control emits signals outside the frequency range or your IR emitter/receiver.
+You don't strictly need an IR receiver to use lircdo. However, you must populate the /etc/lirc/lircd.conf (LIRC v0.9.1 and earlier) LIRC daemon configuration file or add remote control definition config files to directory /etc/lirc/lircd.conf.d (LIRC v0.9.2 and later) containing configuration sections that emulate the remote control(s) for your home AV equipment. Often you can find publically available configuration files. But if you cannot find a pre-made configuration file for one or more of your remote controls you may find you need to generate these configuration files yourself by cloning signals from the remote controls in your home. An IR receiver is needed to clone these signals. The lircdo server/service itself does not require an IR receiver. To set expectations, it is worth mentioning that for some of your physical remote controls you will likely not be able to find publically available LIRC configuration files and you will not be able to clone the signals because of proprietary protocols or because the remote control emits signals outside the frequency range or your IR emitter/receiver.
 
 I cover two IR Emitter/Receivers:
 
@@ -171,10 +171,10 @@ The LIRC service is composed of the LIRC library package which exposes a client 
 
 After all is said and done, lircdo wouldn't be possible without the LIRC service. A big **Thank You** to the creators/developers/maintainers of LIRC.
 
-The LIRC packages are installed/configured as part of the lircdo service installation. You shouldn't have to install/configure LIRC other than to create the remote control definition file(s) /etc/lirc/lircd.conf (Debian Jessie/LIRC v0.9.0) or /etc/lirc/lircd.conf.d/\*.conf (Debian Stretch/LIRC v0.9.4) which is discussed below.
+The LIRC packages are installed/configured as part of the lircdo service installation. You shouldn't have to install/configure LIRC other than to create the remote control definition file(s) /etc/lirc/lircd.conf (Debian Jessie/LIRC v0.9.1 or earlier) or /etc/lirc/lircd.conf.d/\*.conf (Debian Stretch/LIRC v0.9.2 or later) which is discussed below.
 
 
-### LIRC shell scripts and /etc/lirc/lircd.conf
+### LIRC shell scripts and /etc/lirc/lircd.conf or /etc/lirc/lircd.conf.d/*.conf
 
 The LIRC service and LIRC shell scripts are where the "rubber meets the road" so to speak. Really the lircdo service is just a glorified shell script runner. The lircdo service receives commands from the lircdo Alexa skill, determines the appropriate shell script to run, then executes that shell script.
 
@@ -190,13 +190,13 @@ The steps below assume this directory is named 'lircscripts' inside the top-leve
 
 **NOTE: If you change the location or name the directory other than lircscripts then you must update the LIRCSCRIPTS_LOCATION variable in the .env file and restart the lircdo application.**
 
-/etc/lirc/lircd.conf contains the definitions of the remote controls that you want to emulate using LIRC. Under LIRC version 0.90 if you have multiple remote control definition files then concatenate them all together in the /etc/lirc/lircd.conf file. *Later versions of LIRC allow you to create multiple files under /etc/lirc/lircd.conf.d/*.
+/etc/lirc/lircd.conf contains the definitions of the remote controls (LIRC v0.9.1 or earlier) that you want to emulate using LIRC. Under LIRC version 0.9.1 (or ealier) if you have multiple remote control definition files then concatenate them all together in the /etc/lirc/lircd.conf file. *Later versions of LIRC (v0.9.2 and later) allow you to create multiple files under /etc/lirc/lircd.conf.d/*.
 
 A remote control definition specifies things like the frequency used by the remote control, the time gap between IR signal pulses, and the codes for each remote control button.
 
-The LIRC shell scripts and the remote control definitions go hand-in-hand. A given LIRC shell script will use the LIRC api to invoke a code for a named remote control. The LIRC service uses the definitions in /etc/lirc/lircd.conf to look up the details for the specified remote control and code. 
+The LIRC shell scripts and the remote control definitions go hand-in-hand. A given LIRC shell script will use the LIRC api to invoke a code for a named remote control. The LIRC service uses the definitions in /etc/lirc/lircd.conf or /etc/lirc/lircd.conf.d/\*.conf to look up the details for the specified remote control and code. 
 
-Populating /etc/lirc/lircd.conf with remote control definition files to control your home A/V equipment is likely going to involve a sizeable investment in time. As the steps to do this get involved I have broken out this activity into its own [README file](https://github.com/actsasrob/lircdo/blob/master/README_lircd.conf.md) page.
+Populating /etc/lirc/lircd.conf or /etc/lirc/lircd.conf.d/\*.conf with remote control definition files to control your home A/V equipment is likely going to involve a sizeable investment in time. As the steps to do this get involved I have broken out this activity into its own [README file](https://github.com/actsasrob/lircdo/blob/master/README_lircd.conf.md) page.
 
 
 ### catalog_internal.json
@@ -226,7 +226,7 @@ Recommend you proceed as follows:
 
 1. Set up the lircdo server
 2. Run the lircdo_install.sh script to install and configure the LIRC daemon. Stop when the script prompts if you want to continue.
-3. Use the [README page](https://github.com/actsasrob/lircdo/blob/master/README_lircd.conf.md) to populate /etc/lirc/lircd.conf with the definition of at least one remote control. Then follow the instructions in that README to test that you can use the LIRC daemon to successfully generate IR signals using the LIRC irsend client.
+3. Use the [README page](https://github.com/actsasrob/lircdo/blob/master/README_lircd.conf.md) to populate /etc/lirc/lircd.conf or /etc/lirc/lirc.conf.d/\*.conf  with the definition of at least one remote control. Then follow the instructions in that README to test that you can use the LIRC daemon to successfully generate IR signals using the LIRC irsend client.
 4. Create and attach an IR emitter/receiver to your lircdo server. You might need to implement this step before the step above if you find you need an IR receiver to clone IR signals.
 5. If needed, create the DNS domain and or subdomain used by the lircdo Alexa skill to communicate with your lircdo server. If using a dynamic IP, implement a mechanism to keep your FQDN updated as your IP address changes.
 6. If using Let's Encrypt to create/renew server certificates: In your home router forward port 80 to the lircdo server for use by Let's Encrypt.
