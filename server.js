@@ -506,7 +506,7 @@ if (!PAIR_MODE || TEST_MODE) { // START OF NON-PAIR MODE
 			// Error.
 			res.writeHead(200, {"Content-Type": "application/json"});
 			status = 'error';
-			message = 'invalid navigate argument';
+			message = 'invalid numeric argument';
 		} else {
 			res.writeHead(200, {"Content-Type": "application/json"});
 
