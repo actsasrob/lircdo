@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# meta: name=setavcomponentps4
-# meta: displayname=Change AVR Component to PS4
+# meta: name=setavcomponentps
+# meta: displayname=Change AVR Component to PlayStation
 # meta: intent=avr_action
 # meta: action=CHANGE_COMPONENT
-# meta: component=COMPONENT_PS4,COMPONENT_HDP
+# meta: component=COMPONENT_PS,COMPONENT_HDP
 # meta: default_component=false
 # meta: numargs=0
 
