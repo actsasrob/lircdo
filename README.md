@@ -26,7 +26,7 @@ The lircdo server/service is composed of the following components:
 2. Infrared Emitter/Receiver
 3. The lircdo service
 4. [LIRC](http://www.lirc.org/) service
-5. LIRC shell scripts and /etc/lirc/lircd.conf or /etc/lirc/lircd.conf.d/\*.conf (LIRC daemon configuration file)
+5. LIRC shell scripts and /etc/lirc/lircd.conf or /etc/lirc/lircd.conf.d/\*.conf (LIRC daemon configuration file(s))
 6. catalog_internal.json
 7. DNS/Domain name/SSL Cert
 
@@ -38,7 +38,7 @@ This component is implemented using a small computer(e.g. Raspberry Pi 3 Model B
 
 #### Install Debian Jessie/Raspbian or Stretch/Raspbian
 
-Highly recommend using Raspbian with Debian Jessie or Debian Stretch operating system. Raspberry Pi Model 3 computers have additional gpio pins not available via Raspberry Pi Model 2 computers. Recommend using a Raspberry Pi Model 3.
+Highly recommend using Raspbian with Debian Jessie or Debian Stretch operating system. Raspberry Pi Model 3 computers have additional gpio pins not available via Raspberry Pi Model 2 computers. Recommend using a Raspberry Pi 3 Model B.
 
 ##### Download Raspian image
 You can find the zip file containing Raspbian using Debian Jessie [here](http://downloads.raspberrypi.org/raspbian/images/raspbian-2017-07-05/).
@@ -76,11 +76,18 @@ I cover two IR Emitter/Receivers:
 
 I use the homemade IR emitter/receiver discussed below for two of my lircdo servers. It works pretty well but the range is a little limited (about 4 feet). These emitter/receivers have a retro look which is kind of cool though.
 
-I recently built a new lircdo server with Debian Stretch with Raspbian and decided to use an IR Remote Shield as the emitter/receiver. So far it has worked great with no issues and the range is pretty good. This would be my recommended approach at this time. Unless you happen to have all the spare parts lying around the IR Remote Shield will likely be cheaper as well. I picked one up on [Amazon.com](https://www.amazon.com/IR-Remote-Control-Transceiver-Raspberry/dp/B0713SK7RJ) for about $12. A quick internet search turned up this link on [newegg](https://www.newegg.com/Product/Product.aspx?Item=2S7-003Z-007M6) as well.
+I am using the IR Remote Shield with one of my lircdo servers (Debian Jessie/Raspian-based). The IR Remote Shield works great. 
+
+A couple of caveats:
+* I tried using the IR Remote Shield with Debian Stretch/LIRC v0.9.4c. The setup works great for the LIRC remote for my Samsung TV. I created a new LIRC configuration file for a new Blu Ray player. I can send a couple of IR signals and then it stops working. So far I have not been able to determine if the issue is with my LIRC remote config file, IR Remote Shield, something with Debian Stretch, or LIRC v0.9.4c related. That same LIRC configuration file works great when using the IR Remote Shield with Debian Jessie/LIRC v0.9.0-pre.
+* If you use a case with your Raspberry Pi you will probably need to use a clear case. When the IR Remote Shield is installed the top of the component is below the top of the case which blocks the ability to emit IR signals.
+* The IR Remote Shield blocks both power GPIO pins. If you need both power pins then the IR Remote Shield may not be a good choice.
+
+The range of the IR Remote Shoeld is pretty good. This would be my recommended approach at this time unless one of the caveats above applies to your situation. Unless you happen to have all the spare parts lying around the IR Remote Shield will likely be cheaper as well. I picked one up on [Amazon.com](https://www.amazon.com/IR-Remote-Control-Transceiver-Raspberry/dp/B0713SK7RJ) for about $12. A quick internet search turned up this link on [newegg](https://www.newegg.com/Product/Product.aspx?Item=2S7-003Z-007M6) as well.
 
 Install the IR Remote Shield over the gpio pins on the Raspberry Pi as shown in the picture in the [link over at www.raspberrypiwiki.com](http://www.raspberrypiwiki.com/index.php/Raspberry_Pi_IR_Control_Expansion_Board). 
 
-NOTE: The LIRC software setup discussed on that page is for older versions of LIRC v0.9.0 and older. If you use the lircdo installation script it will install/configure LIRC for Debian Jessie or Debian Strech (which uses LIRC v0.9.4) using the configuration that works for me. Hopefully it will just work for you as well. See the "lircdo install script" section below for details.
+NOTE: The LIRC software setup discussed on that page is for older versions of LIRC v0.9.1 and earlier. If you use the lircdo installation script it will install/configure LIRC for Debian Jessie or Debian Strech (which uses LIRC v0.9.4) using the configuration that works for me. Hopefully it will just work for you as well. See the "lircdo install script" section below for details.
 
 #### [Make Your Own Emitter/Receiver](https://www.hackster.io/austin-stanton/creating-a-raspberry-pi-universal-remote-with-lirc-2fd581) 
 
