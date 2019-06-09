@@ -19,6 +19,7 @@ if [ "$#" -eq 1 ]; then
       for ((i=0; i<"${argument}"; i++)); do
         irsend SEND_ONCE Samsung_BN59-00516A_TV KEY_VOLUMEUP 
         status=$?
+	sleepenh 0.3
       done
    fi
 fi
