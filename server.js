@@ -304,7 +304,7 @@ if (!PAIR_MODE || TEST_MODE) { // START OF NON-PAIR MODE
 		if (typeof shared_secret === 'undefined' || shared_secret === null ||
 				shared_secret !== LIRCDO_PAGE_SECRET) {
 			// Error.
-			res.writeHead(402, {"Content-Type": "application/json"});
+			res.writeHead(401, {"Content-Type": "application/json"});
 			status = 'error';
 			message = 'invalid shared secret';
 		} else if (typeof lircComponent !== 'undefined' && lircComponent !== null && 
