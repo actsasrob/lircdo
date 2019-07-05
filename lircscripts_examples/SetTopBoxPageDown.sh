@@ -17,12 +17,19 @@ if [ "$#" -eq 1 ]; then
       if [ "${argument}" -gt 10 ]; then
          argument="10"
       fi
-      for (( j=0; j<"${PAGE_SIZE}"; j++ )); do
-         for ((i=0; i<"${argument}"; i++)); do
-           irsend SEND_ONCE Motorola_QIP6200-2 KEY_DOWN --count=1
-           sleepenh 0.1
-           status=$?
-         done
+      #for (( j=0; j<"${PAGE_SIZE}"; j++ )); do
+      #   for ((i=0; i<"${argument}"; i++)); do
+      #     irsend SEND_ONCE Motorola_QIP6200-2 KEY_DOWN --count=1
+      #     sleepenh 0.1
+      #     status=$?
+      #   done
+      #done
+
+      # Turns out the KEY_CHANNELDOWN/KEY_CHANNELUP buttons act as page down/up when used in the channel guide
+      for ((i=0; i<"${argument}"; i++)); do
+        irsend SEND_ONCE Motorola_QIP6200-2 KEY_CHANNELDOWN --count=1
+        sleepenh 0.1
+        status=$?
       done
    fi
 fi
